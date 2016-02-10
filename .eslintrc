@@ -1,0 +1,13 @@
+---
+extends: standard
+env:
+  jasmine: true
+  browser: true
+rules:
+  comma-dangle:
+    - 2
+    - always-multiline
+  no-multiple-empty-lines:
+    - 2
+    - max: 2
+  padded-blocks: 0
