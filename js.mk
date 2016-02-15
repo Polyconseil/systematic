@@ -22,6 +22,15 @@ LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
 GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' 2> /dev/null)
 GETTEXT_JS_SOURCES ?= $(shell find $(SRC_DIR) -name '*.js' 2> /dev/null)
 
+ifeq ($(IS_APP),yes)
+JS_OUTPUT_FILE ?= bundle.js
+else
+# The default would be index.js, but renaming it is encouraged.
+JS_OUTPUT_FILE ?= index.js
+endif
+
+WEBPACK_OPTIONS ?= --output-filename $(JS_OUTPUT_FILE)
+
 
 # Help Message
 #
@@ -92,16 +101,16 @@ translations: $(SRC_DIR)/translations.json
 serve: translations
 	mkdir -p $(DIST_DIR)
 	concurrent --kill-others \
-		"live-server --port=$(SERVE_PORT) --wait=100 --watch=$(SRC_DIR) --open=$(SRC_DIR)" \
-		"webpack --watch --bail"
+		"live-server --port=$(SERVE_PORT) --wait=100 --watch=$(DIST_DIR) --open=$(SRC_DIR)" \
+		"webpack --watch --colors --bail $(WEBPACK_OPTIONS)"
 
 dist: translations
 	mkdir -p $(DIST_DIR)
-	cp $(SRC_DIR)/translations.json $(DIST_DIR)/translations.json
-	webpack --optimize-minimize --optimize-dedupe --progress
 ifeq ($(IS_APP),yes)
-	html-dist $(SRC_DIR)/index.html --remove-all --minify \
-		--insert bundle.js --output $(DIST_DIR)/index.html
+	webpack --optimize-minimize --optimize-dedupe --progress $(WEBPACK_OPTIONS)
+	html-dist --input $(SRC_DIR)/index.html --config html-dist.conf.js
+else
+	webpack --optimize-dedupe --progress $(WEBPACK_OPTIONS)
 endif
 
 

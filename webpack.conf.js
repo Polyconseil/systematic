@@ -8,6 +8,7 @@ module.exports = function(basePath) {
   }
 
   return {
+    context: basePath,
     entry: PATHS.app,
     output: {
       path: PATHS.dist,
