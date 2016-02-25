@@ -1,7 +1,7 @@
 /* global module */
 
-const webpackConfig = require('./webpack.conf')
-webpackConfig.devtool = 'inline-source-map'
+const webpackGetDefaults = require('./webpack_get_defaults')
+webpackGetDefaults.devtool = 'inline-source-map'
 
 module.exports = function(basePath) {
   return {
@@ -60,7 +60,7 @@ module.exports = function(basePath) {
     browsers: ['PhantomJS'],
     reporters: ['coverage', 'junit', 'mocha'],
 
-    webpack: webpackConfig(basePath),
+    webpack: webpackGetDefaults(basePath),
     webpackMiddleware: {
       noInfo: true,
     },

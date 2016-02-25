@@ -7,7 +7,9 @@ export NODE_PATH := $(shell pwd):$(NODE_PATH)
 
 # Customizable variables
 #
-IS_APP ?= no
+IS_APP ?= yes
+IS_ANGULAR ?= yes
+IS_REACT ?= no
 
 SRC_DIR ?= src
 DIST_DIR ?= dist
@@ -29,7 +31,10 @@ else
 JS_OUTPUT_FILE ?= index.js
 endif
 
-WEBPACK_OPTIONS ?= --output-filename $(JS_OUTPUT_FILE)
+WEBPACK_OPTIONS ?= --output-filename $(JS_OUTPUT_FILE) \
+	--systematic-angular=$(IS_ANGULAR) \
+	--systematic-react=$(IS_REACT) \
+	--systematic-app=$(IS_APP)
 
 
 # Help Message
@@ -101,14 +106,13 @@ translations: $(SRC_DIR)/translations.json
 serve: translations
 	mkdir -p $(DIST_DIR)
 	concurrent --kill-others \
-		"live-server --port=$(SERVE_PORT) --wait=100 --watch=$(DIST_DIR) --open=$(SRC_DIR)" \
+		"live-server --port=$(SERVE_PORT) --wait=100 --watch=$(DIST_DIR) --open=$(DIST_DIR)" \
 		"webpack --watch --colors --bail $(WEBPACK_OPTIONS)"
 
 dist: translations
 	mkdir -p $(DIST_DIR)
 ifeq ($(IS_APP),yes)
-	webpack --optimize-minimize --optimize-dedupe --progress $(WEBPACK_OPTIONS)
-	html-dist --input $(SRC_DIR)/index.html --config html-dist.conf.js
+	webpack --optimize-dedupe --progress $(WEBPACK_OPTIONS) --optimize-minimize
 else
 	webpack --optimize-dedupe --progress $(WEBPACK_OPTIONS)
 endif
