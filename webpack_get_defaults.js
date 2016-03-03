@@ -6,7 +6,7 @@ const htmlPlugin = require('html-webpack-plugin')
 const plugins = []
 const jadeLoaders = ['html', 'jade-html']
 
-if (process.argv['--systematic-angular'] === 'yes') {
+if (process.argv['--systematic-profile'] === 'angular') {
   plugins.push(new ngAnnotatePlugin({add: true}))
   jadeLoaders.unshift('ngtemplate')
 }

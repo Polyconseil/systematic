@@ -2,21 +2,21 @@ default: help
 
 PATH := node_modules/.bin:$(PATH)
 SHELL ?= /bin/bash -o pipefail
+SYSTEMATIC_PATH ?= node_modules/systematic
 
 export NODE_PATH := $(shell pwd):$(NODE_PATH)
 
 # Customizable variables
 #
 IS_APP ?= yes
-IS_ANGULAR ?= yes
-IS_REACT ?= no
+SYSTEMATIC_PROFILE ?= vanilla
 
 SRC_DIR ?= src
 DIST_DIR ?= dist
 SERVE_PORT ?= 8080
 TEST_PORT ?= 8081
 
-ESLINTRC ?= ./node_modules/systematic/.eslintrc
+ESLINTRC ?= ./$(SYSTEMATIC_PATH)/.eslintrc
 
 LOCALES ?= en_US en_GB es_US fr_FR it_IT
 LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
@@ -32,8 +32,7 @@ JS_OUTPUT_FILE ?= index.js
 endif
 
 WEBPACK_OPTIONS ?= --output-filename $(JS_OUTPUT_FILE) \
-	--systematic-angular=$(IS_ANGULAR) \
-	--systematic-react=$(IS_REACT) \
+	--systematic-profile=$(SYSTEMATIC_PROFILE) \
 	--systematic-app=$(IS_APP)
 
 

@@ -17,7 +17,6 @@
   },
   "files": [
     ".eslintrc",
-    "html-dist.conf.js",
     "js.mk",
     "karma.conf.js",
     "package.json",
