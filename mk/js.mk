@@ -1,19 +1,30 @@
 default: help
 
 PATH := node_modules/.bin:$(PATH)
+NODE_BINDIR ?= ./node_modules/.bin/
 SHELL ?= /bin/bash -o pipefail
 SYSTEMATIC_PATH ?= node_modules/systematic
+
+CONF_INI ?= systematic.ini
+READINI ?= $(NODE_BINDIR)readini
 
 export NODE_PATH := $(shell pwd):$(NODE_PATH)
 
 # Customizable variables
-#
-IS_APP ?= yes
-SYSTEMATIC_PROFILE ?= vanilla
+
+SYSTEMATIC_PROFILE ?= $(shell $(READINI) $(CONF_INI) build.profile 2> /dev/null)
+PACKAGE ?= $(shell $(READINI) $(CONF_INI) package.name 2> /dev/null)
+
+ifeq ($(SYSTEMATIC_PROFILE),)
+$(error Define a build profile in $(SYSTEMATIC_PROFILE))
+endif
+ifeq ($(PACKAGE),)
+$(error Define a package name in $(SYSTEMATIC_PROFILE))
+endif
 
 SRC_DIR ?= src
 DIST_DIR ?= dist
-SERVE_PORT ?= 8080
+SERVE_PORT ?= $(shell $(READINI) $(CONF_INI) serve.port 8080 2> /dev/null)
 TEST_PORT ?= 8081
 
 ESLINTRC ?= ./$(SYSTEMATIC_PATH)/.eslintrc
@@ -24,16 +35,7 @@ LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
 GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' 2> /dev/null)
 GETTEXT_JS_SOURCES ?= $(shell find $(SRC_DIR) -name '*.js' 2> /dev/null)
 
-ifeq ($(IS_APP),yes)
-JS_OUTPUT_FILE ?= bundle.js
-else
-# The default would be index.js, but renaming it is encouraged.
-JS_OUTPUT_FILE ?= index.js
-endif
-
-WEBPACK_OPTIONS ?= --output-filename $(JS_OUTPUT_FILE) \
-	--systematic-profile=$(SYSTEMATIC_PROFILE) \
-	--systematic-app=$(IS_APP)
+include $(SYSTEMATIC_PATH)/mk/$(SYSTEMATIC_PROFILE).mk
 
 
 # Help Message
@@ -110,12 +112,7 @@ serve: translations
 
 dist: translations
 	mkdir -p $(DIST_DIR)
-ifeq ($(IS_APP),yes)
-	webpack --optimize-dedupe --progress $(WEBPACK_OPTIONS) --optimize-minimize
-else
-	webpack --optimize-dedupe --progress $(WEBPACK_OPTIONS)
-endif
-
+	webpack --optimize-dedupe --progress
 
 # Miscellaneous build commands
 #
@@ -139,3 +136,4 @@ endif
 
 $(SRC_DIR)/translations.json: /tmp/template.pot
 	gettext-compile --output $@ $(LOCALE_FILES)
+

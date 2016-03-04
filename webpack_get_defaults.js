@@ -1,29 +1,36 @@
 const path = require('path')
+const ini = require('ini')
+const fs = require('fs')
+
+const webpack = require('webpack')
 const ngAnnotatePlugin = require('ng-annotate-webpack-plugin')
 const htmlPlugin = require('html-webpack-plugin')
 
 
+const systematic = ini.parse(fs.readFileSync('./systematic.ini', 'utf-8'))
 const plugins = []
 const jadeLoaders = ['html', 'jade-html']
 
-if (process.argv['--systematic-profile'] === 'angular') {
+if (systematic.build.profile === 'angular') {
   plugins.push(new ngAnnotatePlugin({add: true}))
   jadeLoaders.unshift('ngtemplate')
 }
-if (process.argv['--systematic-app'] === 'yes') {
+if (systematic.build.type === 'app') {
   plugins.push(new htmlPlugin({
     inject: true,
     filename: 'index.html',
     template: 'src/index.html',
   }))
+  plugins.push(new webpack.optimize.UglifyJsPlugin())
 }
 
+const distFolder = 'dist'
 
 module.exports = function(basePath) {
 
   const PATHS = {
     app: path.join(basePath, 'src'),
-    dist: path.join(basePath, 'dist'),
+    dist: path.join(basePath, distFolder),
   }
 
   return {
@@ -31,8 +38,8 @@ module.exports = function(basePath) {
     entry: PATHS.app,
     output: {
       path: PATHS.dist,
-      filename: 'bundle.js',
-      publicPath: 'http://127.0.0.1:3341/dist/',
+      filename: systematic.build.type === 'app' ? 'bundle.js' : 'index.js',
+      publicPath: 'http://127.0.0.1:' + systematic.serve.port + '/' + distFolder + '/',
     },
     module: {
       loaders: [

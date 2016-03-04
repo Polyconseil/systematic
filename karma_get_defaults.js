@@ -1,9 +1,11 @@
 /* global module */
 
 const webpackGetDefaults = require('./webpack_get_defaults')
-webpackGetDefaults.devtool = 'inline-source-map'
 
 module.exports = function(basePath) {
+  const webpackConfig = webpackGetDefaults(basePath)
+  webpackConfig.devtool = 'inline-source-map'
+
   return {
     basePath: basePath,
     // Without this _in the config file_, plugins do not reload automatically
@@ -14,6 +16,7 @@ module.exports = function(basePath) {
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',  // polyfill if we don't include the entrypoint
       'src/**/*.spec.js',
+      'src/**/*tests.js',
     ],
 
     preprocessors: {
@@ -60,7 +63,7 @@ module.exports = function(basePath) {
     browsers: ['PhantomJS'],
     reporters: ['coverage', 'junit', 'mocha'],
 
-    webpack: webpackGetDefaults(basePath),
+    webpack: webpackConfig,
     webpackMiddleware: {
       noInfo: true,
     },

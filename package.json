@@ -15,20 +15,13 @@
   "license": "MIT",
   "dependencies": {
   },
-  "files": [
-    ".eslintrc",
-    "js.mk",
-    "karma.conf.js",
-    "package.json",
-    "webpack.conf.js",
-    "README.md"
-  ],
   "devDependencies": {
     "babel-loader": "6.2.2",
     "babel-polyfill": "6.5.0",
     "babel-preset-es2015": "6.5.0",
     "concurrently": "1.0.0",
     "eslint": "2.0.0",
+    "ini": "1.3.4",
     "jasmine-core": "2.4.1",
     "karma-coverage": "0.5.3",
     "karma-jasmine": "0.3.7",
@@ -58,5 +51,11 @@
     "ngtemplate-loader": "1.3.1",
     "node-sass": "3.4.2",
     "postcss-loader": "0.8.1"
+  },
+  "bin": {
+    "readini": "./bin/readini.js"
+  },
+  "engines": {
+    "node": ">=4.0.0"
   }
 }
