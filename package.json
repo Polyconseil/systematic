@@ -13,8 +13,10 @@
   "keywords": [],
   "author": "Polyconseil",
   "license": "MIT",
-  "dependencies": {
-  },
+  "files": [
+    "*",
+    "!.gitignore"
+  ],
   "devDependencies": {
     "babel-loader": "6.2.2",
     "babel-polyfill": "6.5.0",
