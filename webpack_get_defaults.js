@@ -1,46 +1,56 @@
+const _ = require('lodash')
 const path = require('path')
 const ini = require('ini')
 const fs = require('fs')
 
+const HtmlPlugin = require('html-webpack-plugin')
+const NgAnnotatePlugin = require('ng-annotate-webpack-plugin')
+const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const webpack = require('webpack')
-const ngAnnotatePlugin = require('ng-annotate-webpack-plugin')
-const htmlPlugin = require('html-webpack-plugin')
 
 const systematic = ini.parse(fs.readFileSync('./systematic.ini', 'utf-8'))
 const plugins = []
 const jadeLoaders = ['html', 'jade-html']
 
-if (systematic.build.profile === 'angular') {
-  plugins.push(new ngAnnotatePlugin({add: true}))
-  jadeLoaders.unshift('ngtemplate')
-}
-if (systematic.build.type === 'app') {
-  plugins.push(new htmlPlugin({
-    inject: true,
-    filename: 'index.html',
-    template: 'src/index.html',
-  }))
-  plugins.push(new webpack.optimize.UglifyJsPlugin())
-}
 
-const distFolder = 'dist'
+_.defaultsDeep(systematic, {
+  build: {
+    src_dir: 'src',
+    output_dir: 'dist',
+  },
+  serve: {
+    port: 8080,
+  }
+})
 
 module.exports = function(basePath) {
 
-  const servePort = systematic.serve ? systematic.serve.port : 'no-port'
   const PATHS = {
-    app: path.join(basePath, 'src'),
-    dist: path.join(basePath, distFolder),
+    src: path.join(basePath, systematic.build.src_dir),
+    dist: path.join(basePath, systematic.build.output_dir),
   }
 
+  if (systematic.build.profile === 'angular') {
+    plugins.push(new NgAnnotatePlugin({add: true}))
+    jadeLoaders.unshift('ngtemplate')
+  }
+  if (systematic.build.type === 'app') {
+    plugins.push(new HtmlPlugin({
+      inject: true,
+      filename: 'index.html',
+      template: path.join(systematic.build.src_dir, 'index.html'),
+    }))
+    plugins.push(new webpack.optimize.UglifyJsPlugin())
+    plugins.push(new OpenBrowserPlugin({ url: PATHS.dist }))
+  }
 
   return {
     context: basePath,
-    entry: PATHS.app,
+    entry: PATHS.src,
     output: {
       path: PATHS.dist,
       filename: systematic.build.type === 'app' ? 'bundle.js' : 'index.js',
-      publicPath: 'http://127.0.0.1:' + servePort + '/' + distFolder + '/',
+      publicPath: 'http://127.0.0.1:' + systematic.serve.port + '/' + systematic.build.output_dir + '/',
     },
     resolve: {
       root: [path.resolve(basePath)],
@@ -51,7 +61,7 @@ module.exports = function(basePath) {
           test: /\.js/,
           loader: 'babel',
           exclude: /(node_modules|bower_components)/,
-          include: path.join(basePath, '/src'),
+          include: PATHS.src,
           query: {
             presets: ['es2015'],
           },

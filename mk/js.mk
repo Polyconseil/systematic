@@ -12,19 +12,19 @@ export NODE_PATH := $(shell pwd):$(NODE_PATH)
 
 # Customizable variables
 
-SYSTEMATIC_PROFILE ?= $(shell $(READINI) $(CONF_INI) build.profile 2> /dev/null)
-PACKAGE ?= $(shell $(READINI) $(CONF_INI) package.name 2> /dev/null)
+BUILD_PROFILE ?= $(shell $(READINI) $(CONF_INI) build.profile)
+PACKAGE_NAME ?=  $(shell $(READINI) $(CONF_INI) package.name)
 
-ifeq ($(SYSTEMATIC_PROFILE),)
-$(error Define a build profile in $(SYSTEMATIC_PROFILE))
+ifeq ($(BUILD_PROFILE),)
+$(error Please define a build.profile in $(CONF_INI))
 endif
-ifeq ($(PACKAGE),)
-$(error Define a package name in $(SYSTEMATIC_PROFILE))
+ifeq ($(PACKAGE_NAME),)
+$(error Please define a package name in $(CONF_INI))
 endif
 
-SRC_DIR ?= src
-DIST_DIR ?= dist
-SERVE_PORT ?= $(shell $(READINI) $(CONF_INI) serve.port 8080 2> /dev/null)
+SRC_DIR =     $(shell $(READINI) $(CONF_INI) build.src_dir --default src)
+OUTPUT_DIR =  $(shell $(READINI) $(CONF_INI) build.output_dir --default dist)
+SERVE_PORT =  $(shell $(READINI) $(CONF_INI) serve.port --default 8080)
 TEST_PORT ?= 8081
 
 ESLINTRC ?= ./$(SYSTEMATIC_PATH)/.eslintrc
@@ -33,9 +33,9 @@ LOCALES ?= en_US en_GB es_US fr_FR it_IT
 LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
 
 GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' 2> /dev/null)
-GETTEXT_JS_SOURCES ?= $(shell find $(SRC_DIR) -name '*.js' 2> /dev/null)
+GETTEXT_JS_SOURCES   ?= $(shell find $(SRC_DIR) -name '*.js')
 
-include $(SYSTEMATIC_PATH)/mk/$(SYSTEMATIC_PROFILE).mk
+include $(SYSTEMATIC_PATH)/mk/$(BUILD_PROFILE).mk
 
 
 # Help Message
@@ -45,22 +45,22 @@ Makefile command help
 
 The following commands are available.
 
-    help                 		Display this message.
+		help                 		Display this message.
 
-    clean                   Cleanup intermediate build files.
+		clean                   Cleanup intermediate build files.
 
-    update                  Update node packages locally
-    makemessages            Extract translation tokens from JS, Jade & HTML files.
-    prepare                 Update and extract translation tokens.
+		update                  Update node packages locally
+		makemessages            Extract translation tokens from JS, Jade & HTML files.
+		prepare                 Update and extract translation tokens.
 
-    serve                   Build in development mode, serve and watch.
-    dist                    Bundles the package for distribution.
+		serve                   Build in development mode, serve and watch.
+		dist                    Bundles the package for distribution.
 
-    syntax                  Check application style and syntax with eslint.
-    test                    Runs a single run of the tests and syntax.
-    livetest                Runs continous tests.
-    jenkins-test            Runs tests on jenkins.
-    test-browser            Spawns a server that you can access from any browser.
+		syntax                  Check application style and syntax with eslint.
+		test                    Runs a single run of the tests and syntax.
+		livetest                Runs continous tests.
+		jenkins-test            Runs tests on jenkins.
+		test-browser            Spawns a server that you can access from any browser.
 
 endef
 
@@ -76,7 +76,7 @@ help:
 
 clean:
 	rm -f /tmp/template.pot $(SRC_DIR)/translations.json
-	rm -rf $(DIST_DIR) reports/
+	rm -rf $(OUTPUT_DIR) reports/
 
 prepare: update makemessages
 
@@ -105,13 +105,11 @@ makemessages: /tmp/template.pot
 translations: $(SRC_DIR)/translations.json
 
 serve: translations
-	mkdir -p $(DIST_DIR)
-	concurrent --kill-others \
-		"live-server --port=$(SERVE_PORT) --wait=100 --watch=$(DIST_DIR) --open=$(DIST_DIR)" \
-		"webpack --watch --colors --bail $(WEBPACK_OPTIONS)"
+	mkdir -p $(OUTPUT_DIR)
+	webpack --watch --colors --bail --hot --progress
 
 dist: translations
-	mkdir -p $(DIST_DIR)
+	mkdir -p $(OUTPUT_DIR)
 	webpack --optimize-dedupe --progress
 
 # Miscellaneous build commands
@@ -121,7 +119,7 @@ dist: translations
 	mkdir -p $(dir $@)
 	gettext-extract --output $@ $(GETTEXT_HTML_SOURCES)
 	xgettext --language=JavaScript --keyword=i18n --from-code=utf-8 \
-		--sort-output --join-existing --no-wrap --package-name=$(PACKAGE) \
+		--sort-output --join-existing --no-wrap --package-name=$(PACKAGE_NAME) \
 		--package-version=$(shell node -e "console.log(require('./package.json').version);") \
 		--copyright=POLYCONSEIL --output $@ $(GETTEXT_JS_SOURCES)
 	# Remove comments
