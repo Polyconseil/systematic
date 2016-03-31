@@ -6,7 +6,6 @@ const webpack = require('webpack')
 const ngAnnotatePlugin = require('ng-annotate-webpack-plugin')
 const htmlPlugin = require('html-webpack-plugin')
 
-
 const systematic = ini.parse(fs.readFileSync('./systematic.ini', 'utf-8'))
 const plugins = []
 const jadeLoaders = ['html', 'jade-html']
@@ -28,10 +27,12 @@ const distFolder = 'dist'
 
 module.exports = function(basePath) {
 
+  const servePort = systematic.serve ? systematic.serve.port : 'no-port'
   const PATHS = {
     app: path.join(basePath, 'src'),
     dist: path.join(basePath, distFolder),
   }
+
 
   return {
     context: basePath,
@@ -39,7 +40,10 @@ module.exports = function(basePath) {
     output: {
       path: PATHS.dist,
       filename: systematic.build.type === 'app' ? 'bundle.js' : 'index.js',
-      publicPath: 'http://127.0.0.1:' + systematic.serve.port + '/' + distFolder + '/',
+      publicPath: 'http://127.0.0.1:' + servePort + '/' + distFolder + '/',
+    },
+    resolve: {
+      root: [path.resolve(basePath)],
     },
     module: {
       loaders: [
@@ -53,9 +57,10 @@ module.exports = function(basePath) {
           },
         },
         { test: /\.css/, loaders: ['style', 'css', 'postcss-loader'] },
-        // TODO fix css source maps (add 'css?sourceMaps') breaking url attribute
-        { test: /\.scss$/, loaders: ['style', 'css?sourceMap', 'postcss-loader', 'sass?sourceMap'] },
+        // FIXME css source maps (add 'css?sourceMaps') breaking url attribute
+        { test: /\.scss$/, loaders: ['style', 'css?sourceMap', 'postcss', 'sass?sourceMap'] },
         { test: /\.jade$/, loaders: jadeLoaders },
+        { test: /\.json$/, loader: 'json' },
         { test: /\.(png|gif|jp(e)?g)$/, loader: 'url-loader?limit=8192' },
         { test: /\.(ttf|eot|svg|woff(2))(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=50000' },
       ],
