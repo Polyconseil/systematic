@@ -23,6 +23,7 @@ _.defaultsDeep(systematic, {
   }
 })
 
+
 module.exports = function(basePath) {
 
   const PATHS = {
@@ -40,7 +41,6 @@ module.exports = function(basePath) {
       filename: 'index.html',
       template: path.join(systematic.build.src_dir, 'index.html'),
     }))
-    plugins.push(new webpack.optimize.UglifyJsPlugin())
     plugins.push(new OpenBrowserPlugin({ url: PATHS.dist }))
   }
 
@@ -50,7 +50,8 @@ module.exports = function(basePath) {
     output: {
       path: PATHS.dist,
       filename: systematic.build.type === 'app' ? 'bundle.js' : 'index.js',
-      publicPath: 'http://127.0.0.1:' + systematic.serve.port + '/' + systematic.build.output_dir + '/',
+      publicPath: '/', // Prefix for all the static urls
+      libraryTarget: systematic.build.type === 'lib' ? 'umd' : undefined,
     },
     resolve: {
       root: [path.resolve(basePath)],
