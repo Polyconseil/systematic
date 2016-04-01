@@ -4,6 +4,8 @@ PATH := node_modules/.bin:$(PATH)
 NODE_BINDIR ?= ./node_modules/.bin/
 SHELL ?= /bin/bash -o pipefail
 SYSTEMATIC_PATH ?= node_modules/systematic
+WEBPACK ?= ./node_modules/webpack/bin/webpack.js
+WEBPACK_DEV_SERVER ?= ./node_modules/webpack-dev-server/bin/webpack-dev-server.js
 
 CONF_INI ?= systematic.ini
 READINI ?= $(NODE_BINDIR)readini
@@ -106,14 +108,16 @@ translations: $(SRC_DIR)/translations.json
 
 serve: translations
 	mkdir -p $(OUTPUT_DIR)
-	webpack --watch --colors --bail --hot --progress
+	# TODO(rboucher) Switch to webpack 2, for the --open option to work
+	node --max_old_space_size=4096 $(WEBPACK_DEV_SERVER) \
+		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host 127.0.0.1 --colors \
+		--bail --progress --output-pathinfo --devtool eval-cheap-module-source-map --display-error-details
 
 dist: translations
 	mkdir -p $(OUTPUT_DIR)
-	webpack --optimize-dedupe --progress
+	node --max_old_space_size=4096 $(WEBPACK) --progress --optimize-dedupe --optimize-minimize --optimize-occurence-order
 
 # Miscellaneous build commands
-#
 
 /tmp/template.pot: $(GETTEXT_JS_SOURCES) $(GETTEXT_JS_SOURCES)
 	mkdir -p $(dir $@)

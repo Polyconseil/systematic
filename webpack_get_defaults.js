@@ -5,7 +5,6 @@ const fs = require('fs')
 
 const HtmlPlugin = require('html-webpack-plugin')
 const NgAnnotatePlugin = require('ng-annotate-webpack-plugin')
-const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const webpack = require('webpack')
 
 const systematic = ini.parse(fs.readFileSync('./systematic.ini', 'utf-8'))
@@ -41,7 +40,6 @@ module.exports = function(basePath) {
       filename: 'index.html',
       template: path.join(systematic.build.src_dir, 'index.html'),
     }))
-    plugins.push(new OpenBrowserPlugin({ url: PATHS.dist }))
   }
 
   return {
