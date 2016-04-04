@@ -1,44 +1,37 @@
-const _ = require('lodash')
 const path = require('path')
-const ini = require('ini')
-const fs = require('fs')
 
 const HtmlPlugin = require('html-webpack-plugin')
 const NgAnnotatePlugin = require('ng-annotate-webpack-plugin')
+const OmitTildeWebpackPlugin = require('omit-tilde-webpack-plugin')
 const webpack = require('webpack')
 
-const systematic = ini.parse(fs.readFileSync('./systematic.ini', 'utf-8'))
-const plugins = []
+const systematicConfig = require('./config')
+const buildType = require('./config_choices').buildType
+
+
+const plugins = [
+  new OmitTildeWebpackPlugin({include: 'package.json'}),
+]
 const jadeLoaders = ['html', 'jade-html']
-
-
-_.defaultsDeep(systematic, {
-  build: {
-    src_dir: 'src',
-    output_dir: 'dist',
-  },
-  serve: {
-    port: 8080,
-  }
-})
 
 
 module.exports = function(basePath) {
 
   const PATHS = {
-    src: path.join(basePath, systematic.build.src_dir),
-    dist: path.join(basePath, systematic.build.output_dir),
+    src: path.join(basePath, systematicConfig.build.src_dir),
+    dist: path.join(basePath, systematicConfig.build.output_dir),
   }
 
-  if (systematic.build.profile === 'angular') {
+  // TODO(vperron): Manage the conditions using plugins.
+  if (systematicConfig.build.profile === 'angular') {
     plugins.push(new NgAnnotatePlugin({add: true}))
     jadeLoaders.unshift('ngtemplate')
   }
-  if (systematic.build.type === 'app') {
+  if (systematicConfig.build.type === buildType.APPLICATION) {
     plugins.push(new HtmlPlugin({
       inject: true,
       filename: 'index.html',
-      template: path.join(systematic.build.src_dir, 'index.html'),
+      template: path.join(systematicConfig.build.src_dir, 'index.html'),
     }))
   }
 
@@ -47,9 +40,9 @@ module.exports = function(basePath) {
     entry: PATHS.src,
     output: {
       path: PATHS.dist,
-      filename: systematic.build.type === 'app' ? 'bundle.js' : 'index.js',
+      filename: systematicConfig.build.type === buildType.APPLICATION ? 'bundle.js' : 'index.js',
       publicPath: '/', // Prefix for all the static urls
-      libraryTarget: systematic.build.type === 'lib' ? 'umd' : undefined,
+      libraryTarget: systematicConfig.build.type === buildType.LIBRARY ? 'umd' : undefined,
     },
     resolve: {
       root: [path.resolve(basePath)],

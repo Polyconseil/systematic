@@ -1,12 +1,14 @@
-/* global module */
 
 const webpackGetDefaults = require('./webpack_get_defaults')
+const systematicConfig = require('./config')
 
 module.exports = function(basePath) {
   const webpackConfig = webpackGetDefaults(basePath)
   webpackConfig.devtool = 'inline-source-map'
 
-  return {
+  const testFiles = systematicConfig.build.src_dir + '/**/*tests.js'
+
+  const karmaConfig =  {
     basePath: basePath,
     // Without this _in the config file_, plugins do not reload automatically
     autoWatch: true,
@@ -15,13 +17,8 @@ module.exports = function(basePath) {
 
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',  // polyfill if we don't include the entrypoint
-      'src/**/*.spec.js',
-      'src/**/*tests.js',
+      testFiles,
     ],
-
-    preprocessors: {
-      'src/**/*.spec.js': ['webpack', 'sourcemap', 'coverage'],
-    },
 
     plugins: [
       'karma-coverage',
@@ -68,4 +65,9 @@ module.exports = function(basePath) {
       noInfo: true,
     },
   }
+
+  karmaConfig.preprocessors = {}
+  karmaConfig.preprocessors[testFiles] = ['webpack', 'sourcemap', 'coverage']
+
+  return karmaConfig
 }
