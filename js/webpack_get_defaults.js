@@ -40,6 +40,7 @@ module.exports = function(basePath) {
     entry: PATHS.src,
     output: {
       path: PATHS.dist,
+      pathinfo: true,
       filename: systematicConfig.build.type === buildType.APPLICATION ? 'bundle.js' : 'index.js',
       publicPath: '/', // Prefix for all the static urls
       libraryTarget: systematicConfig.build.type === buildType.LIBRARY ? 'umd' : undefined,
@@ -53,7 +54,7 @@ module.exports = function(basePath) {
           test: /\.js/,
           loader: 'babel',
           exclude: /(node_modules|bower_components)/,
-          include: PATHS.src,
+          include: [PATHS.src],
           query: {
             presets: ['es2015'],
             plugins: ['transform-strict-mode'],

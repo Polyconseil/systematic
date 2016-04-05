@@ -1,17 +1,20 @@
-
-const webpackGetDefaults = require('./webpack_get_defaults')
 const systematicConfig = require('./config')
+const webpackGetDefaults = require('./webpack_get_defaults')
+
 
 module.exports = function(basePath) {
   const webpackConfig = webpackGetDefaults(basePath)
-  webpackConfig.devtool = 'inline-source-map'
+  // fast rebuild, see https://webpack.github.io/docs/configuration.html#devtool
+  // complete source maps are very slow
+  webpackConfig.devtool = 'cheap-module-eval-source-map'
+  webpackConfig.entry = {}  // Reset the webpack entry point, test files are added separatly by karma-webpack
 
   const testFiles = systematicConfig.build.src_dir + '/**/*tests.js'
 
   const karmaConfig =  {
     basePath: basePath,
-    // Without this _in the config file_, plugins do not reload automatically
-    autoWatch: true,
+    autoWatch: true, // Without this _in the config file_, plugins do not reload automatically
+    browserNoActivityTimeout: 100000, // in ms, 100 seconds
 
     frameworks: ['jasmine', 'jasmine-matchers', 'phantomjs-shim'],
 
@@ -58,7 +61,7 @@ module.exports = function(basePath) {
     },
 
     browsers: ['PhantomJS'],
-    reporters: ['coverage', 'junit', 'mocha'],
+    reporters: ['junit', 'mocha', 'html', 'coverage'],
 
     webpack: webpackConfig,
     webpackMiddleware: {
