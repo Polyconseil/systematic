@@ -56,6 +56,7 @@ module.exports = function(basePath) {
           include: PATHS.src,
           query: {
             presets: ['es2015'],
+            plugins: ['transform-strict-mode'],
           },
         },
         { test: /\.css/, loaders: ['style', 'css', 'postcss-loader'] },
