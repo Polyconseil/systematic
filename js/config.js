@@ -13,7 +13,10 @@ _.defaultsDeep(systematic, {
   },
   serve: {
     port: 8080,
-  }
+  },
+  test: {
+    file_pattern: '**/*tests.js'
+  },
 })
 
 module.exports = systematic

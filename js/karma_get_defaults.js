@@ -1,3 +1,5 @@
+const path = require('path')
+
 const systematicConfig = require('./config')
 const webpackGetDefaults = require('./webpack_get_defaults')
 
@@ -9,7 +11,7 @@ module.exports = function(basePath) {
   webpackConfig.devtool = 'cheap-module-eval-source-map'
   webpackConfig.entry = {}  // Reset the webpack entry point, test files are added separatly by karma-webpack
 
-  const testFiles = systematicConfig.build.src_dir + '/**/*tests.js'
+  const testFiles = path.join(systematicConfig.build.src_dir, systematicConfig.test.file_pattern)
 
   const karmaConfig =  {
     basePath: basePath,
