@@ -61,7 +61,7 @@ The following commands are available.
 		syntax                  Check application style and syntax with eslint.
 		test                    Runs a single run of the tests and syntax.
 		livetest                Runs continous tests.
-		livetest-debug          Runs continous tests with complete source maps.
+		livetest-debug          Runs continous tests with complete source maps, without syntax check.
 		jenkins-test            Runs tests on jenkins.
 		test-browser            Spawns a server that you can access from any browser.
 
