@@ -49,6 +49,9 @@ module.exports = function(basePath) {
       root: [path.resolve(basePath)],
     },
     module: {
+      preLoaders: [
+        { test: /\.js$/, loader: 'source-map-loader' },
+      ],
       loaders: [
         {
           test: /\.js/,
