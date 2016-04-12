@@ -4,6 +4,7 @@ const HtmlPlugin = require('html-webpack-plugin')
 const NgAnnotatePlugin = require('ng-annotate-webpack-plugin')
 const OmitTildeWebpackPlugin = require('omit-tilde-webpack-plugin')
 const webpack = require('webpack')
+const combineLoaders = require('webpack-combine-loaders')
 
 const systematicConfig = require('./config')
 const buildType = require('./config_choices').buildType
@@ -13,6 +14,13 @@ const plugins = [
   new OmitTildeWebpackPlugin({include: 'package.json'}),
 ]
 const jadeLoaders = ['html', 'jade-html']
+const jsLoaders = [{
+  loader: 'babel',
+  query: {
+    presets: ['es2015'],
+    plugins: ['transform-strict-mode'],
+  },
+}]
 
 
 module.exports = function(basePath) {
@@ -24,8 +32,14 @@ module.exports = function(basePath) {
 
   // TODO(vperron): Manage the conditions using plugins.
   if (systematicConfig.build.profile === 'angular') {
-    plugins.push(new NgAnnotatePlugin({add: true}))
     jadeLoaders.unshift('ngtemplate')
+    jsLoaders.push({
+      loader: 'ng-annotate',
+      query: {
+        es6: true,
+        map: true,
+      },
+    })
   }
   if (systematicConfig.build.type === buildType.APPLICATION) {
     plugins.push(new HtmlPlugin({
@@ -55,13 +69,10 @@ module.exports = function(basePath) {
       loaders: [
         {
           test: /\.js/,
-          loader: 'babel',
+          loader: combineLoaders(jsLoaders),
           exclude: /(node_modules|bower_components)/,
           include: [PATHS.src],
-          query: {
-            presets: ['es2015'],
-            plugins: ['transform-strict-mode'],
-          },
+
         },
         { test: /\.css/, loaders: ['style', 'css', 'postcss-loader'] },
         // FIXME css source maps (add 'css?sourceMaps') breaking url attribute

@@ -115,7 +115,7 @@ serve: translations
 	# TODO(rboucher) Switch to webpack 2, for the --open option to work
 	node --max_old_space_size=4096 $(WEBPACK_DEV_SERVER) \
 		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host 127.0.0.1 --colors \
-		--bail --progress --output-pathinfo --devtool eval-cheap-module-source-map --display-error-details
+		--bail --progress --output-pathinfo --devtool cheap-module-source-map --display-error-details
 
 dist: translations
 	mkdir -p $(OUTPUT_DIR)
