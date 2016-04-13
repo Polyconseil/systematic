@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+'use strict';
+
+var _ = require('lodash');
+var fs = require('fs');
+var ini = require('ini');
+var util = require('util');
+
+// Parameters
+// FIXME(vperron): go vanillaJS instead of using 100 dependencies
+var argv = require('minimist')(process.argv.slice(2));
+var filenames = argv._.sort() || ['app/settings/settings.ini'];
+var global_name = argv.global_name || 'app_settings';
+  
+// Merge all settings together
+var config = {};
+filenames.forEach(function(filename) {
+  _.merge(config, ini.parse(fs.readFileSync(filename, 'utf-8')));
+});
+
+console.log(util.format('window.%s = %s;', global_name, JSON.stringify(config)));

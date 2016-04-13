@@ -92,4 +92,14 @@ Systematic uses a makefile, get all commands with `make help`.
 ## Translations
 
 `make makemessages` generates translations using [easygettext](https://github.com/Polyconseil/easygettext).
-The result will be in `<YOUR_SOURCE_FOLDER>/translations.json`.
+The resulting `.po` files will be in `/locale`.
+`make translations` generates a JSON file from them, located at <YOUR_SOURCE_FOLDER>/translations.json`.
+
+
+# Profiles
+
+## Angular
+
+The angular profile add the ng-annotate loader.
+FIXME(rboucher)
+`ng-annotate` **does not support arrow functions** for now.
