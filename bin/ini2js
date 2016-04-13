@@ -12,7 +12,7 @@ var util = require('util');
 var argv = require('minimist')(process.argv.slice(2));
 var filenames = argv._.sort() || ['app/settings/settings.ini'];
 var global_name = argv.global_name || 'app_settings';
-  
+
 // Merge all settings together
 var config = {};
 filenames.forEach(function(filename) {

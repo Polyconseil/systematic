@@ -9,12 +9,14 @@ WEBPACK_DEV_SERVER ?= ./node_modules/webpack-dev-server/bin/webpack-dev-server.j
 
 CONF_INI ?= systematic.ini
 READINI ?= $(NODE_BINDIR)readini
+INI2JS ?= $(NODE_BINDIR)ini2js
 
 export NODE_PATH := $(shell pwd):$(NODE_PATH)
 
 # Customizable variables
 
 BUILD_PROFILE ?= $(shell $(READINI) $(CONF_INI) build.profile)
+BUILD_TYPE ?= $(shell $(READINI) $(CONF_INI) build.type)
 PACKAGE_NAME ?=  $(shell $(READINI) $(CONF_INI) package.name)
 
 ifeq ($(BUILD_PROFILE),)
@@ -36,6 +38,7 @@ LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
 
 GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' 2> /dev/null)
 GETTEXT_JS_SOURCES   ?= $(shell find $(SRC_DIR) -name '*.js')
+SETTINGS_INI_FILES := $(shell find $(SRC_DIR)/settings -name '*.ini' 2> /dev/null)
 
 include $(SYSTEMATIC_PATH)/mk/$(BUILD_PROFILE).mk
 
@@ -98,7 +101,7 @@ livetest: syntax
 	karma start --no-single-run karma.conf.js
 
 livetest-debug:
-	karma start --no-single-run karma.conf.js --devtool source-map
+	karma start --no-single-run karma.conf.js --devtool source-map --reporters mocha,kjhtml
 
 test-browser: syntax
 	karma start --port $(TEST_PORT) --reporters kjhtml --browsers '' karma.conf.js
@@ -110,18 +113,26 @@ makemessages: /tmp/template.pot
 
 translations: $(SRC_DIR)/translations.json
 
-serve: translations
+serve: translations settings
 	mkdir -p $(OUTPUT_DIR)
 	# TODO(rboucher) Switch to webpack 2, for the --open option to work
 	node --max_old_space_size=4096 $(WEBPACK_DEV_SERVER) \
 		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host 127.0.0.1 --colors \
 		--bail --progress --output-pathinfo --devtool cheap-module-source-map --display-error-details
 
-dist: translations
+dist: translations settings
 	mkdir -p $(OUTPUT_DIR)
 	node --max_old_space_size=4096 $(WEBPACK) --progress --optimize-dedupe --optimize-minimize --optimize-occurence-order
 
+
 # Miscellaneous build commands
+
+settings: $(SETTINGS_INI_FILES)
+ifeq ($(BUILD_TYPE),app)
+	@echo "########## generating 'app.settings.js' ##########"
+	mkdir -p $(OUTPUT_DIR)
+	$(INI2JS) $^ --global_name app_settings > $(OUTPUT_DIR)/app.settings.js
+endif
 
 /tmp/template.pot: $(GETTEXT_JS_SOURCES) $(GETTEXT_JS_SOURCES)
 	mkdir -p $(dir $@)
@@ -142,4 +153,3 @@ dist: translations
 
 $(SRC_DIR)/translations.json: /tmp/template.pot
 	gettext-compile --output $@ $(LOCALE_FILES)
-

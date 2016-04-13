@@ -63,7 +63,7 @@ module.exports = function(basePath) {
     },
 
     browsers: ['PhantomJS'],
-    reporters: ['junit', 'mocha', 'html', 'coverage'],
+    reporters: ['junit', 'mocha', 'kjhtml', 'coverage'],
 
     webpack: webpackConfig,
     webpackMiddleware: {
