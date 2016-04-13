@@ -8,7 +8,7 @@ module.exports = function(basePath) {
   const webpackConfig = webpackGetDefaults(basePath)
   // fast rebuild, see https://webpack.github.io/docs/configuration.html#devtool
   // complete source maps are very slow
-  webpackConfig.devtool = 'cheap-module-eval-source-map'
+  webpackConfig.devtool = 'cheap-module-source-map'
   webpackConfig.entry = {}  // Reset the webpack entry point, test files are added separatly by karma-webpack
 
   const testFiles = path.join(basePath, systematicConfig.test.file_pattern)
