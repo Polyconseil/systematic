@@ -30,6 +30,7 @@ SRC_DIR =     $(shell $(READINI) $(CONF_INI) build.src_dir --default src)
 OUTPUT_DIR =  $(shell $(READINI) $(CONF_INI) build.output_dir --default dist)
 SERVE_PORT =  $(shell $(READINI) $(CONF_INI) serve.port --default 8080)
 TEST_PORT ?= 8081
+NODE_MEMORY ?= 4096
 
 ESLINTRC ?= ./$(SYSTEMATIC_PATH)/.eslintrc
 
@@ -116,13 +117,13 @@ translations: $(SRC_DIR)/translations.json
 serve: translations settings
 	mkdir -p $(OUTPUT_DIR)
 	# TODO(rboucher) Switch to webpack 2, for the --open option to work
-	node --max_old_space_size=4096 $(WEBPACK_DEV_SERVER) \
+	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) \
 		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host 127.0.0.1 --colors \
 		--bail --progress --output-pathinfo --devtool cheap-module-source-map --display-error-details
 
 dist: translations settings
 	mkdir -p $(OUTPUT_DIR)
-	node --max_old_space_size=4096 $(WEBPACK) --progress --optimize-dedupe --optimize-minimize --optimize-occurence-order
+	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) --progress --optimize-dedupe --optimize-minimize --optimize-occurence-order
 
 
 # Miscellaneous build commands
