@@ -103,3 +103,13 @@ The resulting `.po` files will be in `/locale`.
 The angular profile add the ng-annotate loader.
 FIXME(rboucher)
 `ng-annotate` **does not support arrow functions** for now.
+
+
+# Source map issue
+
+FIXME(rboucher,vperron)
+Source maps does not seem to work very well on `make dist`. We tried:
+
+ * This issue only happen when the flag `--optimize-minimize` is given
+ * Use `webpack.optimize.UglifyJsPlugin` instead of `--optimize-minimize`
+ * There is a warning in bluetils-js with ui-router source map missing, but is does not seem to be the root of the problem.

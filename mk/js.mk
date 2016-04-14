@@ -30,6 +30,7 @@ SRC_DIR =     $(shell $(READINI) $(CONF_INI) build.src_dir --default src)
 OUTPUT_DIR =  $(shell $(READINI) $(CONF_INI) build.output_dir --default dist)
 SERVE_PORT =  $(shell $(READINI) $(CONF_INI) serve.port --default 8080)
 TEST_PORT ?= 8081
+# webpack can need more memory than the default 512mo of node
 NODE_MEMORY ?= 4096
 
 ESLINTRC ?= ./$(SYSTEMATIC_PATH)/.eslintrc
@@ -123,7 +124,7 @@ serve: translations settings
 
 dist: translations settings
 	mkdir -p $(OUTPUT_DIR)
-	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) --progress --optimize-dedupe --optimize-minimize --optimize-occurence-order
+	BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) --progress --optimize-dedupe --optimize-occurence-order # --optimize-minimize
 
 
 # Miscellaneous build commands
