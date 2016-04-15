@@ -100,9 +100,17 @@ The resulting `.po` files will be in `/locale`.
 
 ## Angular
 
-The angular profile add the ng-annotate loader.
+The angular profile add the ng-annotate and ng-templates loaders.
+
 FIXME(rboucher)
 `ng-annotate` **does not support arrow functions** for now.
+
+```javascript
+// Don't do this
+angular.controller('myController', $http => {
+  $http.get(...
+})
+```
 
 
 # Source map issue
