@@ -80,10 +80,13 @@ module.exports = function(basePath) {
         { test: /\.jade$/, loaders: jadeLoaders },
         { test: /\.json$/, loader: 'json' },
         { test: /\.(png|gif|jp(e)?g)$/, loader: 'url-loader?limit=8192' },
-        { test: /\.(ttf|eot|svg|woff(2))(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=50000' },
+        { test: /\.(ttf|eot|svg|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=50000' },
       ],
     },
-    devtool: 'source-map',  // A source map will be emitted.
     plugins: plugins,
+    devtool: 'source-map',  // A source map will be emitted.
+    sassLoader: {
+      includePaths: [path.join(basePath, "node_modules")]
+    }
   }
 }
