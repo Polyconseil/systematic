@@ -21,6 +21,19 @@ const jsLoaders = [{
   },
 }]
 
+// css sourceMap option breaks relative url imports
+// In dev, the workaround is a full URL path through the output.publicPath option
+// In prod, css source maps are disabled
+// FIXME(rboucher): remove when this fix is released: https://github.com/webpack/style-loader/pull/96
+const cssSourceMap = (process.env.SYSTEMATIC_BUILD_MODE !== 'PROD')
+const cssLoader = 'css' + (cssSourceMap ? '?sourceMap' : '')
+const sassLoader = 'sass' + (cssSourceMap ? '?sourceMap' : '')
+
+function buildPublicPath() {
+  if (process.env.SYSTEMATIC_BUILD_MODE === 'PROD') return '/'
+  else return 'http://127.0.0.1:' + systematicConfig.serve.port +'/'
+}
+
 
 module.exports = function(basePath) {
 
@@ -54,7 +67,7 @@ module.exports = function(basePath) {
       path: PATHS.dist,
       pathinfo: true,
       filename: systematicConfig.build.type === buildType.APPLICATION ? 'bundle.js' : 'index.js',
-      publicPath: '/', // Prefix for all the static urls
+      publicPath: buildPublicPath(), // Prefix for all the static urls
       libraryTarget: systematicConfig.build.type === buildType.LIBRARY ? 'umd' : undefined,
     },
     resolve: {
@@ -72,14 +85,13 @@ module.exports = function(basePath) {
           include: [PATHS.src],
 
         },
-        { test: /\.css/, loaders: ['style', 'css', 'postcss-loader'] },
-        // FIXME css source maps (add 'css?sourceMaps') breaking url attribute
-        { test: /\.scss$/, loaders: ['style', 'css', 'postcss', 'sass?sourceMap'] },
+        { test: /\.css/, loaders: ['style', cssLoader, 'postcss'] },
+        { test: /\.scss$/, loaders: ['style', cssLoader, 'postcss', sassLoader] },
         { test: /\.jade$/, loader: 'jade' },
         { test: /\.html$/, loader: 'html' },
         { test: /\.json$/, loader: 'json' },
-        { test: /\.(png|gif|jp(e)?g)$/, loader: 'url-loader?limit=8192' },
-        { test: /\.(ttf|eot|svg|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=50000' },
+        { test: /\.(png|gif|jp(e)?g)$/, loader: 'url?limit=8192' },
+        { test: /\.(ttf|eot|svg|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?limit=50000' },
       ],
     },
     plugins: plugins,

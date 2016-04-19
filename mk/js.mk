@@ -132,7 +132,9 @@ serve: translations settings
 
 dist: translations settings
 	mkdir -p $(OUTPUT_DIR)
-	BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) --progress --optimize-dedupe --optimize-occurence-order # --optimize-minimize
+	# Minification caused issues
+	SYSTEMATIC_BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) \
+		--progress --optimize-dedupe --optimize-occurence-order # --optimize-minimize
 
 
 # Miscellaneous build commands
