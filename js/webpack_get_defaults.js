@@ -13,7 +13,6 @@ const buildType = require('./config_choices').buildType
 const plugins = [
   new OmitTildeWebpackPlugin({include: 'package.json'}),
 ]
-const jadeLoaders = ['html', 'jade-html']
 const jsLoaders = [{
   loader: 'babel',
   query: {
@@ -32,7 +31,6 @@ module.exports = function(basePath) {
 
   // TODO(vperron): Manage the conditions using plugins.
   if (systematicConfig.build.profile === 'angular') {
-    jadeLoaders.unshift('ngtemplate')
     jsLoaders.push({
       loader: 'ng-annotate',
       query: {
@@ -76,8 +74,9 @@ module.exports = function(basePath) {
         },
         { test: /\.css/, loaders: ['style', 'css', 'postcss-loader'] },
         // FIXME css source maps (add 'css?sourceMaps') breaking url attribute
-        { test: /\.scss$/, loaders: ['style', 'css?sourceMap', 'postcss', 'sass?sourceMap'] },
-        { test: /\.jade$/, loaders: jadeLoaders },
+        { test: /\.scss$/, loaders: ['style', 'css', 'postcss', 'sass?sourceMap'] },
+        { test: /\.jade$/, loader: 'jade' },
+        { test: /\.html$/, loader: 'html' },
         { test: /\.json$/, loader: 'json' },
         { test: /\.(png|gif|jp(e)?g)$/, loader: 'url-loader?limit=8192' },
         { test: /\.(ttf|eot|svg|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=50000' },
