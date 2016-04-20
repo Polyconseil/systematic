@@ -42,9 +42,9 @@ ESLINTRC ?= ./$(SYSTEMATIC_PATH)/.eslintrc
 LOCALES ?= en_US en_GB es_US fr_FR it_IT
 LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
 
-GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html')
+GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' 2> /dev/null)
 GETTEXT_JS_SOURCES   ?= $(shell find $(SRC_DIR) -name '*.js')
-SETTINGS_INI_FILES := $(shell find $(SRC_DIR)/settings -name '*.ini')
+SETTINGS_INI_FILES := $(shell find $(SRC_DIR)/settings -name '*.ini' 2> /dev/null)
 
 ECHOPREFIX ?= $(shell tput setaf 2)--- [make]
 ECHOSUFFIX ?= $(shell tput sgr 0)
@@ -90,7 +90,7 @@ help:
 	$(info $(helpmsg))
 
 clean:
-	rm -f /tmp/template.pot $(SRC_DIR)/translations.json
+	rm -f /tmp/template.pot $(OUTPUT_DIR)/translations.json
 	rm -rf $(OUTPUT_DIR) reports/
 
 prepare: update makemessages
@@ -120,7 +120,7 @@ jenkins-test: syntax
 
 makemessages: /tmp/template.pot
 
-translations: $(SRC_DIR)/translations.json
+translations: $(OUTPUT_DIR)/translations.json
 settings: $(OUTPUT_DIR)/app.settings.js
 
 serve: translations settings
@@ -164,5 +164,5 @@ endif
 		msgattrib --no-wrap --no-location --no-obsolete -o $$PO_FILE $$PO_FILE; \
 	done;
 
-$(SRC_DIR)/translations.json: /tmp/template.pot
+$(OUTPUT_DIR)/translations.json: /tmp/template.pot
 	gettext-compile --output $@ $(LOCALE_FILES)
