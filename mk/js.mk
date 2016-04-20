@@ -1,5 +1,7 @@
 default: help
 
+# Paths
+
 PATH := node_modules/.bin:$(PATH)
 NODE_BINDIR ?= ./node_modules/.bin/
 SHELL ?= /bin/bash -o pipefail
@@ -13,7 +15,7 @@ INI2JS ?= $(NODE_BINDIR)ini2js
 
 export NODE_PATH := $(shell pwd):$(NODE_PATH)
 
-# Customizable variables
+# Variables customizable through systematic.ini
 
 BUILD_PROFILE ?= $(shell $(READINI) $(CONF_INI) build.profile)
 BUILD_TYPE ?= $(shell $(READINI) $(CONF_INI) build.type)
@@ -30,17 +32,22 @@ SRC_DIR =     $(shell $(READINI) $(CONF_INI) build.src_dir --default src)
 OUTPUT_DIR =  $(shell $(READINI) $(CONF_INI) build.output_dir --default dist)
 SERVE_PORT =  $(shell $(READINI) $(CONF_INI) serve.port --default 8080)
 TEST_PORT ?= 8081
+
+# Other variables
+
 # webpack can need more memory than the default 512mo of node
 NODE_MEMORY ?= 4096
-
 ESLINTRC ?= ./$(SYSTEMATIC_PATH)/.eslintrc
 
 LOCALES ?= en_US en_GB es_US fr_FR it_IT
 LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
 
-GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' 2> /dev/null)
+GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html')
 GETTEXT_JS_SOURCES   ?= $(shell find $(SRC_DIR) -name '*.js')
-SETTINGS_INI_FILES := $(shell find $(SRC_DIR)/settings -name '*.ini' 2> /dev/null)
+SETTINGS_INI_FILES := $(shell find $(SRC_DIR)/settings -name '*.ini')
+
+ECHOPREFIX ?= $(shell tput setaf 2)--- [make]
+ECHOSUFFIX ?= $(shell tput sgr 0)
 
 include $(SYSTEMATIC_PATH)/mk/$(BUILD_PROFILE).mk
 
@@ -75,7 +82,7 @@ endef
 
 # Makefile Targets
 #
-.PHONY: default help update makemessages prepare
+.PHONY: default help update makemessages prepare settings
 .PHONY: serve dist syntax test livetest jenkins-test test-browser
 
 help:
@@ -114,6 +121,7 @@ jenkins-test: syntax
 makemessages: /tmp/template.pot
 
 translations: $(SRC_DIR)/translations.json
+settings: $(OUTPUT_DIR)/app.settings.js
 
 serve: translations settings
 	mkdir -p $(OUTPUT_DIR)
@@ -129,14 +137,15 @@ dist: translations settings
 
 # Miscellaneous build commands
 
-settings: $(SETTINGS_INI_FILES)
-ifeq ($(BUILD_TYPE),app)
-	@echo "########## generating 'app.settings.js' ##########"
+$(OUTPUT_DIR)/app.settings.js: $(SETTINGS_INI_FILES)
+ifeq ($(BUILD_TYPE),application)
+	@echo "$(ECHOPREFIX) generating 'app.settings.js' $(ECHOSUFFIX)"
 	mkdir -p $(OUTPUT_DIR)
-	$(INI2JS) $^ --global_name app_settings > $(OUTPUT_DIR)/app.settings.js
+	$(INI2JS) $^ --global_name app_settings > $@
 endif
 
 /tmp/template.pot: $(GETTEXT_JS_SOURCES) $(GETTEXT_JS_SOURCES)
+	@echo "$(ECHOPREFIX) extracting translations $(ECHOSUFFIX)"
 	mkdir -p $(dir $@)
 	gettext-extract --output $@ $(GETTEXT_HTML_SOURCES)
 	xgettext --language=JavaScript --keyword=i18n --from-code=utf-8 \
