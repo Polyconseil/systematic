@@ -68,6 +68,7 @@ The following commands are available.
 		prepare                 Update and extract translation tokens.
 
 		serve                   Build in development mode, serve and watch.
+		serve-dist              Bundles the package for distribution and serves it.
 		dist                    Bundles the package for distribution.
 
 		syntax                  Check application style and syntax with eslint.
@@ -83,7 +84,7 @@ endef
 # Makefile Targets
 #
 .PHONY: default help update makemessages prepare settings
-.PHONY: serve dist syntax test livetest jenkins-test test-browser
+.PHONY: serve dist serve-dist syntax test livetest jenkins-test test-browser
 
 help:
 	@echo ""
@@ -135,6 +136,9 @@ dist: translations settings
 	# Minification caused issues
 	SYSTEMATIC_BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) \
 		--progress --optimize-dedupe --optimize-occurence-order # --optimize-minimize
+
+serve-dist: dist
+	$(NODE_BINDIR)http-server ./$(OUTPUT_DIR) -p $(TEST_PORT)  -o dist
 
 
 # Miscellaneous build commands
