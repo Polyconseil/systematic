@@ -28,7 +28,8 @@ Your file structure:
   import './module_2'
   ```
 
-* If your project is an application, there must be an HTML entry point named `index.html` in the source folder, containing the primary page. Example:
+* If your project is an application, there must be an HTML entry point named `index.html` in the source folder, containing the primary page. Your JS entry point will be automatically added.
+Example:
 
   ```html
   <!DOCTYPE html>
