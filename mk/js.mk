@@ -46,6 +46,7 @@ GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html'
 GETTEXT_JS_SOURCES   ?= $(shell find $(SRC_DIR) -name '*.js')
 SETTINGS_INI_FILES := $(shell find $(SRC_DIR)/settings -name '*.ini' 2> /dev/null)
 
+# Colors for a nicer output
 ECHOPREFIX ?= $(shell tput setaf 2)--- [make]
 ECHOSUFFIX ?= $(shell tput sgr 0)
 
@@ -138,7 +139,7 @@ dist: translations settings
 		--progress --optimize-dedupe --optimize-occurence-order # --optimize-minimize
 
 serve-dist: dist
-	$(NODE_BINDIR)http-server ./$(OUTPUT_DIR) -p $(TEST_PORT)  -o dist
+	$(NODE_BINDIR)http-server ./$(OUTPUT_DIR) -p $(TEST_PORT) -o
 
 
 # Miscellaneous build commands
@@ -169,4 +170,5 @@ endif
 	done;
 
 $(OUTPUT_DIR)/translations.json: /tmp/template.pot
+	mkdir -p $(OUTPUT_DIR)
 	gettext-compile --output $@ $(LOCALE_FILES)

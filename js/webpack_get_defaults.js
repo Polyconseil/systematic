@@ -21,16 +21,17 @@ const jsLoaders = [{
   },
 }]
 
+const PRODUCTION_MODE = (process.env.SYSTEMATIC_BUILD_MODE === 'PROD')
+
 // css sourceMap option breaks relative url imports
 // In dev, the workaround is a full URL path through the output.publicPath option
 // In prod, css source maps are disabled
 // FIXME(rboucher): remove when this fix is released: https://github.com/webpack/style-loader/pull/96
-const cssSourceMap = (process.env.SYSTEMATIC_BUILD_MODE !== 'PROD')
-const cssLoader = 'css' + (cssSourceMap ? '?sourceMap' : '')
-const sassLoader = 'sass' + (cssSourceMap ? '?sourceMap' : '')
+const cssLoader = 'css' + (PRODUCTION_MODE ? '' : '?sourceMap')
+const sassLoader = 'sass' + (PRODUCTION_MODE ? '' : '?sourceMap')
 
 function buildPublicPath() {
-  if (process.env.SYSTEMATIC_BUILD_MODE === 'PROD') return '/'
+  if (PRODUCTION_MODE) return '/'
   else return 'http://127.0.0.1:' + systematicConfig.serve.port +'/'
 }
 
