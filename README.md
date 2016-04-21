@@ -2,6 +2,15 @@
 
 An opinionated toolchain to package ES6 applications and libraries.
 
+**Features :**
+
+  * Import all kind of file and output a bundle thanks to Webpack
+  * Full es6 support
+  * Code style and linting with [standard](https://github.com/feross/standard)
+  * Translations management
+  * Settings management
+
+
 # Installation
 
 `npm install systematic`
@@ -9,15 +18,17 @@ An opinionated toolchain to package ES6 applications and libraries.
 Your file structure:
 
 ```
-├── dist
-│   └── bundle.js         # result of the build
+├── dist                  # result of the build
+│   └── bundle.js
+│   └── index.html
 ├── src
 │    ├── module_1         # your modules
 │    ├── module_2
-│    ├── index.html       # only for an application
+│    ├── index.html       # HTML entry point, only for an application
 │    └── index.js         # JS entry point
 └── systematic.ini        # systematic config
 ```
+
 
 ## Entry point
 
@@ -46,7 +57,10 @@ Example:
   </html>
   ```
 
+
 ## Config files
+
+* Systematic requires a `systematic.ini` configuration file in the root folder of your project. Find out all the available options in `systematic.example.ini`
 
 * Define the webpack config: create a file `webpack.config.js` at the root of the projet. Example:
 
@@ -73,8 +87,6 @@ Example:
   module.exports = karma => karma.set(karmaDefaults)
   ```
 
-* Systematic requires a `systematic.ini` configuration file in the root folder of your project. Find out all the available options in `systematic.example.ini`
-
 
 # Usage
 
@@ -94,24 +106,31 @@ Systematic uses a makefile, get all commands with `make help`.
 
 `make makemessages` generates translations using [easygettext](https://github.com/Polyconseil/easygettext).
 The resulting `.po` files will be in `/locale`.
-`make translations` generates a JSON file from them, located at <YOUR_SOURCE_FOLDER>/translations.json`.
+`make translations` generates a JSON file from them, located at <YOUR_DIST_FOLDER>/translations.json`.
+
+You can then load them in your JS as an object:
+```javascript
+import translations from 'dist/translations.json'`
+```
+
+## Settings
+
+`make settings` generates a file `<YOUR_DIST_FOLDER>/app.settings.js` if your project is an application.
+
+It needs to be included in your index.html, since it will not be added by Webpack.
+
+This method allows to change the settings without redeploying the app.
 
 
-# Profiles
+# Build profiles
+
+systematic.ini `profile` option
 
 ## Angular
 
-The angular profile add the ng-annotate and ng-templates loaders.
+Value : `angular`
 
-FIXME(rboucher)
-`ng-annotate` **does not support arrow functions** for now.
-
-```javascript
-// Don't do this
-angular.controller('myController', $http => {
-  $http.get(...
-})
-```
+Adds the [ng-annotate](https://github.com/olov/ng-annotate) loader.
 
 
 # Source map issue
