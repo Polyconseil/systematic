@@ -127,7 +127,7 @@ settings: $(OUTPUT_DIR)/app.settings.js
 
 serve: translations settings
 	mkdir -p $(OUTPUT_DIR)
-	# TODO(rboucher) Switch to webpack 2, for the --open option to work
+	# TODO: Switch to webpack 2, for the --open option to work
 	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) \
 		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host 127.0.0.1 --colors \
 		--bail --progress --output-pathinfo --devtool cheap-module-source-map --display-error-details

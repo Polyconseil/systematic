@@ -8,7 +8,7 @@ var ini = require('ini');
 var util = require('util');
 
 // Parameters
-// FIXME(vperron): go vanillaJS instead of using 100 dependencies
+// FIXME: go vanillaJS instead of using 100 dependencies
 var argv = require('minimist')(process.argv.slice(2));
 var filenames = argv._.sort() || ['app/settings/settings.ini'];
 var global_name = argv.global_name || 'app_settings';

@@ -26,7 +26,7 @@ const PRODUCTION_MODE = (process.env.SYSTEMATIC_BUILD_MODE === 'PROD')
 // css sourceMap option breaks relative url imports
 // In dev, the workaround is a full URL path through the output.publicPath option
 // In prod, css source maps are disabled
-// FIXME(rboucher): remove when this fix is released: https://github.com/webpack/style-loader/pull/96
+// FIXME: remove when this fix is released: https://github.com/webpack/style-loader/pull/96
 const cssLoader = 'css' + (PRODUCTION_MODE ? '' : '?sourceMap')
 const sassLoader = 'sass' + (PRODUCTION_MODE ? '' : '?sourceMap')
 
@@ -43,7 +43,7 @@ module.exports = function(basePath) {
     dist: path.join(basePath, systematicConfig.build.output_dir),
   }
 
-  // TODO(vperron): Manage the conditions using plugins.
+  // TODO: Manage the conditions using plugins.
   if (systematicConfig.build.profile === 'angular') {
     jsLoaders.push({
       loader: 'ng-annotate',

@@ -124,7 +124,8 @@ This method allows to change the settings without redeploying the app.
 
 # Build profiles
 
-systematic.ini `profile` option
+From systematic.ini's `profile` option. For now, only the `angular` profile is supported on top of the
+natural `vanilla` profile.
 
 ## Angular
 
@@ -133,11 +134,17 @@ Value : `angular`
 Adds the [ng-annotate](https://github.com/olov/ng-annotate) loader.
 
 
-# Source map issue
+# TODO
 
-FIXME(rboucher,vperron)
+## Source Maps issue
+
 Source maps does not seem to work very well on `make dist`. We tried:
 
  * This issue only happen when the flag `--optimize-minimize` is given
  * Use `webpack.optimize.UglifyJsPlugin` instead of `--optimize-minimize`
  * There is a warning in bluetils-js with ui-router source map missing, but is does not seem to be the root of the problem.
+
+
+# License
+
+MIT
