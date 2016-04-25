@@ -136,6 +136,8 @@ Adds the [ng-annotate](https://github.com/olov/ng-annotate) loader.
 
 # TODO
 
+## Add a sample project on Github.
+
 ## Source Maps issue
 
 Source maps does not seem to work very well on `make dist`. We tried:
