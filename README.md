@@ -106,6 +106,7 @@ Systematic uses a makefile, get all commands with `make help`.
 
 `make makemessages` generates translations using [easygettext](https://github.com/Polyconseil/easygettext).
 The resulting `.po` files will be in `/locale`.
+
 `make translations` generates a JSON file from them, located at <YOUR_DIST_FOLDER>/translations.json`.
 
 You can then load them in your JS as an object:
