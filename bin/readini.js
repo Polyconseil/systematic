@@ -4,6 +4,7 @@
 
 // Usage: readini group.field filename.ini --default optional_default_value
 
+const _ = require('lodash');
 const fs = require('fs');
 const ini = require('ini');
 const util = require('util');
