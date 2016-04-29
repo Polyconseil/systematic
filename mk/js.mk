@@ -66,7 +66,7 @@ The following commands are available.
 
 		update                  Update node packages locally
 		makemessages            Extract translation tokens from JS, Jade & HTML files.
-		prepare                 Update and extract translation tokens.
+		prepare                 Execute all pre-build actions (translations, settings...)
 
 		serve                   Build in development mode, serve and watch.
 		serve-dist              Bundles the package for distribution and serves it.
@@ -95,7 +95,7 @@ clean:
 	rm -f /tmp/template.pot $(OUTPUT_DIR)/translations.json
 	rm -rf $(OUTPUT_DIR) reports/
 
-prepare: update makemessages
+prepare: translations settings
 
 update:
 	npm install
@@ -105,19 +105,19 @@ syntax: eslint
 eslint:
 	eslint --config $(ESLINTRC) $(SRC_DIR)
 
-test: syntax
+test: prepare syntax
 	karma start --single-run --no-auto-watch karma.conf.js
 
-livetest: syntax
+livetest: prepare syntax
 	karma start --no-single-run karma.conf.js
 
-livetest-debug:
+livetest-debug: prepare
 	karma start --no-single-run karma.conf.js --devtool source-map --reporters mocha,kjhtml
 
-test-browser: syntax
+test-browser: prepare syntax
 	karma start --port $(TEST_PORT) --reporters kjhtml --browsers '' karma.conf.js
 
-jenkins-test: syntax
+jenkins-test: prepare syntax
 	karma start --single-run --no-auto-watch --no-colors --reporters junit,mocha,coverage karma.conf.js
 
 makemessages: /tmp/template.pot
@@ -125,14 +125,14 @@ makemessages: /tmp/template.pot
 translations: $(OUTPUT_DIR)/translations.json
 settings: $(OUTPUT_DIR)/app.settings.js
 
-serve: translations settings
+serve: prepare
 	mkdir -p $(OUTPUT_DIR)
 	# TODO: Switch to webpack 2, for the --open option to work
 	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) \
 		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host 127.0.0.1 --colors \
 		--bail --progress --output-pathinfo --devtool cheap-module-source-map --display-error-details
 
-dist: translations settings
+dist: prepare
 	mkdir -p $(OUTPUT_DIR)
 	# Minification caused issues
 	SYSTEMATIC_BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) \
