@@ -60,24 +60,24 @@ Makefile command help
 
 The following commands are available.
 
-		help                 		Display this message.
+    help                    Displays this message.
 
-		clean                   Cleanup intermediate build files.
+    clean                   Cleanup intermediate build files.
 
-		update                  Update node packages locally
-		makemessages            Extract translation tokens from JS, Jade & HTML files.
-		prepare                 Execute all pre-build actions (translations, settings...)
+    update                  Update node packages locally
+    makemessages            Extract translation tokens from JS, Jade & HTML files.
+    prepare                 Execute all pre-build actions (translations, settings...)
 
-		serve                   Build in development mode, serve and watch.
-		serve-dist              Bundles the package for distribution and serves it.
-		dist                    Bundles the package for distribution.
+    serve                   Build in development mode, serve and watch.
+    serve-dist              Bundles the package for distribution and serves it.
+    dist                    Bundles the package for distribution.
 
-		syntax                  Check application style and syntax with eslint.
-		test                    Runs a single run of the tests and syntax.
-		livetest                Runs continous tests.
-		livetest-debug          Runs continous tests with complete source maps, without syntax check.
-		jenkins-test            Runs tests on jenkins.
-		test-browser            Spawns a server that you can access from any browser.
+    syntax                  Check application style and syntax with eslint.
+    test                    Runs a single run of the tests and syntax.
+    livetest                Runs continous tests.
+    livetest-debug          Runs continous tests with complete source maps, without syntax check.
+    jenkins-test            Runs tests on jenkins.
+    test-browser            Spawns a server that you can access from any browser.
 
 endef
 
