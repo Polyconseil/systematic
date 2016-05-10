@@ -1,0 +1,20 @@
+{
+  "name": "some-ui",
+  "version": "1.0.0",
+  "description": "An interactive map",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vperron/some-ui"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "keywords": [],
+  "author": "Polyconseil",
+  "dependencies": {
+    "leaflet": "1.0.0-beta.2.rc.2"
+  },
+  "devDependencies": {
+    "systematic": "file:///home/vperron/dev/newfront/systematic"
+  }
+}
