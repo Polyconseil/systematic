@@ -69,7 +69,6 @@
     "webpack-dev-server": "1.14.1"
   },
   "bin": {
-    "readini": "./bin/readini.js",
     "ini2js": "./bin/ini2js.js"
   },
   "engines": {

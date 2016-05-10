@@ -10,16 +10,20 @@ WEBPACK ?= ./node_modules/webpack/bin/webpack.js
 WEBPACK_DEV_SERVER ?= ./node_modules/webpack-dev-server/bin/webpack-dev-server.js
 
 CONF_INI ?= systematic.ini
-READINI ?= $(NODE_BINDIR)readini
 INI2JS ?= $(NODE_BINDIR)ini2js
+
+# Inspired from http://stackoverflow.com/questions/22550265/read-certain-key-from-certain-section-of-ini-file-sed-awk
+define readini
+$(shell sed -nr '/\[$(2)\]/,/\[/{/$(3)/p}' $(1) | sed -ne 's/^\s*$(3)\s*=\s*//p')
+endef
 
 export NODE_PATH := $(shell pwd):$(NODE_PATH)
 
 # Variables customizable through systematic.ini
 
-BUILD_PROFILE ?= $(shell $(READINI) $(CONF_INI) build.profile)
-BUILD_TYPE ?= $(shell $(READINI) $(CONF_INI) build.type)
-PACKAGE_NAME ?=  $(shell $(READINI) $(CONF_INI) package.name)
+BUILD_PROFILE ?= $(call readini,$(CONF_INI),build,profile)
+BUILD_TYPE ?= $(call readini,$(CONF_INI),build,type)
+PACKAGE_NAME ?= $(call readini,$(CONF_INI),package,name)
 
 ifeq ($(BUILD_PROFILE),)
 $(error Please define a build.profile in $(CONF_INI))
@@ -28,9 +32,15 @@ ifeq ($(PACKAGE_NAME),)
 $(error Please define a package name in $(CONF_INI))
 endif
 
-SRC_DIR =     $(shell $(READINI) $(CONF_INI) build.src_dir --default src)
-OUTPUT_DIR =  $(shell $(READINI) $(CONF_INI) build.output_dir --default dist)
-SERVE_PORT =  $(shell $(READINI) $(CONF_INI) serve.port --default 8080)
+SRC_DIR := $(call readini,$(CONF_INI),build,src_dir)
+SRC_DIR := $(if $(SRC_DIR),$(SRC_DIR),src)
+
+OUTPUT_DIR := $(call readini,$(CONF_INI),build,output_dir)
+OUTPUT_DIR := $(if $(OUTPUT_DIR),$(OUTPUT_DIR),dist)
+
+SERVE_PORT := $(call readini,$(CONF_INI),serve,port)
+SERVE_PORT := $(if $(SERVE_PORT),$(SERVE_PORT),8080)
+
 TEST_PORT ?= 8081
 
 # Other variables
