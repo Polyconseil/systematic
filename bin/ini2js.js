@@ -4,7 +4,7 @@
 Converts .ini files to a JS script executable in a browser.
 
 Dependencies are avoided for simplicity. This is especially useful when packaging an app in a Docker container.
-The libs minimist and ini are therefore inlined in this file.
+The 'ini' library is inlined in this file.
 */
 
 'use strict';
@@ -12,60 +12,7 @@ The libs minimist and ini are therefore inlined in this file.
 var fs = require('fs');
 var util = require('util');
 
-
-// lib minimist
-// From https://github.com/substack/minimist
-
-var eol = process.platform === 'win32' ? '\r\n' : '\n'
-
-function encode (obj, opt) {
-  var children = []
-  var out = ''
-
-  if (typeof opt === 'string') {
-    opt = {
-      section: opt,
-      whitespace: false
-    }
-  } else {
-    opt = opt || {}
-    opt.whitespace = opt.whitespace === true
-  }
-
-  var separator = opt.whitespace ? ' = ' : '='
-
-  Object.keys(obj).forEach(function (k, _, __) {
-    var val = obj[k]
-    if (val && Array.isArray(val)) {
-      val.forEach(function (item) {
-        out += safe(k + '[]') + separator + safe(item) + '\n'
-      })
-    } else if (val && typeof val === 'object') {
-      children.push(k)
-    } else {
-      out += safe(k) + separator + safe(val) + eol
-    }
-  })
-
-  if (opt.section && out.length) {
-    out = '[' + safe(opt.section) + ']' + eol + out
-  }
-
-  children.forEach(function (k, _, __) {
-    var nk = dotSplit(k).join('\\.')
-    var section = (opt.section ? opt.section + '.' : '') + nk
-    var child = encode(obj[k], {
-      section: section,
-      whitespace: opt.whitespace
-    })
-    if (out.length && child.length) {
-      out += eol
-    }
-    out += child
-  })
-
-  return out
-}
+/* 'ini' file format decoder, inspired by https://github.com/npm/ini */
 
 function dotSplit (str) {
   return str.replace(/\1/g, '\u0002LITERAL\\1LITERAL\u0002')
@@ -76,7 +23,49 @@ function dotSplit (str) {
   })
 }
 
-function decode (str) {
+function isQuoted (val) {
+  return (val.charAt(0) === '"' && val.slice(-1) === '"') ||
+    (val.charAt(0) === "'" && val.slice(-1) === "'")
+}
+
+function unsafe (val, doUnesc) {
+  val = (val || '').trim()
+  if (isQuoted(val)) {
+    // remove the single quotes before calling JSON.parse
+    if (val.charAt(0) === "'") {
+      val = val.substr(1, val.length - 2)
+    }
+    try { val = JSON.parse(val) } catch (_) {}
+  } else {
+    // walk the val to find the first not-escaped ; character
+    var esc = false
+    var unesc = ''
+    for (var i = 0, l = val.length; i < l; i++) {
+      var c = val.charAt(i)
+      if (esc) {
+        if ('\\;#'.indexOf(c) !== -1) {
+          unesc += c
+        } else {
+          unesc += '\\' + c
+        }
+        esc = false
+      } else if (';#'.indexOf(c) !== -1) {
+        break
+      } else if (c === '\\') {
+        esc = true
+      } else {
+        unesc += c
+      }
+    }
+    if (esc) {
+      unesc += '\\'
+    }
+    return unesc
+  }
+  return val
+}
+
+function iniDecode (str) {
   var out = {}
   var p = out
   var section = null
@@ -150,65 +139,24 @@ function decode (str) {
   return out
 }
 
-function isQuoted (val) {
-  return (val.charAt(0) === '"' && val.slice(-1) === '"') ||
-    (val.charAt(0) === "'" && val.slice(-1) === "'")
+
+/* minimist library v1.2.0, from https://github.com/substack/minimist */
+
+function hasKey (obj, keys) {
+    var o = obj;
+    keys.slice(0,-1).forEach(function (key) {
+        o = (o[key] || {});
+    });
+
+    var key = keys[keys.length - 1];
+    return key in o;
 }
 
-function safe (val) {
-  return (typeof val !== 'string' ||
-    val.match(/[=\r\n]/) ||
-    val.match(/^\[/) ||
-    (val.length > 1 &&
-     isQuoted(val)) ||
-    val !== val.trim()) ?
-      JSON.stringify(val) :
-      val.replace(/;/g, '\\;').replace(/#/g, '\\#')
+function isNumber (x) {
+    if (typeof x === 'number') return true;
+    if (/^0x[0-9a-f]+$/i.test(x)) return true;
+    return /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(e[-+]?\d+)?$/.test(x);
 }
-
-function unsafe (val, doUnesc) {
-  val = (val || '').trim()
-  if (isQuoted(val)) {
-    // remove the single quotes before calling JSON.parse
-    if (val.charAt(0) === "'") {
-      val = val.substr(1, val.length - 2)
-    }
-    try { val = JSON.parse(val) } catch (_) {}
-  } else {
-    // walk the val to find the first not-escaped ; character
-    var esc = false
-    var unesc = ''
-    for (var i = 0, l = val.length; i < l; i++) {
-      var c = val.charAt(i)
-      if (esc) {
-        if ('\\;#'.indexOf(c) !== -1) {
-          unesc += c
-        } else {
-          unesc += '\\' + c
-        }
-        esc = false
-      } else if (';#'.indexOf(c) !== -1) {
-        break
-      } else if (c === '\\') {
-        esc = true
-      } else {
-        unesc += c
-      }
-    }
-    if (esc) {
-      unesc += '\\'
-    }
-    return unesc
-  }
-  return val
-}
-
-var parse = decode
-var stringify = encode
-
-
-// lib ini
-// From https://github.com/npm/ini
 
 var minimist = function (args, opts) {
     if (!opts) opts = {};
@@ -430,36 +378,19 @@ var minimist = function (args, opts) {
     return argv;
 };
 
-function hasKey (obj, keys) {
-    var o = obj;
-    keys.slice(0,-1).forEach(function (key) {
-        o = (o[key] || {});
-    });
-
-    var key = keys[keys.length - 1];
-    return key in o;
-}
-
-function isNumber (x) {
-    if (typeof x === 'number') return true;
-    if (/^0x[0-9a-f]+$/i.test(x)) return true;
-    return /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(e[-+]?\d+)?$/.test(x);
-}
-
-
 
 // ====== ini2js ======
 
 // Parameters
 var argv = minimist(process.argv.slice(2));
-var filenames = argv._.sort() || ['app/settings/settings.ini'];
-var global_name = argv.global_name || 'app_settings';
+var filenames = argv._.sort() || ['src/settings.ini'];
+var namespace = argv.namespace || '__SETTINGS__';
 
 // Merge all settings together
 var config = {};
 filenames.forEach(function(filename) {
-  var parsed = parse(fs.readFileSync(filename, 'utf-8'));
+  var parsed = iniDecode(fs.readFileSync(filename, 'utf-8'));
   for (var i in parsed) { config[i] = parsed[i]; }
 });
 
-console.log(util.format('window.%s = %s;', global_name, JSON.stringify(config)));
+console.log(util.format('window.%s = %s;', namespace, JSON.stringify(config)));
