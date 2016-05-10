@@ -1,5 +1,7 @@
+/* Systematic's enums, possible configuration values */
+
 module.exports = {
-  buildType: {
+  buildTypes: {
     APPLICATION: 'application',
     LIBRARY: 'library',
   },

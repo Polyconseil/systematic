@@ -1,18 +1,20 @@
+/* Systematic's webpack base config file */
+
 const path = require('path')
 
-const HtmlPlugin = require('html-webpack-plugin')
-const NgAnnotatePlugin = require('ng-annotate-webpack-plugin')
-const OmitTildeWebpackPlugin = require('omit-tilde-webpack-plugin')
-const webpack = require('webpack')
+// TODO(vperron): Terrible to require this for the 5 lines this plugin is.
 const combineLoaders = require('webpack-combine-loaders')
+const HtmlPlugin = require('html-webpack-plugin')
+const OmitTildeWebpackPlugin = require('omit-tilde-webpack-plugin')
 
-const systematicConfig = require('./config')
-const buildType = require('./config_choices').buildType
-
-
+const config = require('./config')
+const enums = require('./config_choices')
 const plugins = [
   new OmitTildeWebpackPlugin({include: 'package.json'}),
 ]
+
+
+/* Pre-configure loaders */
 const jsLoaders = [{
   loader: 'babel',
   query: {
@@ -21,30 +23,45 @@ const jsLoaders = [{
   },
 }]
 
+const cssLoader = {
+  loader: 'css',
+  query: {
+    localIdentName: '[path][name]__[local]__[hash:base64:5]',
+  },
+}
+const postcssLoader = { loader: 'postcss', query: {} }
+const sassLoader = { loader: 'sass', query: {} }
+const styleLoader = { loader: 'style', query: {} }
+
+const cssLoaders = [styleLoader, cssLoader, postcssLoader]
+const sassLoaders = [styleLoader, cssLoader, postcssLoader, sassLoader]
+
 const PRODUCTION_MODE = (process.env.SYSTEMATIC_BUILD_MODE === 'PROD')
 
 // css sourceMap option breaks relative url imports
 // In dev, the workaround is a full URL path through the output.publicPath option
 // In prod, css source maps are disabled
 // FIXME: remove when this fix is released: https://github.com/webpack/style-loader/pull/96
-const cssLoader = 'css' + (PRODUCTION_MODE ? '' : '?sourceMap')
-const sassLoader = 'sass' + (PRODUCTION_MODE ? '' : '?sourceMap')
+if (PRODUCTION_MODE) {
+  cssLoaders.forEach(function (loader) { loader.query.sourceMap = true })
+  sassLoaders.forEach(function (loader) { loader.query.sourceMap = true })
+}
 
-function buildPublicPath() {
+function buildPublicPath () {
   if (PRODUCTION_MODE) return '/'
-  else return 'http://127.0.0.1:' + systematicConfig.serve.port +'/'
+  else return `http://127.0.0.1:${config.serve.port}/`
 }
 
 
-module.exports = function(basePath) {
+module.exports = function (basePath) {
 
   const PATHS = {
-    src: path.join(basePath, systematicConfig.build.src_dir),
-    dist: path.join(basePath, systematicConfig.build.output_dir),
+    src: path.join(basePath, config.build.src_dir),
+    dist: path.join(basePath, config.build.output_dir),
   }
 
   // TODO: Manage the conditions using plugins.
-  if (systematicConfig.build.profile === 'angular') {
+  if (config.build.profile === 'angular') {
     jsLoaders.push({
       loader: 'ng-annotate',
       query: {
@@ -53,11 +70,11 @@ module.exports = function(basePath) {
       },
     })
   }
-  if (systematicConfig.build.type === buildType.APPLICATION) {
+  if (config.build.type === enums.buildTypes.APPLICATION) {
     plugins.push(new HtmlPlugin({
       inject: true,
       filename: 'index.html',
-      template: path.join(systematicConfig.build.src_dir, 'index.html'),
+      template: path.join(config.build.src_dir, 'index.html'),
     }))
   }
 
@@ -67,9 +84,9 @@ module.exports = function(basePath) {
     output: {
       path: PATHS.dist,
       pathinfo: true,
-      filename: systematicConfig.build.type === buildType.APPLICATION ? 'bundle.js' : 'index.js',
+      filename: config.build.type === enums.buildTypes.APPLICATION ? 'bundle.js' : 'index.js',
       publicPath: buildPublicPath(), // Prefix for all the static urls
-      libraryTarget: systematicConfig.build.type === buildType.LIBRARY ? 'umd' : undefined,
+      libraryTarget: config.build.type === enums.buildTypes.LIBRARY ? 'umd' : 'var',
     },
     resolve: {
       root: [path.resolve(basePath)],
@@ -86,8 +103,8 @@ module.exports = function(basePath) {
           include: [PATHS.src],
 
         },
-        { test: /\.css/, loaders: ['style', cssLoader, 'postcss'] },
-        { test: /\.scss$/, loaders: ['style', cssLoader, 'postcss', sassLoader] },
+        { test: /\.css/, loader: combineLoaders(cssLoaders) },
+        { test: /\.scss$/, loader: combineLoaders(sassLoaders) },
         { test: /\.jade$/, loader: 'jade' },
         { test: /\.html$/, loader: 'html' },
         { test: /\.json$/, loader: 'json' },
@@ -98,7 +115,7 @@ module.exports = function(basePath) {
     plugins: plugins,
     devtool: 'source-map',  // A source map will be emitted.
     sassLoader: {
-      includePaths: [path.join(basePath, "node_modules")]
-    }
+      includePaths: [path.join(basePath, 'node_modules')],
+    },
   }
 }

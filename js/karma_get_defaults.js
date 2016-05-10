@@ -1,6 +1,8 @@
 const path = require('path')
 
 const systematicConfig = require('./config')
+
+// FIXME(vperron): We use 'default' config here, not the application one. Fix it.
 const webpackGetDefaults = require('./webpack_get_defaults')
 
 

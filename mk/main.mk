@@ -161,7 +161,7 @@ ifeq ($(BUILD_TYPE),application)
 	$(INI2JS) $^ --global_name app_settings > $@
 endif
 
-/tmp/template.pot: $(GETTEXT_JS_SOURCES) $(GETTEXT_JS_SOURCES)
+/tmp/template.pot: $(GETTEXT_JS_SOURCES) $(GETTEXT_HTML_SOURCES)
 	@echo "$(ECHOPREFIX) extracting translations $(ECHOSUFFIX)"
 	mkdir -p $(dir $@)
 	gettext-extract --output $@ $(GETTEXT_HTML_SOURCES)
