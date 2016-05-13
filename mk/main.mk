@@ -8,6 +8,7 @@ SHELL ?= /bin/bash -o pipefail
 SYSTEMATIC_PATH ?= node_modules/systematic
 WEBPACK ?= ./node_modules/webpack/bin/webpack.js
 WEBPACK_DEV_SERVER ?= ./node_modules/webpack-dev-server/bin/webpack-dev-server.js
+WEBPACK_DIST_OPTS := $(if $(CI),,--progress)
 
 CONF_INI ?= systematic.ini
 INI2JS ?= $(NODE_BINDIR)ini2js
@@ -146,7 +147,7 @@ dist: prepare
 	mkdir -p $(OUTPUT_DIR)
 	# Minification caused issues
 	SYSTEMATIC_BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) \
-		--progress --optimize-dedupe --optimize-occurence-order # --optimize-minimize
+		--optimize-dedupe --optimize-occurence-order $(WEBPACK_DIST_OPTS) # --optimize-minimize
 
 serve-dist: dist
 	$(NODE_BINDIR)http-server ./$(OUTPUT_DIR) -p $(TEST_PORT) -o
