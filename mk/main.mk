@@ -114,22 +114,22 @@ update:
 syntax: eslint
 
 eslint:
-	eslint --config $(ESLINTRC) $(SRC_DIR)
+	$(NODE_BINDIR)eslint --config $(ESLINTRC) $(SRC_DIR)
 
 test: prepare syntax
-	karma start --single-run --no-auto-watch karma.conf.js
+	$(NODE_BINDIR)karma start --single-run --no-auto-watch karma.conf.js
 
 livetest: prepare syntax
-	karma start --no-single-run karma.conf.js
+	$(NODE_BINDIR)karma start --no-single-run karma.conf.js
 
 livetest-debug: prepare
-	karma start --no-single-run karma.conf.js --devtool source-map --reporters mocha,kjhtml
+	$(NODE_BINDIR)karma start --no-single-run karma.conf.js --devtool source-map --reporters mocha,kjhtml
 
 test-browser: prepare syntax
-	karma start --port $(TEST_PORT) --reporters kjhtml --browsers '' karma.conf.js
+	$(NODE_BINDIR)karma start --port $(TEST_PORT) --reporters kjhtml --browsers '' karma.conf.js
 
 jenkins-test: prepare syntax
-	karma start --single-run --no-auto-watch --no-colors --reporters junit,mocha,coverage karma.conf.js
+	$(NODE_BINDIR)karma start --single-run --no-auto-watch --no-colors --reporters junit,mocha,coverage karma.conf.js
 
 makemessages: /tmp/template.pot
 
