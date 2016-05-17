@@ -165,7 +165,7 @@ endif
 /tmp/template.pot: $(GETTEXT_JS_SOURCES) $(GETTEXT_HTML_SOURCES)
 	@echo "$(ECHOPREFIX) extracting translations $(ECHOSUFFIX)"
 	mkdir -p $(dir $@)
-	$(NODE_BINDIR)gettext-extract --output $@ $(GETTEXT_HTML_SOURCES)
+	gettext-extract --output $@ $(GETTEXT_HTML_SOURCES)
 	xgettext --language=JavaScript --keyword=i18n --from-code=utf-8 \
 		--sort-output --join-existing --no-wrap --package-name=$(PACKAGE_NAME) \
 		--package-version=$(shell node -e "console.log(require('./package.json').version);") \
@@ -182,4 +182,4 @@ endif
 
 $(OUTPUT_DIR)/translations.json: /tmp/template.pot
 	mkdir -p $(OUTPUT_DIR)
-	$(NODE_BINDIR)gettext-compile --output $@ $(LOCALE_FILES)
+	gettext-compile --output $@ $(LOCALE_FILES)
