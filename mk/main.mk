@@ -2,7 +2,6 @@ default: help
 
 # Paths
 
-PATH := node_modules/.bin:$(PATH)
 NODE_BINDIR ?= ./node_modules/.bin/
 SHELL ?= /bin/bash -o pipefail
 SYSTEMATIC_PATH ?= node_modules/systematic
@@ -18,6 +17,7 @@ define readini
 $(shell sed -ne '/\[$(2)\]/,/\[/ {/$(3)/p; }' $(1) | sed -ne 's/^[[:space:]]*$(3)[[:space:]]*=[[:space:]]*//p')
 endef
 
+export PATH := $(NODE_BINDIR):$(PATH)
 export NODE_PATH := $(shell pwd):$(NODE_PATH)
 
 # Variables customizable through systematic.ini
