@@ -15,7 +15,7 @@ INI2JS ?= $(NODE_BINDIR)ini2js
 
 # Inspired from http://stackoverflow.com/questions/22550265/read-certain-key-from-certain-section-of-ini-file-sed-awk
 define readini
-$(shell sed -nr '/\[$(2)\]/,/\[/{/$(3)/p}' $(1) | sed -ne 's/^\s*$(3)\s*=\s*//p')
+$(shell sed -ne '/\[$(2)\]/,/\[/ {/$(3)/p; }' $(1) | sed -ne 's/^[[:space:]]*$(3)[[:space:]]*=[[:space:]]*//p')
 endef
 
 export NODE_PATH := $(shell pwd):$(NODE_PATH)
