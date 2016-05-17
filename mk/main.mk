@@ -17,6 +17,8 @@ define readini
 $(shell sed -ne '/\[$(2)\]/,/\[/ {/$(3)/p; }' $(1) | sed -ne 's/^[[:space:]]*$(3)[[:space:]]*=[[:space:]]*//p')
 endef
 
+# On OSX the PATH variable isn't exported unless "SHELL" is also set, see: http://stackoverflow.com/a/25506676
+SHELL = /bin/bash
 export PATH := $(NODE_BINDIR):$(PATH)
 export NODE_PATH := $(shell pwd):$(NODE_PATH)
 
