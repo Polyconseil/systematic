@@ -1,43 +1,53 @@
 # Systematic
 
-An opinionated toolchain to package ES6 applications and libraries.
+An opinionated, mostly framework-agnostic toolchain to package ES6 applications and libraries for the browser.
 
 **Features :**
 
-  * Import all kind of file and output a bundle thanks to Webpack
-  * Full es6 support
-  * Code style and linting with [standard](https://github.com/feross/standard)
-  * Translations management
-  * Settings management
+  * Stay lazy: the toolchain already made the good choices for you.
+  * Full ES6/PostCSS support through carefully selected & configured Webpack plugins.
+  * Paranoid code linting & styling with [standard](https://github.com/feross/standard)
+  * Framework-agnostic, standard (GNU gettext) translation file handling.
+  * Application settings management, human-editable INI files get converted into JS.
 
 
 # Installation
 
 `npm install systematic`
 
-Your file structure:
+The file structure expected for your application or library.
 
-```
-├── dist                  # result of the build
-│   └── bundle.js
+```bash
+├── dist                  # what gets built
+│   ├── app.settings.js
+│   ├── bundle.js
+│   ├── bundle.js.map
+│   ├── translations.json
+│   ├── an_asset.png
 │   └── index.html
-├── src
-│    ├── module_1         # your modules
-│    ├── module_2
-│    ├── index.html       # HTML entry point, only for an application
+|
+├── src                   # your code
+│    ├── some_module/
+|    |      ├── enums.js
+|    |      ├── index.js
+|    |      ├── index.spec.js
+|    |      └── models.js
+|    |
+│    ├── utils.js
+│    ├── index.html       # HTML entry point (applications)
+│    ├── index.spec.js    # A test spec file
 │    └── index.js         # JS entry point
+|
+├── webpack.config.js     # Webpack config, inherits systematic's
+├── karma.config.js       # Karma config, inherits systematic's
+├── Makefile              # Your application's Makefile
 └── systematic.ini        # systematic config
 ```
 
 
-## Entry point
+## Entry points
 
 * The default source folder (containing your source code and tests) is `src`. It must contain an entrypoint file named `index.js`. Example:
-
-  ```javascript
-  import './module_1'
-  import './module_2'
-  ```
 
 * If your project is an application, there must be an HTML entry point named `index.html` in the source folder, containing the primary page. Your JS entry point will be automatically added.
 Example:
@@ -68,7 +78,7 @@ Example:
   // import systematic default webpack settings
   const webpackDefaults = require('systematic').webpack_get_defaults(__dirname)
 
-  // optional overrides example
+  // optional overrides (an example !)
   webpackDefaults.loader.push({ test: /\.file_extension_example$/, loaders: ['my-loader'] },)
 
   module.exports = webpackDefaults
@@ -90,7 +100,7 @@ Example:
 
 # Usage
 
-Systematic uses a makefile, get all commands with `make help`.
+Systematic uses a Makefile. Get all commands with `make help`.
 
 ## Build
 
@@ -107,7 +117,7 @@ Systematic uses a makefile, get all commands with `make help`.
 `make makemessages` generates translations using [easygettext](https://github.com/Polyconseil/easygettext).
 The resulting `.po` files will be in `/locale`.
 
-`make translations` generates a JSON file from them, located at <YOUR_DIST_FOLDER>/translations.json`.
+`make translations` generates a JSON file from them, located at dist/translations.json`.
 
 You can then load them in your JS as an object:
 ```javascript
@@ -116,7 +126,7 @@ import translations from 'dist/translations.json'`
 
 ## Settings
 
-`make settings` generates a file `<YOUR_DIST_FOLDER>/app.settings.js` if your project is an application.
+`make settings` generates a file `dist/app.settings.js` if your project is an application.
 
 It needs to be included in your index.html, since it will not be added by Webpack.
 
@@ -136,8 +146,6 @@ Adds the [ng-annotate](https://github.com/olov/ng-annotate) loader.
 
 
 # TODO
-
-## Add a sample project on Github.
 
 ## Source Maps issue
 
