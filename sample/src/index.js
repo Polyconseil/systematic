@@ -14,7 +14,7 @@ import LazyGoogleMapsApi from './lazy-gmaps-loader.js'
 import LeafletGooglePlugin from './leaflet-google-plugin.js'
 
 // Test image import, as a sample.
-import './img/img.jpg'
+import sampleImage from './img/img.jpg'
 // Test local CSS rules
 import mapStyles from './map.css'
 
@@ -52,12 +52,19 @@ let map = new L.Map(MAP_DIV_ID, {
   fadeAnimation: MAP_SETTINGS.fadeAnimation,
 })
 
-map.setView([48.859, 2.341], 12)
+let parisLatLng = [48.859, 2.341]
+map.setView(parisLatLng, 12)
 
 L.control.scale({
   imperial: MAP_SETTINGS.imperialScale,
   position: 'bottomleft',
 }).addTo(map)
+
+let sampleIcon = L.icon({
+  iconUrl: sampleImage,
+  iconSize: [150, 84],
+})
+L.marker(parisLatLng, {icon: sampleIcon}).addTo(map)
 
 // Add tiles as soon as Google Maps API is loaded
 LazyGoogleMapsApi.load().then(() => {
