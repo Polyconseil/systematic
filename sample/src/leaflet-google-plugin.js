@@ -206,8 +206,7 @@ export default {
 
     L.Google.asyncWait = []
     L.Google.asyncInitialize = function () {
-      let i
-      for (i = 0; i < L.Google.asyncWait.length; i = i + 1) {
+      for (let i = 0; i < L.Google.asyncWait.length; i++) {
         let o = L.Google.asyncWait[i]
         o._ready = true
         if (o._container) {
