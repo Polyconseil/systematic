@@ -141,14 +141,14 @@ settings: $(OUTPUT_DIR)/app.settings.js
 serve: prepare
 	mkdir -p $(OUTPUT_DIR)
 	# TODO: Switch to webpack 2, for the --open option to work
-	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) \
+	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) --bail \
 		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host 127.0.0.1 --colors \
 		--bail --progress --output-pathinfo --devtool cheap-module-source-map --display-error-details
 
 dist: prepare
 	mkdir -p $(OUTPUT_DIR)
 	# Minification caused issues
-	SYSTEMATIC_BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) \
+	SYSTEMATIC_BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) --bail \
 		--optimize-dedupe --optimize-occurence-order $(WEBPACK_DIST_OPTS) # --optimize-minimize
 
 serve-dist: dist
