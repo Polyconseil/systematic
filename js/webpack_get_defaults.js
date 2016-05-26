@@ -1,5 +1,7 @@
 /* Systematic's webpack base config file */
 
+'use strict'
+
 const path = require('path')
 
 // TODO(vperron): Terrible to require this for the 5 lines this plugin is.
@@ -50,6 +52,15 @@ function buildPublicPath () {
   else return `http://127.0.0.1:${config.serve.port}/`
 }
 
+function getDependencies () {
+  let packageJson
+  try {
+    packageJson = require('package.json')
+  } catch (e) {
+    return []
+  }
+  return Object.keys(packageJson.dependencies)
+}
 
 module.exports = function (basePath) {
 
@@ -86,6 +97,7 @@ module.exports = function (basePath) {
       publicPath: buildPublicPath(), // Prefix for all the static urls
       libraryTarget: config.build.type === enums.buildTypes.LIBRARY ? 'umd' : 'var',
     },
+    externals: config.build.type === enums.buildTypes.LIBRARY ? getDependencies() : [],
     resolve: {
       root: [path.resolve(basePath)],
     },

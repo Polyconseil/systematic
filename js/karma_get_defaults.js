@@ -6,16 +6,17 @@ const systematicConfig = require('./config')
 const webpackGetDefaults = require('./webpack_get_defaults')
 
 
-module.exports = function(basePath) {
+module.exports = function (basePath) {
   const webpackConfig = webpackGetDefaults(basePath)
   // fast rebuild, see https://webpack.github.io/docs/configuration.html#devtool
   // complete source maps are very slow
   webpackConfig.devtool = 'cheap-module-source-map'
   webpackConfig.entry = {}  // Reset the webpack entry point, test files are added separatly by karma-webpack
+  webpackConfig.externals = []  // Keep all the dependencies during the tests
 
   const testFiles = path.join(basePath, systematicConfig.test.file_pattern)
 
-  const karmaConfig =  {
+  const karmaConfig = {
     basePath: basePath,
     autoWatch: true, // Without this _in the config file_, plugins do not reload automatically
     browserNoActivityTimeout: 100000, // in ms, 100 seconds
