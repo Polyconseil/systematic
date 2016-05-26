@@ -5,14 +5,12 @@ const path = require('path')
 // TODO(vperron): Terrible to require this for the 5 lines this plugin is.
 const combineLoaders = require('webpack-combine-loaders')
 const HtmlPlugin = require('html-webpack-plugin')
-const OmitTildeWebpackPlugin = require('omit-tilde-webpack-plugin')
 
 const config = require('./config')
 const enums = require('./config_choices')
-const plugins = [
-  new OmitTildeWebpackPlugin({include: 'package.json'}),
-]
 
+/* Global plugins collection, will be filled according to the profile */
+const plugins = []
 
 /* Pre-configure loaders */
 const jsLoaders = [{
