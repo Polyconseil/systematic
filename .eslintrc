@@ -11,7 +11,3 @@ rules:
     - 2
     - max: 2
   padded-blocks: 0
-
-  # TODO: remove all following when this commit is released:
-  # https://github.com/feross/eslint-config-standard/commit/e2c4c2e6740e0b0d6945ac2b7d6ec7ead78dec7d
-  arrow-parens: 0
