@@ -144,18 +144,6 @@ Value : `angular`
 
 Adds the [ng-annotate](https://github.com/olov/ng-annotate) loader.
 
-
-# TODO
-
-## Source Maps issue
-
-Source maps does not seem to work very well on `make dist`. We tried:
-
- * This issue only happen when the flag `--optimize-minimize` is given
- * Use `webpack.optimize.UglifyJsPlugin` instead of `--optimize-minimize`
- * There is a warning in bluetils-js with ui-router source map missing, but is does not seem to be the root of the problem.
-
-
 # License
 
 MIT
