@@ -11,6 +11,7 @@
   },
   "keywords": [],
   "author": "Polyconseil",
+  "license": "MIT",
   "dependencies": {
     "leaflet": "1.0.0-beta.2.rc.2"
   },
