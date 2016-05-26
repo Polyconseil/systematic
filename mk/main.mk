@@ -128,7 +128,7 @@ livetest: prepare
 	karma start --no-single-run karma.conf.js --devtool source-map --reporters mocha,kjhtml
 
 test-browser: prepare syntax
-	karma start --port $(TEST_PORT) --reporters kjhtml --browsers '' karma.conf.js
+	karma start --port $(TEST_PORT) --reporters kjhtml karma.conf.js
 
 jenkins-test: prepare syntax
 	karma start --single-run --no-auto-watch --no-colors --reporters junit,mocha,coverage karma.conf.js
