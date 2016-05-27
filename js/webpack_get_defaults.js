@@ -2,6 +2,7 @@
 
 'use strict'
 
+const fs = require('fs')
 const path = require('path')
 
 // TODO(vperron): Terrible to require this for the 5 lines this plugin is.
@@ -80,11 +81,14 @@ module.exports = function (basePath) {
     })
   }
   if (config.build.type === enums.buildTypes.APPLICATION) {
-    plugins.push(new HtmlPlugin({
-      inject: true,
-      filename: 'index.html',
-      template: path.join(config.build.src_dir, 'index.html'),
-    }))
+    const indexHtmlPath = path.join(config.build.src_dir, 'index.html')
+    if (fs.existsSync(indexHtmlPath)) {
+      plugins.push(new HtmlPlugin({
+        inject: true,
+        filename: 'index.html',
+        template: indexHtmlPath,
+      }))
+    }
   }
 
   return {
