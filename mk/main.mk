@@ -167,7 +167,7 @@ endif
 /tmp/template.pot: $(GETTEXT_JS_SOURCES) $(GETTEXT_HTML_SOURCES)
 	@echo "$(ECHOPREFIX) extracting translations $(ECHOSUFFIX)"
 	mkdir -p $(dir $@)
-	gettext-extract --output $@ $(GETTEXT_HTML_SOURCES)
+	gettext-extract --quiet --output $@ $(GETTEXT_HTML_SOURCES)
 	xgettext --language=JavaScript --keyword=i18n --from-code=utf-8 \
 		--sort-output --join-existing --no-wrap --package-name=$(PACKAGE_NAME) \
 		--package-version=$(shell node -e "console.log(require('./package.json').version);") \
