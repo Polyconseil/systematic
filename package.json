@@ -58,7 +58,6 @@
     "phantomjs-prebuilt": "2.1.7",
     "postcss-loader": "0.8.2",
     "sass-loader": "3.2.0",
-    "source-map-loader": "0.1.5",
     "standard": "6.0.8",
     "style-loader": "0.13.1",
     "url-loader": "0.5.7",
