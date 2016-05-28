@@ -2,12 +2,11 @@ const path = require('path')
 
 const systematicConfig = require('./config')
 
-// FIXME(vperron): We use 'default' config here, not the application one. Fix it.
-const webpackGetDefaults = require('./webpack_get_defaults')
 
+module.exports = function (basePath, _webpackConfig) {
 
-module.exports = function (basePath) {
-  const webpackConfig = webpackGetDefaults(basePath)
+  const webpackConfig = _webpackConfig || require('./webpack_get_defaults')(basePath)
+
   // fast rebuild, see https://webpack.github.io/docs/configuration.html#devtool
   // complete source maps are very slow
   webpackConfig.devtool = 'cheap-module-source-map'
