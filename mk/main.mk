@@ -17,6 +17,10 @@ define readini
 $(shell sed -ne '/\[$(2)\]/,/\[/ {/$(3)/p; }' $(1) | sed -ne 's/^[[:space:]]*$(3)[[:space:]]*=[[:space:]]*//p')
 endef
 
+define read_package
+$(shell node -p "require('./package.json').$(1)")
+endef
+
 # On OSX the PATH variable isn't exported unless "SHELL" is also set, see: http://stackoverflow.com/a/25506676
 SHELL = /bin/bash
 export PATH := $(NODE_BINDIR):$(PATH)
@@ -26,7 +30,7 @@ export NODE_PATH := $(shell pwd):$(NODE_PATH)
 
 BUILD_PROFILE ?= $(call readini,$(CONF_INI),build,profile)
 BUILD_TYPE ?= $(call readini,$(CONF_INI),build,type)
-PACKAGE_NAME ?= $(call readini,$(CONF_INI),package,name)
+PACKAGE_NAME ?= $(call read_package,name)
 
 ifeq ($(BUILD_PROFILE),)
 $(error Please define a build.profile in $(CONF_INI))

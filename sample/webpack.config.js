@@ -1,5 +1,5 @@
 const webpackDefaults = require('systematic').webpack_get_defaults(__dirname)
 
-// eventual overrides
+// optional overrides
 
 module.exports = webpackDefaults

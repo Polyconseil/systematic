@@ -1,5 +1,5 @@
 const karmaDefaults = require('systematic').karma_get_defaults(__dirname)
 
-// eventual overrides
+// optional overrides
 
 module.exports = (karma) => karma.set(karmaDefaults)
