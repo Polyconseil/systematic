@@ -91,8 +91,7 @@ The following commands are available.
 
     syntax                  Check application style and syntax with eslint.
     test                    Runs a single run of the tests and syntax.
-    livetest                Runs continous tests.
-    livetest-debug          Runs continous tests with complete source maps, without syntax check.
+    livetest                Runs continous tests with complete source maps, without syntax check.
     jenkins-test            Runs tests on jenkins.
     test-browser            Spawns a server that you can access from any browser.
 
@@ -125,10 +124,7 @@ eslint:
 test: prepare syntax
 	karma start --single-run --no-auto-watch karma.conf.js
 
-livetest: prepare syntax
-	karma start --no-single-run karma.conf.js
-
-livetest-debug: prepare
+livetest: prepare
 	karma start --no-single-run karma.conf.js --devtool source-map --reporters mocha,kjhtml
 
 test-browser: prepare syntax
