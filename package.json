@@ -68,6 +68,6 @@
     "ini2js": "./bin/ini2js.js"
   },
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=4.0.0 <6"
   }
 }
