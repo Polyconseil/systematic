@@ -103,7 +103,8 @@ module.exports = function (basePath) {
     },
     externals: config.build.type === enums.buildTypes.LIBRARY ? getDependencies() : [],
     resolve: {
-      root: [path.resolve(basePath)],
+      // Go look for requires inside 'src' and 'node_modules'
+      root: [path.resolve(basePath), path.join(basePath, 'node_modules')],
     },
     module: {
       loaders: [

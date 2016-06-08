@@ -149,7 +149,7 @@ dist: prepare
 	mkdir -p $(OUTPUT_DIR)
 	# Minification caused issues
 	SYSTEMATIC_BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) --bail \
-		--optimize-dedupe --optimize-occurence-order $(WEBPACK_DIST_OPTS) # --optimize-minimize
+		--no-color --display-modules --optimize-dedupe --optimize-occurence-order $(WEBPACK_DIST_OPTS) # --optimize-minimize
 
 serve-dist: dist
 	$(NODE_BINDIR)http-server ./$(OUTPUT_DIR) -p $(TEST_PORT) -o
