@@ -59,8 +59,9 @@ ESLINTRC ?= ./$(SYSTEMATIC_PATH)/.eslintrc
 LOCALES ?= en_US en_GB es_US fr_FR it_IT
 LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
 
+GETTEXT_EXCLUDE_PATTERN ?= $(call readini,$(CONF_INI),test,file_pattern,'*.spec')
 GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' 2> /dev/null)
-GETTEXT_JS_SOURCES   ?= $(shell find $(SRC_DIR) -name '*.js')
+GETTEXT_JS_SOURCES   ?= $(shell find $(SRC_DIR) -name '*.js' ! -name $(GETTEXT_EXCLUDE_PATTERN))
 SETTINGS_INI_FILES := $(shell find $(SRC_DIR)/settings -name '*.ini' 2> /dev/null)
 
 # Colors for a nicer output
