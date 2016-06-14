@@ -49,7 +49,7 @@ if (PRODUCTION_MODE) {
 }
 
 function buildPublicPath () {
-  if (PRODUCTION_MODE) return '/'
+  if (PRODUCTION_MODE) return `${config.build.public_path}`
   else return `http://127.0.0.1:${config.serve.port}/`
 }
 

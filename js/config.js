@@ -10,6 +10,7 @@ _.defaultsDeep(systematic, {
   build: {
     src_dir: 'src',
     output_dir: 'dist',
+    public_path: '/',
   },
   serve: {
     port: 8080,
