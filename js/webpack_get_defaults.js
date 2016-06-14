@@ -120,7 +120,7 @@ module.exports = function (basePath) {
         { test: /\.jade$/, loader: 'jade' },
         { test: /\.html$/, loader: 'html' },
         { test: /\.json$/, loader: 'json' },
-        { test: /\.(png|gif|jp(e)?g)$/, loader: 'url?limit=8192' },
+        { test: /\.(png|gif|jp(e)?g)$/, loader: 'url?limit=50000' },
         { test: /\.(ttf|eot|svg|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?limit=50000' },
       ],
     },
