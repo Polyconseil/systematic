@@ -7,9 +7,8 @@ module.exports = function (basePath, _webpackConfig) {
 
   const webpackConfig = _webpackConfig || require('./webpack_get_defaults')(basePath)
 
-  // fast rebuild, see https://webpack.github.io/docs/configuration.html#devtool
-  // complete source maps are very slow
-  webpackConfig.devtool = 'cheap-module-source-map'
+  // Inline source maps, without columns & simple sourcemaps for loaders
+  webpackConfig.devtool = 'cheap-module-inline-source-map'
   webpackConfig.entry = {}  // Reset the webpack entry point, test files are added separatly by karma-webpack
   webpackConfig.externals = []  // Keep all the dependencies during the tests
 
@@ -28,7 +27,6 @@ module.exports = function (basePath, _webpackConfig) {
     ],
 
     plugins: [
-      'karma-coverage',
       'karma-jasmine',
       'karma-jasmine-matchers',
       'karma-jasmine-html-reporter',
@@ -40,21 +38,6 @@ module.exports = function (basePath, _webpackConfig) {
       'karma-webpack',
     ],
 
-    // Reporter options
-    coverageReporter: {
-      reporters: [
-        {
-          type: 'text-summary',
-        },
-        {
-          type: 'cobertura',
-          dir: 'reports',
-          subdir: '.',
-          file: 'xmlcov.xml',
-        },
-      ],
-    },
-
     junitReporter: {
       outputFile: './reports/TEST-karma.xml',
       useBrowserName: false,
@@ -65,7 +48,7 @@ module.exports = function (basePath, _webpackConfig) {
     },
 
     browsers: ['PhantomJS'],
-    reporters: ['junit', 'mocha', 'kjhtml', 'coverage'],
+    reporters: ['junit', 'mocha', 'kjhtml'],
 
     webpack: webpackConfig,
     webpackMiddleware: {
@@ -74,7 +57,7 @@ module.exports = function (basePath, _webpackConfig) {
   }
 
   karmaConfig.preprocessors = {}
-  karmaConfig.preprocessors[testFiles] = ['webpack', 'sourcemap', 'coverage']
+  karmaConfig.preprocessors[testFiles] = ['webpack', 'sourcemap']
 
   return karmaConfig
 }

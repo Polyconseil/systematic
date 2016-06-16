@@ -39,7 +39,6 @@
     "json-loader": "0.5.4",
     "karma": "0.13.22",
     "karma-cli": "1.0.0",
-    "karma-coverage": "0.5.5",
     "karma-jasmine": "0.3.8",
     "karma-jasmine-html-reporter": "0.2.0",
     "karma-jasmine-matchers": "2.0.2",
