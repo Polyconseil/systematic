@@ -8,13 +8,12 @@ const path = require('path')
 // TODO(vperron): Terrible to require this for the 5 lines this plugin is.
 const combineLoaders = require('webpack-combine-loaders')
 const HtmlPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const config = require('./config')
 const enums = require('./config_choices')
 
 /* Global plugins collection, will be filled according to the profile */
-const plugins = [new ExtractTextPlugin('bundle.css')]
+const plugins = []
 
 /* Pre-configure loaders */
 const jsLoaders = [{
@@ -33,9 +32,10 @@ const cssLoader = {
 }
 const postcssLoader = { loader: 'postcss', query: {} }
 const sassLoader = { loader: 'sass', query: {} }
+const styleLoader = { loader: 'style', query: {} }
 
-const cssLoaders = [cssLoader, postcssLoader]
-const sassLoaders = [cssLoader, postcssLoader, sassLoader]
+const cssLoaders = [styleLoader, cssLoader, postcssLoader]
+const sassLoaders = [styleLoader, cssLoader, postcssLoader, sassLoader]
 
 const PRODUCTION_MODE = (process.env.SYSTEMATIC_BUILD_MODE === 'PROD')
 
@@ -115,8 +115,8 @@ module.exports = function (basePath) {
           include: [PATHS.src],
 
         },
-        { test: /\.css/, loader: ExtractTextPlugin.extract(combineLoaders(cssLoaders)) },
-        { test: /\.scss$/, loader: ExtractTextPlugin.extract(combineLoaders(sassLoaders)) },
+        { test: /\.css/, loader: combineLoaders(cssLoaders) },
+        { test: /\.scss$/, loader: combineLoaders(sassLoaders) },
         { test: /\.jade$/, loader: 'jade' },
         { test: /\.html$/, loader: 'html' },
         { test: /\.json$/, loader: 'json' },
