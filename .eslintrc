@@ -11,3 +11,6 @@ rules:
     - 2
     - max: 2
   padded-blocks: 0
+
+  # Relax camelcase rule: modules and services are NOT camelcase.
+  camelcase: 0
