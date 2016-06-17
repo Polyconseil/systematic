@@ -53,6 +53,7 @@ module.exports = function (basePath, _webpackConfig) {
     webpack: webpackConfig,
     webpackMiddleware: {
       noInfo: true,
+      stats: 'errors-only',
     },
   }
 
