@@ -31,7 +31,7 @@ module.exports = function (basePath, _webpackConfig) {
       'karma-jasmine-matchers',
       'karma-jasmine-html-reporter',
       'karma-junit-reporter',
-      'karma-mocha-reporter',
+      'karma-webpack-error-reporter',
       'karma-phantomjs-launcher',
       'karma-phantomjs-shim',
       'karma-sourcemap-loader',
@@ -43,12 +43,8 @@ module.exports = function (basePath, _webpackConfig) {
       useBrowserName: false,
     },
 
-    mochaReporter: {
-      ignoreSkipped: true,
-    },
-
     browsers: ['PhantomJS'],
-    reporters: ['junit', 'mocha', 'kjhtml'],
+    reporters: ['webpack-error'],
 
     webpack: webpackConfig,
     webpackMiddleware: {

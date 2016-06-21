@@ -122,13 +122,13 @@ eslint:
 	eslint --config $(ESLINTRC) $(SRC_DIR)
 
 test: prepare syntax
-	karma start --reporters mocha --single-run --no-auto-watch karma.conf.js
+	karma start --reporters webpack-error --single-run --no-auto-watch karma.conf.js
 
 jenkins-test: prepare syntax
-	karma start  --reporters junit,mocha --single-run --no-auto-watch --no-colors karma.conf.js
+	karma start  --reporters junit,webpack-error --single-run --no-auto-watch --no-colors karma.conf.js
 
 livetest: prepare
-	karma start  --reporters mocha,kjhtml --no-single-run --devtool source-map karma.conf.js
+	karma start  --reporters webpack-error,kjhtml --no-single-run --devtool source-map karma.conf.js
 
 test-browser: prepare syntax
 	karma start --reporters kjhtml --port $(TEST_PORT) karma.conf.js
