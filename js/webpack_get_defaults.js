@@ -14,7 +14,7 @@ const config = require('./config')
 const enums = require('./config_choices')
 
 /* Global plugins collection, will be filled according to the profile */
-const plugins = [new ExtractTextPlugin('bundle.css')]
+const plugins = []
 
 /* Pre-configure loaders */
 const jsLoaders = [{
@@ -33,9 +33,18 @@ const cssLoader = {
 }
 const postcssLoader = { loader: 'postcss', query: {} }
 const sassLoader = { loader: 'sass', query: {} }
+const styleLoader = { loader: 'style', query: {} }
 
 const cssLoaders = [cssLoader, postcssLoader]
 const sassLoaders = [cssLoader, postcssLoader, sassLoader]
+
+if (config.build.type === enums.buildTypes.APPLICATION) {
+  plugins.push(new ExtractTextPlugin('bundle.css'))
+} else {
+  // Without the extract test plugin, we need the style loader
+  cssLoaders.unshift(styleLoader)
+  sassLoaders.unshift(styleLoader)
+}
 
 const PRODUCTION_MODE = (process.env.SYSTEMATIC_BUILD_MODE === 'PROD')
 
@@ -62,6 +71,17 @@ function getDependencies () {
   }
   return Object.keys(packageJson.dependencies)
 }
+
+function applyExtractText (inlinedLoaders) {
+  // Extract css only for apps
+  // We want to be able to import a lib with a single JS import
+  if (config.build.type === enums.buildTypes.APPLICATION) {
+    return ExtractTextPlugin.extract(inlinedLoaders)
+  } else {
+    return inlinedLoaders
+  }
+}
+
 
 module.exports = function (basePath) {
 
@@ -101,6 +121,8 @@ module.exports = function (basePath) {
       publicPath: buildPublicPath(), // Prefix for all the static urls
       libraryTarget: config.build.type === enums.buildTypes.LIBRARY ? 'umd' : 'var',
     },
+    // All deps of a library must be installed by the application
+    // This avoids duplicated deps and version conflicts
     externals: config.build.type === enums.buildTypes.LIBRARY ? getDependencies() : [],
     resolve: {
       // Go look for requires inside 'src' and 'node_modules'
@@ -113,10 +135,9 @@ module.exports = function (basePath) {
           loader: combineLoaders(jsLoaders),
           exclude: /(node_modules|bower_components)/,
           include: [PATHS.src],
-
         },
-        { test: /\.css/, loader: ExtractTextPlugin.extract(combineLoaders(cssLoaders)) },
-        { test: /\.scss$/, loader: ExtractTextPlugin.extract(combineLoaders(sassLoaders)) },
+        { test: /\.css/, loader: applyExtractText(combineLoaders(cssLoaders)) },
+        { test: /\.scss$/, loader: applyExtractText(combineLoaders(sassLoaders)) },
         { test: /\.jade$/, loader: 'jade' },
         { test: /\.html$/, loader: 'html' },
         { test: /\.json$/, loader: 'json' },
