@@ -41,7 +41,7 @@ const sassLoaders = [cssLoader, postcssLoader, sassLoader]
 if (config.build.type === enums.buildTypes.APPLICATION) {
   plugins.push(new ExtractTextPlugin('bundle.css'))
 } else {
-  // Without the extract test plugin, we need the style loader
+  // Without the extract text plugin, we need the style loader
   cssLoaders.unshift(styleLoader)
   sassLoaders.unshift(styleLoader)
 }
