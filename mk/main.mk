@@ -4,7 +4,7 @@ default: help
 
 NODE_BINDIR ?= ./node_modules/.bin/
 SHELL ?= /bin/bash -o pipefail
-SYSTEMATIC_PATH ?= node_modules/systematic
+SYSTEMATIC_PATH ?= node_modules/systematic/
 WEBPACK ?= ./node_modules/webpack/bin/webpack.js
 WEBPACK_DEV_SERVER ?= ./node_modules/webpack-dev-server/bin/webpack-dev-server.js
 WEBPACK_DIST_OPTS := $(if $(CI),,--progress)
@@ -50,6 +50,20 @@ SERVE_PORT := $(if $(SERVE_PORT),$(SERVE_PORT),8080)
 
 TEST_PORT ?= 8081
 
+# webpack default config
+
+ifeq ($(wildcard webpack.config.js),)
+WEBPACK_OPTIONS_CONFIG_FILE ?= --config $(SYSTEMATIC_PATH)default_configs/webpack.config.js
+endif
+
+ifeq ($(wildcard karma.conf.js),)
+KARMA_OPTIONS_CONFIG_FILE ?= $(SYSTEMATIC_PATH)default_configs/karma.conf.js
+else
+KARMA_OPTIONS_CONFIG_FILE ?= karma.conf.js
+endif
+
+WEBPACK_OPTIONS ?= $(WEBPACK_OPTIONS_CONFIG_FILE) --bail
+
 # Other variables
 
 # webpack can need more memory than the default 512mo of node
@@ -67,7 +81,7 @@ SETTINGS_INI_FILES := $(shell find $(SRC_DIR)/settings -name '*.ini' 2> /dev/nul
 ECHOPREFIX ?= $(shell tput setaf 2)--- [make]
 ECHOSUFFIX ?= $(shell tput sgr 0)
 
-include $(SYSTEMATIC_PATH)/mk/$(BUILD_PROFILE).mk
+include $(SYSTEMATIC_PATH)mk/$(BUILD_PROFILE).mk
 
 
 # Help Message
@@ -122,16 +136,16 @@ eslint:
 	eslint --config $(ESLINTRC) $(SRC_DIR)
 
 test: prepare syntax
-	karma start --reporters webpack-error --single-run --no-auto-watch karma.conf.js
+	karma start --reporters webpack-error --single-run --no-auto-watch $(KARMA_OPTIONS_CONFIG_FILE)
 
 jenkins-test: prepare syntax
-	karma start  --reporters junit,webpack-error --single-run --no-auto-watch --no-colors karma.conf.js
+	karma start  --reporters junit,webpack-error --single-run --no-auto-watch --no-colors $(KARMA_OPTIONS_CONFIG_FILE)
 
 livetest: prepare
-	karma start  --reporters webpack-error,kjhtml --no-single-run --devtool source-map karma.conf.js
+	karma start  --reporters webpack-error,kjhtml --no-single-run --devtool source-map $(KARMA_OPTIONS_CONFIG_FILE)
 
 test-browser: prepare syntax
-	karma start --reporters kjhtml --port $(TEST_PORT) karma.conf.js
+	karma start --reporters kjhtml --port $(TEST_PORT) $(KARMA_OPTIONS_CONFIG_FILE)
 
 makemessages: /tmp/template.pot
 
@@ -141,14 +155,14 @@ settings: $(OUTPUT_DIR)/app.settings.js
 serve: prepare
 	mkdir -p $(OUTPUT_DIR)
 	# TODO: Switch to webpack 2, for the --open option to work
-	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) --bail \
+	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) $(WEBPACK_OPTIONS) \
 		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host 127.0.0.1 --colors \
 		--bail --progress --output-pathinfo --devtool cheap-module-source-map --display-error-details
 
+# Don't minify because it causes issues, see https://github.com/Polyconseil/systematic/issues/13
 dist: prepare
 	mkdir -p $(OUTPUT_DIR)
-	# Minification caused issues
-	SYSTEMATIC_BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) --bail \
+	SYSTEMATIC_BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) $(WEBPACK_OPTIONS) \
 		--no-color --display-modules --optimize-dedupe --optimize-occurence-order $(WEBPACK_DIST_OPTS) # --optimize-minimize
 
 serve-dist: dist

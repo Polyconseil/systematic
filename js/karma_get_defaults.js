@@ -22,7 +22,7 @@ module.exports = function (basePath, _webpackConfig) {
     frameworks: ['jasmine', 'jasmine-matchers', 'phantomjs-shim'],
 
     files: [
-      'node_modules/babel-polyfill/dist/polyfill.js',  // polyfill if we don't include the entrypoint
+      basePath + '/node_modules/babel-polyfill/dist/polyfill.js',  // polyfill if we don't include the entrypoint
       testFiles,
     ],
 
