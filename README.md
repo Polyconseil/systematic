@@ -118,6 +118,12 @@ Value : `angular`
 
 Adds the [ng-annotate](https://github.com/olov/ng-annotate) loader.
 
+## VueJS
+
+Value : `vue`
+
+Adds translation management with the vue translation token.
+
 # Override Karma or Webpack config
 
 It's possible to override the build or test config by adding config files at the root of the projet.
