@@ -68,35 +68,9 @@ Example:
   ```
 
 
-## Config files
+## Config file
 
 * Systematic requires a `systematic.ini` configuration file in the root folder of your project. Find out all the available options in `systematic.example.ini`
-
-* Define the webpack config: create a file `webpack.config.js` at the root of the projet. Example:
-
-  ```javascript
-  // import systematic default webpack settings
-  const webpackDefaults = require('systematic').webpack_get_defaults(__dirname)
-
-  // optional overrides (an example !)
-  webpackDefaults.loader.push({ test: /\.file_extension_example$/, loaders: ['my-loader'] },)
-
-  module.exports = webpackDefaults
-  ```
-
-
-* Define the karma config: create a file `webpack.config.js` at the root of the projet. Example:
-
-  ```javascript
-  // import systematic default karma settings
-  const karmaDefaults = require('systematic').karma_get_defaults(__dirname)
-
-  // optional overrides example
-  karmaDefaults.plugins.push('my-plugin')
-
-  module.exports = karma => karma.set(karmaDefaults)
-  ```
-
 
 # Usage
 
@@ -143,6 +117,35 @@ natural `vanilla` profile.
 Value : `angular`
 
 Adds the [ng-annotate](https://github.com/olov/ng-annotate) loader.
+
+# Override Karma or Webpack config
+
+It's possible to override the build or test config by adding config files at the root of the projet.
+
+* For Webpack: `webpack.config.js`. Example :
+
+  ```javascript
+  // import systematic default webpack settings
+  const webpackDefaults = require('systematic').webpack_get_defaults(__dirname)
+
+  // optional overrides (an example !)
+  webpackDefaults.loader.push({ test: /\.file_extension_example$/, loaders: ['my-loader'] },)
+
+  module.exports = webpackDefaults
+  ```
+
+
+* For Karma: `webpack.config.js`. Example:
+
+  ```javascript
+  // import systematic default karma settings
+  const karmaDefaults = require('systematic').karma_get_defaults(__dirname)
+
+  // optional overrides example
+  karmaDefaults.plugins.push('my-plugin')
+
+  module.exports = karma => karma.set(karmaDefaults)
+  ```
 
 # License
 
