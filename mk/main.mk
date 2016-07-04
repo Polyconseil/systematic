@@ -168,7 +168,7 @@ endif
 	@echo "$(ECHOPREFIX) extracting translations $(ECHOSUFFIX)"
 	mkdir -p $(dir $@)
 	gettext-extract --quiet $(GETTEXTEXTRACT_OPTIONS) --output $@ $(GETTEXT_HTML_SOURCES)
-	xgettext --language=JavaScript --keyword=i18n --from-code=utf-8 \
+	xgettext --language=JavaScript --keyword=i18n --keyword=npgettext:1c,2,3 --from-code=utf-8 \
 		--sort-output --join-existing --no-wrap --package-name=$(PACKAGE_NAME) \
 		--package-version=$(shell node -e "console.log(require('./package.json').version);") \
 		--copyright=POLYCONSEIL --output $@ $(GETTEXT_JS_SOURCES)
