@@ -53,11 +53,11 @@ TEST_PORT ?= 8081
 # webpack default config
 
 ifeq ($(wildcard webpack.config.js),)
-WEBPACK_OPTIONS_CONFIG_FILE ?= --config $(SYSTEMATIC_PATH)default_configs/webpack.config.js
+WEBPACK_OPTIONS_CONFIG_FILE ?= --config $(SYSTEMATIC_PATH)default_config/webpack.config.js
 endif
 
 ifeq ($(wildcard karma.conf.js),)
-KARMA_OPTIONS_CONFIG_FILE ?= $(SYSTEMATIC_PATH)default_configs/karma.conf.js
+KARMA_OPTIONS_CONFIG_FILE ?= $(SYSTEMATIC_PATH)default_config/karma.conf.js
 else
 KARMA_OPTIONS_CONFIG_FILE ?= karma.conf.js
 endif
