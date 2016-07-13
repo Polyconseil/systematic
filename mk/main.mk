@@ -196,6 +196,6 @@ endif
 		msgattrib --no-wrap --no-location --no-obsolete -o $$PO_FILE $$PO_FILE; \
 	done;
 
-$(OUTPUT_DIR)/translations.json: /tmp/template.pot
+$(OUTPUT_DIR)/translations.json:
 	mkdir -p $(OUTPUT_DIR)
 	gettext-compile --output $@ $(LOCALE_FILES)
