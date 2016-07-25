@@ -154,6 +154,8 @@ settings: $(OUTPUT_DIR)/app.settings.js
 
 serve: prepare
 	mkdir -p $(OUTPUT_DIR)
+	# Link the node_modules inside the dist/ directory during serve.
+	ln -s $$(pwd)/node_modules $(OUTPUT_DIR)/node_modules
 	# TODO: Switch to webpack 2, for the --open option to work
 	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) $(WEBPACK_OPTIONS) \
 		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host 127.0.0.1 --colors \
@@ -166,6 +168,7 @@ dist: prepare
 		--no-color --display-modules --optimize-dedupe --optimize-occurence-order $(WEBPACK_DIST_OPTS) # --optimize-minimize
 
 serve-dist: dist
+	mkdir -p $(OUTPUT_DIR)
 	$(NODE_BINDIR)http-server ./$(OUTPUT_DIR) -p $(TEST_PORT) -o
 
 
