@@ -5,10 +5,11 @@ An opinionated, mostly framework-agnostic toolchain to package ES6 applications 
 **Features :**
 
   * Stay lazy: the toolchain already made the good choices for you.
-  * Full ES6/PostCSS support through carefully selected & configured Webpack plugins.
+  * Full ES6 & PostCSS support through carefully selected & configured Webpack plugins.
   * Paranoid code linting & styling with [standard](https://github.com/feross/standard)
   * Framework-agnostic, standard (GNU gettext) translation file handling.
   * Application settings management, human-editable INI files get converted into JS.
+  * Library creation, with dependencies exclusion from build
 
 
 # Installation
@@ -84,7 +85,7 @@ Systematic uses a Makefile. Get all commands with `make help`.
 ## Run tests
 
 `make test` runs all test that match the test file pattern (default `**/*tests.js`).
-`make livetest` run test continuously, when a file changes
+`make livetest` run test continuously, when a file changes.
 
 ## Translations
 
@@ -152,6 +153,13 @@ It's possible to override the build or test config by adding config files at the
 
   module.exports = karma => karma.set(karmaDefaults)
   ```
+
+# Building libraries
+
+When building a library, we don't want the dependencies included in the bundle. It can cause version conflict with other packages or duplicated library imports.
+
+Systematic will set all dependencies as webpack "externals", which means they have to be required by the app.
+
 
 # License
 
