@@ -70,7 +70,7 @@ WEBPACK_OPTIONS ?= $(WEBPACK_OPTIONS_CONFIG_FILE) --bail
 NODE_MEMORY ?= 4096
 ESLINTRC ?= ./$(SYSTEMATIC_PATH)/.eslintrc
 
-LOCALES ?= en_US en_GB es_US fr_FR it_IT
+LOCALES ?= $(call readini,$(CONF_INI),build,locales)
 LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
 
 GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' 2> /dev/null)
