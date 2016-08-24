@@ -15,8 +15,11 @@ _.defaultsDeep(systematic, {
   serve: {
     port: 8080,
   },
+})
+
+_.defaultsDeep(systematic, {
   test: {
-    file_pattern: 'src/**/*tests.js'
+    file_pattern: systematic.build.src_dir + '/**/*tests.js'
   },
 })
 

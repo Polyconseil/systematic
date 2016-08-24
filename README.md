@@ -10,6 +10,7 @@ An opinionated, mostly framework-agnostic toolchain to package ES6 applications 
   * Framework-agnostic, standard (GNU gettext) translation file handling.
   * Application settings management, human-editable INI files get converted into JS.
   * Library creation, with dependencies exclusion from build
+  * Pluggable: it's easy to add commands or override features
 
 
 # Installation
@@ -46,9 +47,66 @@ The file structure expected for your application or library.
 ```
 
 
+## Config file
+
+* Systematic requires a `systematic.ini` configuration file in the root folder of your project.
+
+  ```ini
+  [build]
+  ; Mandatory
+  ; Project type, can be application or library. An app will need an HTML entry point
+  type = library
+  ; Optional, default: vanilla
+  ; Build profile, can be angular, vue...
+  profile = vanilla
+  ; Optional, default: dist
+  ; The relative path for the build output, defaults to dist
+  output_dir = dist
+  ; Optional, default: src
+  ; The relative path to the source dir
+  src_dir = src
+  ; Optional, default: /
+  ; The path where the application will be hosted in production (eg. '/app/')
+  public_path = /
+  ; Optional, default is blank
+  ; The locales to generate translation files
+  locales = en_US en_GB
+
+  [serve]
+  ; Optional, default: 8080
+  ; The network port to access local website, if it's an app
+  port = 8080
+
+  [test]
+  ; Optional, default: <YOUR_SRC_DIR>/**/*tests.js
+  ; All files matching this pattern will be processed with karma
+  ; It is relative to the root given to the karma config, usually the project root
+  file_pattern = src/**/*tests.js
+  ```
+
+## Makefile
+
+Systematic uses GNU `make`. Create a Makefile at the root of your project, to import systematic commands:
+
+  ```makefile
+  include node_modules/systematic/mk/main.mk
+
+  # Your own commands
+  ```
+
+
 ## Entry points
 
 * The default source folder (containing your source code and tests) is `src`. It must contain an entrypoint file named `index.js`. Example:
+
+  ```javascript
+  import somelib from 'some-lib'
+  import m1 from './module1'
+  import m2 from './module1'
+
+  // Bootstrap your project here
+  somelib.bootstrap(m1, m2)
+  ```
 
 * If your project is an application, there must be an HTML entry point named `index.html` in the source folder, containing the primary page. Your JS entry point will be automatically added.
 Example:
@@ -69,13 +127,9 @@ Example:
   ```
 
 
-## Config file
-
-* Systematic requires a `systematic.ini` configuration file in the root folder of your project. Find out all the available options in `systematic.example.ini`
-
 # Usage
 
-Systematic uses a Makefile. Get all commands with `make help`.
+`make help` gives a list of all commands.
 
 ## Build
 

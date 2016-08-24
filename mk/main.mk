@@ -29,6 +29,7 @@ export NODE_PATH := $(shell pwd):$(NODE_PATH)
 # Variables customizable through systematic.ini
 
 BUILD_PROFILE ?= $(call readini,$(CONF_INI),build,profile)
+BUILD_PROFILE := $(if $(BUILD_PROFILE),$(BUILD_PROFILE),vanilla)
 BUILD_TYPE ?= $(call readini,$(CONF_INI),build,type)
 PACKAGE_NAME ?= $(call read_package,name)
 
