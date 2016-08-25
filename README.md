@@ -136,7 +136,7 @@ It's possible to override the build or test config by adding config files at the
   const webpackDefaults = require('systematic').webpack_get_defaults(__dirname)
 
   // optional overrides (an example !)
-  webpackDefaults.loader.push({ test: /\.file_extension_example$/, loaders: ['my-loader'] },)
+  webpackDefaults.module.loaders.push({ test: /\.file_extension_example$/, loader: 'my-loader' })
 
   module.exports = webpackDefaults
   ```
