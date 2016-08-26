@@ -157,7 +157,7 @@ serve: prepare
 	# TODO: Switch to webpack 2, for the --open option to work
 	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) $(WEBPACK_OPTIONS) \
 		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host 127.0.0.1 --colors \
-		--bail --progress --output-pathinfo --devtool cheap-module-source-map --display-error-details
+		--bail --progress --output-pathinfo --display-error-details
 
 # Don't minify because it causes issues, see https://github.com/Polyconseil/systematic/issues/13
 dist: prepare
