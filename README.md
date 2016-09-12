@@ -196,7 +196,7 @@ It's possible to override the build or test config by adding config files at the
   ```
 
 
-* For Karma: `webpack.config.js`. Example:
+* For Karma: `karma.conf.js`. Example:
 
   ```javascript
   // import systematic default karma settings
