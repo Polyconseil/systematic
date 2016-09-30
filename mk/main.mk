@@ -108,7 +108,6 @@ The following commands are available.
     test                    Runs a single run of the tests and syntax.
     livetest                Runs continous tests with complete source maps, without syntax check.
     jenkins-test            Runs tests on jenkins.
-    test-browser            Spawns a server that you can access from any browser.
 
 endef
 
@@ -144,9 +143,6 @@ jenkins-test: prepare syntax
 
 livetest: prepare
 	karma start  --reporters webpack-error,kjhtml --no-single-run --devtool source-map $(KARMA_OPTIONS_CONFIG_FILE)
-
-test-browser: prepare syntax
-	karma start --reporters kjhtml --port $(TEST_PORT) $(KARMA_OPTIONS_CONFIG_FILE)
 
 makemessages: /tmp/template.pot
 
