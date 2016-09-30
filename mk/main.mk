@@ -98,7 +98,7 @@ The following commands are available.
 
     update                  Update node packages locally
     makemessages            Extract translation tokens from JS, Jade & HTML files.
-    prepare                 Execute all pre-build actions (translations, settings...)
+    prepare                 Execute all pre-build actions (translations, settings)
 
     serve                   Build in development mode, serve and watch.
     serve-dist              Bundles the package for distribution and serves it.
