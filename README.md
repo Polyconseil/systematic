@@ -156,12 +156,11 @@ import translations from 'dist/translations.json'`
 ## Settings
 
 `make settings` generates a file `dist/app.settings.js` from all INI files in `src/settings/` if your project is an application.
-Settings are added in alphabetical order, the last one overriding the previous. It is automatically run with `serve`, `dist` and `test`.
+Settings files are processed in alphabetical order, the last one overriding the previous. It is automatically run with `serve`, `dist` and `test`.
 
 **The generated file `dist/app.settings.js` needs to be included in your index.html, since it will not be added by Webpack.**
 
-After the app is deployed, you might want to change the settings. This part is not handled by systematic, but we recommand to regenerate
-the settings from INI files.
+After the app is deployed, you might want to change the settings. This part is not handled by systematic, but we recommand to regenerate the settings from INI files.
 INI files are an ideal format, as it is not error prone, ensures only settings values are changed and no javascript is added.
 
 # Build profiles
