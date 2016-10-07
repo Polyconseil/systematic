@@ -216,6 +216,14 @@ When building a library, we don't want the dependencies included in the bundle. 
 Systematic will set all dependencies as webpack "externals", which means they have to be required by the app.
 
 
+# Troubleshooting
+
+## Webpack's livereload is not working properly
+
+You should probably allow more watchers on your machine, see how [on webpack's
+doc](https://webpack.github.io/docs/troubleshooting.html#not-enough-watchers).
+
+
 # License
 
 MIT
