@@ -136,6 +136,10 @@ Example:
 `make serve` to run a local server.
 `make dist` for a prod build.
 
+If you notice that webpack's livereload feature is not working correctly, you
+should probably allow more watchers on your machine, see how [on webpack's
+doc](https://webpack.github.io/docs/troubleshooting.html#not-enough-watchers).
+
 ## Run tests
 
 `make test` runs all test that match the test file pattern (default `**/*tests.js`).
