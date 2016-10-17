@@ -136,10 +136,6 @@ Example:
 `make serve` to run a local server.
 `make dist` for a prod build.
 
-If you notice that webpack's livereload feature is not working correctly, you
-should probably allow more watchers on your machine, see how [on webpack's
-doc](https://webpack.github.io/docs/troubleshooting.html#not-enough-watchers).
-
 ## Run tests
 
 `make test` runs all test that match the test file pattern (default `**/*tests.js`).
@@ -218,6 +214,14 @@ It's possible to override the build or test config by adding config files at the
 When building a library, we don't want the dependencies included in the bundle. It can cause version conflict with other packages or duplicated library imports.
 
 Systematic will set all dependencies as webpack "externals", which means they have to be required by the app.
+
+
+# Troubleshooting
+
+## Webpack's livereload is not working properly
+
+You should probably allow more watchers on your machine, see how [on webpack's
+doc](https://webpack.github.io/docs/troubleshooting.html#not-enough-watchers).
 
 
 # License
