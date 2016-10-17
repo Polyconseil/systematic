@@ -32,12 +32,16 @@ BUILD_PROFILE ?= $(call readini,$(CONF_INI),build,profile)
 BUILD_PROFILE := $(if $(BUILD_PROFILE),$(BUILD_PROFILE),vanilla)
 BUILD_TYPE ?= $(call readini,$(CONF_INI),build,type)
 PACKAGE_NAME ?= $(call read_package,name)
+PACKAGE_AUTHOR ?= $(call read_package,author)
 
 ifeq ($(BUILD_PROFILE),)
 $(error Please define a build.profile in $(CONF_INI))
 endif
 ifeq ($(PACKAGE_NAME),)
 $(error Please define a package name in $(CONF_INI))
+endif
+ifeq ($(PACKAGE_AUTHOR),)
+$(error Please define a package author in package.json (used in translation files))
 endif
 
 SRC_DIR := $(call readini,$(CONF_INI),build,src_dir)
@@ -183,7 +187,7 @@ endif
 	xgettext --language=JavaScript --keyword=i18n --keyword=npgettext:1c,2,3 --from-code=utf-8 \
 		--sort-output --join-existing --no-wrap --package-name=$(PACKAGE_NAME) \
 		--package-version=$(shell node -e "console.log(require('./package.json').version);") \
-		--copyright=POLYCONSEIL --output $@ $(GETTEXT_JS_SOURCES)
+		--copyright="$(PACKAGE_AUTHOR)" --output $@ $(GETTEXT_JS_SOURCES)
 	# Remove comments
 	sed -i.bak '/^#:/ d' $@ && rm $@.bak
 	@for lang in $(LOCALES); do \
