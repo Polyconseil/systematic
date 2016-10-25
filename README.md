@@ -143,7 +143,7 @@ Example:
 
 ## Translations
 
-`make makemessages` generates translations using [easygettext](https://github.com/Polyconseil/easygettext).
+`make makemessages` extract translations from your HTML and JS files using [easygettext](https://github.com/Polyconseil/easygettext).
 The resulting `.po` files will be in `/locale`.
 
 `make translations` generates a JSON file from them, located at dist/translations.json`. It is automatically run with `serve`, `dist` and `test`.
