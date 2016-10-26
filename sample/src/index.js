@@ -43,14 +43,8 @@ function createMapElement (id) {
 // Init raw leaflet map (no tiles yet)
 createMapElement(MAP_DIV_ID)
 
-let map = new L.Map(MAP_DIV_ID, {
-  maxZoom: MAP_SETTINGS.maxZoom,
-  minZoom: MAP_SETTINGS.minZoom,
-  zoomControl: MAP_SETTINGS.zoomControl,
-  scrollWheelZoom: MAP_SETTINGS.scrollWheelZoom,
-  attributionControl: MAP_SETTINGS.attributionControl,
-  fadeAnimation: MAP_SETTINGS.fadeAnimation,
-})
+// Override minZoom by using the spread operator (for example purpose)
+let map = new L.Map(MAP_DIV_ID, {minZoom: 1, ...MAP_SETTINGS})
 
 let parisLatLng = [48.859, 2.341]
 map.setView(parisLatLng, 12)

@@ -20,7 +20,7 @@ const plugins = []
 const jsLoaders = [{
   loader: 'babel',
   query: {
-    presets: ['es2015'],
+    presets: ['es2015', 'stage-3'],
     plugins: ['transform-strict-mode'],
   },
 }]
