@@ -8,7 +8,7 @@ module.exports = function (basePath, _webpackConfig) {
   const webpackConfig = _webpackConfig || require('./webpack_get_defaults')(basePath)
 
   // Inline source maps, without columns & simple sourcemaps for loaders
-  webpackConfig.devtool = 'cheap-module-inline-source-map'
+  webpackConfig.devtool = 'inline-source-map'
   webpackConfig.entry = {}  // Reset the webpack entry point, test files are added separatly by karma-webpack
   webpackConfig.externals = []  // Keep all the dependencies during the tests
 
