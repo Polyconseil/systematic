@@ -59,7 +59,7 @@ if (PRODUCTION_MODE) {
 
 function buildPublicPath () {
   if (PRODUCTION_MODE) return `${config.build.public_path}`
-  else return `http://127.0.0.1:${config.serve.port}/`
+  else return `http://${config.serve.host}:${config.serve.port}/`
 }
 
 function getDependencies () {

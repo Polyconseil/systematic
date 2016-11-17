@@ -50,6 +50,9 @@ SRC_DIR := $(if $(SRC_DIR),$(SRC_DIR),src)
 OUTPUT_DIR := $(call readini,$(CONF_INI),build,output_dir)
 OUTPUT_DIR := $(if $(OUTPUT_DIR),$(OUTPUT_DIR),dist)
 
+SERVE_HOST := $(call readini,$(CONF_INI),serve,host)
+SERVE_HOST := $(if $(SERVE_HOST),$(SERVE_HOST),127.0.0.1)
+
 SERVE_PORT := $(call readini,$(CONF_INI),serve,port)
 SERVE_PORT := $(if $(SERVE_PORT),$(SERVE_PORT),8080)
 
@@ -157,7 +160,7 @@ serve: prepare
 	mkdir -p $(OUTPUT_DIR)
 	# TODO: Switch to webpack 2, for the --open option to work
 	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) $(WEBPACK_OPTIONS) \
-		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host 127.0.0.1 --colors \
+		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host $(SERVE_HOST) --colors \
 		--bail --progress --output-pathinfo --display-error-details
 
 # Don't minify because it causes issues, see https://github.com/Polyconseil/systematic/issues/13

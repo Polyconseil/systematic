@@ -73,6 +73,8 @@ The file structure expected for your application or library.
   locales = en_US en_GB
 
   [serve]
+  ; Interface to listen
+  host = 127.0.0.1
   ; Optional, default: 8080
   ; The network port to access local website, if it's an app
   port = 8080
