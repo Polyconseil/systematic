@@ -21,7 +21,7 @@ const jsLoaders = [{
   loader: 'babel',
   query: {
     presets: ['es2015', 'stage-3'],
-    plugins: ['transform-strict-mode'],
+    plugins: ['transform-strict-mode', 'es6-promise'],
   },
 }]
 
