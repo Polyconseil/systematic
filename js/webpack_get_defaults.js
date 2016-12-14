@@ -17,13 +17,41 @@ const enums = require('./config_choices')
 const plugins = []
 
 /* Pre-configure loaders */
-const jsLoaders = [{
-  loader: 'babel',
-  query: {
-    presets: ['es2015', 'stage-3'],
-    plugins: ['transform-strict-mode'],
-  },
-}]
+
+var defaultBabelPresets = ['es2015', 'stage-3']
+
+function getCommonJsLoaders (babelPresets) {
+  return [{
+    loader: 'babel',
+    query: {
+      presets: babelPresets,
+      plugins: ['transform-strict-mode'],
+    },
+  }]
+}
+
+function buildJsLoaders (profile, babelPresets) {
+  switch (profile) {
+    case 'angular':
+      var commonJsLoaders = getCommonJsLoaders(babelPresets)
+      commonJsLoaders.push({
+        loader: 'ng-annotate',
+        query: {
+          es6: true,
+          map: true,
+        },
+      })
+      return commonJsLoaders
+      break
+
+    case 'react':
+      babelPresets.unshift('react')
+      return getCommonJsLoaders(babelPresets)
+      break
+  }
+}
+
+const jsLoaders = buildJsLoaders(config.build.profile, defaultBabelPresets)
 
 const cssLoader = {
   loader: 'css',
@@ -159,7 +187,7 @@ module.exports = function (basePath) {
     module: {
       loaders: [
         {
-          test: /\.js/,
+          test: /\.(js|jsx)/,
           loader: combineLoaders(jsLoaders),
           exclude: /(node_modules|bower_components)/,
           include: [PATHS.src],
