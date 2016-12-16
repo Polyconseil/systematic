@@ -54,7 +54,7 @@ The file structure expected for your application or library.
   ```ini
   [build]
   ; Mandatory
-  ; Project type, can be application or library. An app will need an HTML entry point
+  ; Project type, can be application, component or library. An app will need an HTML entry point
   type = library
   ; Optional, default: vanilla
   ; Build profile, can be angular, vue...
@@ -210,6 +210,11 @@ It's possible to override the build or test config by adding config files at the
 
   module.exports = karma => karma.set(karmaDefaults)
   ```
+
+# Building components
+
+A component is halfway between a library and an application. You get to have an index.html page that is useful for development, but the dependencies
+aren't bundled with the final package, just like a library.
 
 # Building libraries
 

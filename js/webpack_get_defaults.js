@@ -31,6 +31,7 @@ const cssLoader = {
     localIdentName: '[path][name]__[local]__[hash:base64:5]',
   },
 }
+
 const postcssLoader = { loader: 'postcss', query: {} }
 const sassLoader = { loader: 'sass', query: {} }
 const styleLoader = { loader: 'style', query: {} }
@@ -38,14 +39,7 @@ const styleLoader = { loader: 'style', query: {} }
 const cssLoaders = [cssLoader, postcssLoader]
 const sassLoaders = [cssLoader, postcssLoader, sassLoader]
 
-if (config.build.type === enums.buildTypes.APPLICATION) {
-  plugins.push(new ExtractTextPlugin('bundle.css'))
-} else {
-  // Without the extract text plugin, we need the style loader
-  cssLoaders.unshift(styleLoader)
-  sassLoaders.unshift(styleLoader)
-}
-
+/* Differentiate plugins & loaders depending on the profile, mode, and type */
 const PRODUCTION_MODE = (process.env.SYSTEMATIC_BUILD_MODE === 'PROD')
 
 // css sourceMap option breaks relative url imports
@@ -55,6 +49,58 @@ const PRODUCTION_MODE = (process.env.SYSTEMATIC_BUILD_MODE === 'PROD')
 if (PRODUCTION_MODE) {
   cssLoaders.forEach(function (loader) { loader.query.sourceMap = true })
   sassLoaders.forEach(function (loader) { loader.query.sourceMap = true })
+}
+
+
+switch(config.build.type) {
+  case enums.buildTypes.APPLICATION:
+  case enums.buildTypes.COMPONENT:
+    // applications & components need CSS extraction, also an index page and potentially favicon.
+    plugins.push(new ExtractTextPlugin('bundle.css'))
+    const indexHtmlPath = path.join(config.build.src_dir, 'index.html')
+    if (fs.existsSync(indexHtmlPath)) {
+      const htmlPluginProperties = {
+        inject: true,
+        filename: 'index.html',
+        template: indexHtmlPath,
+      }
+
+      const faviconPath = path.join(config.build.src_dir, 'favicon.ico')
+      if (fs.existsSync(faviconPath)) {
+        htmlPluginProperties.favicon = faviconPath
+      }
+
+      plugins.push(new HtmlPlugin(htmlPluginProperties))
+    }
+    break
+  default:
+    // Without the extract text plugin, we need the style loader
+    cssLoaders.unshift(styleLoader)
+    sassLoaders.unshift(styleLoader)
+    break
+}
+
+// TODO: Manage the conditions using plugins.
+if (config.build.profile === 'angular') {
+  jsLoaders.push({
+    loader: 'ng-annotate',
+    query: {
+      es6: true,
+      map: true,
+    },
+  })
+}
+
+function applyExtractText (inlinedLoaders) {
+  // Extract css only for apps
+  // We want to be able to import a lib with a single JS import
+  switch (config.build.type) {
+    case enums.buildTypes.APPLICATION:
+    case enums.buildTypes.COMPONENT:
+      return ExtractTextPlugin.extract(inlinedLoaders)
+    default:
+      return inlinedLoaders
+  }
 }
 
 function buildPublicPath () {
@@ -72,13 +118,20 @@ function getDependencies () {
   return Object.keys(packageJson.dependencies)
 }
 
-function applyExtractText (inlinedLoaders) {
-  // Extract css only for apps
-  // We want to be able to import a lib with a single JS import
-  if (config.build.type === enums.buildTypes.APPLICATION) {
-    return ExtractTextPlugin.extract(inlinedLoaders)
-  } else {
-    return inlinedLoaders
+function getExternals () {
+  // All deps of a library or component must be installed or available in the application context.
+  // This avoids duplicated deps and version conflicts
+  switch (config.build.type) {
+    case enums.buildTypes.COMPONENT:
+      if (PRODUCTION_MODE) {
+        return getDependencies()
+      } else {
+        return []
+      }
+    case enums.buildTypes.LIBRARY:
+      return getDependencies()
+    default:
+      return []
   }
 }
 
@@ -88,27 +141,6 @@ module.exports = function (basePath) {
   const PATHS = {
     src: path.join(basePath, config.build.src_dir),
     dist: path.join(basePath, config.build.output_dir),
-  }
-
-  // TODO: Manage the conditions using plugins.
-  if (config.build.profile === 'angular') {
-    jsLoaders.push({
-      loader: 'ng-annotate',
-      query: {
-        es6: true,
-        map: true,
-      },
-    })
-  }
-  if (config.build.type === enums.buildTypes.APPLICATION) {
-    const indexHtmlPath = path.join(config.build.src_dir, 'index.html')
-    if (fs.existsSync(indexHtmlPath)) {
-      plugins.push(new HtmlPlugin({
-        inject: true,
-        filename: 'index.html',
-        template: indexHtmlPath,
-      }))
-    }
   }
 
   return {
@@ -121,12 +153,9 @@ module.exports = function (basePath) {
       publicPath: buildPublicPath(), // Prefix for all the static urls
       libraryTarget: config.build.type === enums.buildTypes.LIBRARY ? 'umd' : 'var',
     },
-    // All deps of a library must be installed by the application
-    // This avoids duplicated deps and version conflicts
-    externals: config.build.type === enums.buildTypes.LIBRARY ? getDependencies() : [],
+    externals: getExternals(),
     resolve: {
-      // Go look for requires inside 'src' and 'node_modules'
-      root: [path.resolve(basePath), path.join(basePath, 'node_modules')],
+      root: [path.resolve(basePath), path.join(basePath, 'node_modules')],  // look for requires inside 'src' and 'node_modules'
     },
     module: {
       loaders: [
