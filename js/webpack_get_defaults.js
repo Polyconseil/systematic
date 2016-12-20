@@ -51,7 +51,6 @@ if (PRODUCTION_MODE) {
   sassLoaders.forEach(function (loader) { loader.query.sourceMap = true })
 }
 
-
 switch(config.build.type) {
   case enums.buildTypes.APPLICATION:
   case enums.buildTypes.COMPONENT:
@@ -178,6 +177,14 @@ module.exports = function (basePath) {
     devtool: 'source-map',  // A source map will be emitted.
     sassLoader: {
       includePaths: [path.join(basePath, 'node_modules')],
+    },
+    postcss: function () {
+      return [
+        require('postcss-cssnext'),
+        require('postcss-import')({  // This plugin enables @import rule in CSS files.
+          path: [basePath],  // Use the same path for CSS and JS imports
+        }),
+      ]
     },
   }
 }
