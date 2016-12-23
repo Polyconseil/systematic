@@ -1,6 +1,6 @@
 {
   "name": "systematic",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "main": "./index.js",
   "description": "Simple tooling for frontend apps",
   "publishConfig": {
