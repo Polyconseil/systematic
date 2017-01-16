@@ -18,40 +18,36 @@ const plugins = []
 
 /* Pre-configure loaders */
 
-var defaultBabelPresets = ['es2015', 'stage-3']
 
-function getCommonJsLoaders (babelPresets) {
-  return [{
+function buildJsLoaders (profile) {
+
+  const loaders = [{
     loader: 'babel',
     query: {
-      presets: babelPresets,
+      presets: ['es2015', 'stage-3'],
       plugins: ['transform-strict-mode'],
     },
   }]
-}
 
-function buildJsLoaders (profile, babelPresets) {
   switch (profile) {
     case 'angular':
-      var commonJsLoaders = getCommonJsLoaders(babelPresets)
-      commonJsLoaders.push({
+      loaders.push({
         loader: 'ng-annotate',
         query: {
           es6: true,
           map: true,
         },
       })
-      return commonJsLoaders
       break
-
     case 'react':
-      babelPresets.unshift('react')
-      return getCommonJsLoaders(babelPresets)
+      loaders[0].query.presets.unshift('react')
       break
   }
+
+  return loaders
 }
 
-const jsLoaders = buildJsLoaders(config.build.profile, defaultBabelPresets)
+const jsLoaders = buildJsLoaders(config.build.profile)
 
 const cssLoader = {
   loader: 'css',
@@ -79,7 +75,7 @@ if (PRODUCTION_MODE) {
   sassLoaders.forEach(function (loader) { loader.query.sourceMap = true })
 }
 
-switch(config.build.type) {
+switch (config.build.type) {
   case enums.buildTypes.APPLICATION:
   case enums.buildTypes.COMPONENT:
     // applications & components need CSS extraction, also an index page and potentially favicon.
