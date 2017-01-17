@@ -131,6 +131,21 @@ function buildPublicPath () {
   else return `http://${config.serve.host}:${config.serve.port}/`
 }
 
+function libraryTarget () {
+  switch (config.build.type) {
+    case enums.buildTypes.COMPONENT:
+      if (PRODUCTION_MODE) {
+        return 'umd'
+      } else {
+        return 'var'
+      }
+    case enums.buildTypes.LIBRARY:
+      return 'umd'
+    default:
+      return 'var'
+  }
+}
+
 function getDependencies () {
   let packageJson
   try {
@@ -174,7 +189,7 @@ module.exports = function (basePath) {
       pathinfo: true,
       filename: config.build.type === enums.buildTypes.APPLICATION ? 'bundle.js' : 'index.js',
       publicPath: buildPublicPath(), // Prefix for all the static urls
-      libraryTarget: config.build.type === enums.buildTypes.LIBRARY ? 'umd' : 'var',
+      libraryTarget: libraryTarget(),
     },
     externals: getExternals(),
     resolve: {
