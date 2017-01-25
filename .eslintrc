@@ -1,5 +1,7 @@
 ---
-extends: standard
+extends:
+  - standard
+  - standard-jsx
 env:
   jasmine: true
   browser: true
