@@ -5,126 +5,15 @@
 const fs = require('fs')
 const path = require('path')
 
-// TODO(vperron): Terrible to require this for the 5 lines this plugin is.
-const combineLoaders = require('webpack-combine-loaders')
+const webpack = require('webpack')
+
 const HtmlPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const config = require('./config')
 const enums = require('./config_choices')
 
-/* Global plugins collection, will be filled according to the profile */
-const plugins = []
-
-/* Pre-configure loaders */
-
-
-function buildJsLoaders (profile) {
-
-  const loaders = [{
-    loader: 'babel',
-    query: {
-      presets: ['es2015', 'stage-3'],
-      plugins: ['transform-strict-mode'],
-    },
-  }]
-
-  switch (profile) {
-    case 'angular':
-      loaders.push({
-        loader: 'ng-annotate',
-        query: {
-          es6: true,
-          map: true,
-        },
-      })
-      break
-    case 'react':
-      loaders[0].query.presets.unshift('react')
-      break
-  }
-
-  return loaders
-}
-
-const jsLoaders = buildJsLoaders(config.build.profile)
-
-const cssLoader = {
-  loader: 'css',
-  query: {
-    localIdentName: '[path][name]__[local]__[hash:base64:5]',
-  },
-}
-
-const postcssLoader = { loader: 'postcss', query: {} }
-const sassLoader = { loader: 'sass', query: {} }
-const styleLoader = { loader: 'style', query: {} }
-
-const cssLoaders = [cssLoader, postcssLoader]
-const sassLoaders = [cssLoader, postcssLoader, sassLoader]
-
-/* Differentiate plugins & loaders depending on the profile, mode, and type */
 const PRODUCTION_MODE = (process.env.SYSTEMATIC_BUILD_MODE === 'PROD')
-
-// css sourceMap option breaks relative url imports
-// In dev, the workaround is a full URL path through the output.publicPath option
-// In prod, css source maps are disabled
-// FIXME: remove when this fix is released: https://github.com/webpack/style-loader/pull/96
-if (PRODUCTION_MODE) {
-  cssLoaders.forEach(function (loader) { loader.query.sourceMap = true })
-  sassLoaders.forEach(function (loader) { loader.query.sourceMap = true })
-}
-
-switch (config.build.type) {
-  case enums.buildTypes.APPLICATION:
-  case enums.buildTypes.COMPONENT:
-    // applications & components need CSS extraction, also an index page and potentially favicon.
-    plugins.push(new ExtractTextPlugin('bundle.css'))
-    const indexHtmlPath = path.join(config.build.src_dir, 'index.html')
-    if (fs.existsSync(indexHtmlPath)) {
-      const htmlPluginProperties = {
-        inject: true,
-        filename: 'index.html',
-        template: indexHtmlPath,
-      }
-
-      const faviconPath = path.join(config.build.src_dir, 'favicon.ico')
-      if (fs.existsSync(faviconPath)) {
-        htmlPluginProperties.favicon = faviconPath
-      }
-
-      plugins.push(new HtmlPlugin(htmlPluginProperties))
-    }
-    break
-  default:
-    // Without the extract text plugin, we need the style loader
-    cssLoaders.unshift(styleLoader)
-    sassLoaders.unshift(styleLoader)
-    break
-}
-
-// TODO: Manage the conditions using plugins.
-if (config.build.profile === 'angular') {
-  jsLoaders.push({
-    loader: 'ng-annotate',
-    query: {
-      es6: true,
-      map: true,
-    },
-  })
-}
-
-function applyExtractText (inlinedLoaders) {
-  // Extract css only for apps
-  // We want to be able to import a lib with a single JS import
-  switch (config.build.type) {
-    case enums.buildTypes.APPLICATION:
-    case enums.buildTypes.COMPONENT:
-      return ExtractTextPlugin.extract(inlinedLoaders)
-    default:
-      return inlinedLoaders
-  }
-}
 
 function buildPublicPath () {
   if (PRODUCTION_MODE) return `${config.build.public_path}`
@@ -174,11 +63,141 @@ function getExternals () {
 }
 
 
+function getOutputFileName () {
+  let name = 'index.js'
+  if (config.build.type === enums.buildTypes.APPLICATION) {
+    name = 'bundle.js'
+    if (PRODUCTION_MODE) {
+      name = `${name}.[hash].js`
+    }
+  }
+  return name
+}
+
+function buildJsLoaders (profile) {
+  const loaders = [{loader: 'babel-loader'}]
+  switch (profile) {
+    case 'angular':
+      loaders.push({
+        loader: 'ng-annotate',
+        query: {
+          es6: true,
+          map: true,
+        },
+      })
+      break
+    case 'react':
+      loaders[0].query.presets.unshift('react')
+      break
+  }
+  return loaders
+}
+
+function configureHTMLPlugin () {
+  const indexHtmlPath = path.join(config.build.src_dir, 'index.html')
+  if (fs.existsSync(indexHtmlPath)) {
+    const htmlPluginProperties = {
+      inject: true,
+      filename: 'index.html',
+      template: indexHtmlPath,
+    }
+    const faviconPath = path.join(config.build.src_dir, 'favicon.ico')
+    if (fs.existsSync(faviconPath)) {
+      htmlPluginProperties.favicon = faviconPath
+    }
+    return new HtmlPlugin(htmlPluginProperties)
+  }
+}
+
+
+
 module.exports = function (basePath) {
 
   const PATHS = {
     src: path.join(basePath, config.build.src_dir),
     dist: path.join(basePath, config.build.output_dir),
+  }
+  const plugins = [
+    new webpack.LoaderOptionsPlugin({
+      debug: true,
+      options: {
+        context: basePath,
+        babel: {
+          presets: [['es2015', { "loose": true, "modules": false }], 'stage-3'],
+          plugins: ['transform-strict-mode'],
+          comments: false
+        }
+      }
+    }),
+  ]
+  const jsLoaders = buildJsLoaders(config.build.profile)
+  const cssLoader = {
+    loader: 'css-loader',
+    options: {
+      localIdentName: '[path][name]__[local]--[hash:base64:5]'
+    }
+  }
+  const postCssLoader = {
+    loader: 'postcss-loader',
+    options: {
+      plugins: function () {
+        return [
+          require('postcss-cssnext'),
+          require('postcss-import')({  // This plugin enables @import rule in CSS files.
+            path: [basePath],  // Use the same path for CSS and JS imports
+          }),
+        ]
+      }
+    }
+  }
+  const sassLoader = {
+    loader: 'sass-loader', options: {
+      includePaths: [
+        path.join(basePath, 'node_modules'),
+      ],
+    }
+  }
+
+  let extractCSS = null
+
+  switch (config.build.type) {
+    case enums.buildTypes.APPLICATION:
+      if (PRODUCTION_MODE) {
+        extractCSS = new ExtractTextPlugin('bundle.[contenthash].css')
+      } else {
+        extractCSS = new ExtractTextPlugin('bundle.css')
+      }
+      plugins.push(extractCSS)
+      plugins.push(configureHTMLPlugin())
+      break
+
+    case enums.buildTypes.COMPONENT:
+      plugins.push(extractCSS)
+      plugins.push(configureHTMLPlugin())
+      break
+
+    default:
+      cssLoaders.unshift(styleLoader)
+      sassLoaders.unshift(styleLoader)
+      break
+  }
+
+  switch (config.build.profile) {
+    case 'angular':
+      jsLoaders.push({
+        loader: 'ng-annotate-loader',
+        query: {
+          es6: true,
+          map: true,
+        },
+      })
+      break
+  }
+
+  if (PRODUCTION_MODE) {
+    plugins.push(new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true,
+    }))
   }
 
   return {
@@ -187,43 +206,46 @@ module.exports = function (basePath) {
     output: {
       path: PATHS.dist,
       pathinfo: true,
-      filename: config.build.type === enums.buildTypes.APPLICATION ? 'bundle.js' : 'index.js',
+      filename: getOutputFileName(),
       publicPath: buildPublicPath(), // Prefix for all the static urls
       libraryTarget: libraryTarget(),
     },
     externals: getExternals(),
     resolve: {
-      root: [path.resolve(basePath), path.join(basePath, 'node_modules')],  // look for requires inside 'src' and 'node_modules'
+      modules: [
+        path.resolve(basePath),
+        path.join(basePath, 'node_modules')
+      ],
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.(js|jsx)/,
-          loader: combineLoaders(jsLoaders),
+          use: jsLoaders,
           exclude: /(node_modules|bower_components)/,
           include: [PATHS.src],
         },
-        { test: /\.css/, loader: applyExtractText(combineLoaders(cssLoaders)) },
-        { test: /\.scss$/, loader: applyExtractText(combineLoaders(sassLoaders)) },
-        { test: /\.jade$/, loader: 'jade' },
-        { test: /\.html$/, loader: 'html' },
-        { test: /\.json$/, loader: 'json' },
-        { test: /\.(png|gif|jp(e)?g)$/, loader: 'url?limit=50000' },
-        { test: /\.(ttf|eot|svg|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?limit=50000' },
+        {
+          test: /\.css/,
+          use: extractCSS.extract({
+            loader:[cssLoader, postCssLoader],
+            fallbackLoader: 'style-loader',
+          })
+        },
+        {
+          test: /\.scss$/,
+          use: extractCSS.extract({
+            loader:[cssLoader, postCssLoader, sassLoader],
+            fallbackLoader: 'style-loader',
+          })
+        },
+        { test: /\.jade$/, loader: 'jade-loader' },
+        { test: /\.html$/, loader: 'html-loader' },
+        { test: /\.(png|gif|jp(e)?g)$/, loader: 'url-loader?limit=50000' },
+        { test: /\.(ttf|eot|svg|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=50000' },
       ],
     },
     plugins: plugins,
     devtool: 'source-map',  // A source map will be emitted.
-    sassLoader: {
-      includePaths: [path.join(basePath, 'node_modules')],
-    },
-    postcss: function () {
-      return [
-        require('postcss-cssnext'),
-        require('postcss-import')({  // This plugin enables @import rule in CSS files.
-          path: [basePath],  // Use the same path for CSS and JS imports
-        }),
-      ]
-    },
   }
 }

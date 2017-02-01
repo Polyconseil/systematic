@@ -9,7 +9,7 @@ module.exports = function (basePath, _webpackConfig) {
 
   // Inline source maps, without columns & simple sourcemaps for loaders
   webpackConfig.devtool = 'inline-source-map'
-  webpackConfig.entry = {}  // Reset the webpack entry point, test files are added separatly by karma-webpack
+  webpackConfig.entry = function(){return {}}  // Reset the webpack entry point, test files are added separatly by karma-webpack
   webpackConfig.externals = []  // Keep all the dependencies during the tests
 
   const testFiles = path.join(basePath, systematicConfig.test.file_pattern)

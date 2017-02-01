@@ -161,13 +161,13 @@ serve: prepare
 	# TODO: Switch to webpack 2, for the --open option to work
 	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) $(WEBPACK_OPTIONS) \
 		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host $(SERVE_HOST) --colors \
-		--bail --progress --output-pathinfo --display-error-details
+		--bail --progress --output-pathinfo
 
 # Don't minify because it causes issues, see https://github.com/Polyconseil/systematic/issues/13
 dist: prepare
 	mkdir -p $(OUTPUT_DIR)
 	SYSTEMATIC_BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) $(WEBPACK_OPTIONS) \
-		--no-color --display-modules --optimize-dedupe --optimize-occurence-order $(WEBPACK_DIST_OPTS) # --optimize-minimize
+		--no-color --display-modules $(WEBPACK_DIST_OPTS) --optimize-minimize
 
 serve-dist: dist
 	mkdir -p $(OUTPUT_DIR)
