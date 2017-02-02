@@ -142,10 +142,10 @@ module.exports = function (basePath) {
     options: {
       plugins: function () {
         return [
-          require('postcss-cssnext'),
           require('postcss-import')({  // This plugin enables @import rule in CSS files.
             path: [basePath],  // Use the same path for CSS and JS imports
           }),
+          require('postcss-cssnext'),
         ]
       }
     }
