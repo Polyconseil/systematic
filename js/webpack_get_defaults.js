@@ -172,13 +172,14 @@ module.exports = function (basePath) {
       break
 
     case enums.buildTypes.COMPONENT:
+      extractCSS = new ExtractTextPlugin('bundle.css')
       plugins.push(extractCSS)
       plugins.push(configureHTMLPlugin())
       break
 
-    default:
-      cssLoaders.unshift(styleLoader)
-      sassLoaders.unshift(styleLoader)
+    case enums.buildTypes.LIBRARY:
+      extractCSS = new ExtractTextPlugin('bundle.css')
+      plugins.push(extractCSS)
       break
   }
 
