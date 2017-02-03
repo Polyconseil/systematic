@@ -86,9 +86,6 @@ function buildJsLoaders (profile) {
         },
       })
       break
-    case 'react':
-      loaders[0].query.presets.unshift('react')
-      break
   }
   return loaders
 }
@@ -109,6 +106,18 @@ function configureHTMLPlugin () {
   }
 }
 
+function buildBabelPresets (profile) {
+  const presets = [
+    ['es2015', { 'loose': true, 'modules': false }],
+    'stage-3',
+  ]
+  switch (profile) {
+    case 'react':
+      presets.unshift('react')
+      break
+  }
+  return presets
+}
 
 
 module.exports = function (basePath) {
@@ -123,7 +132,7 @@ module.exports = function (basePath) {
       options: {
         context: basePath,
         babel: {
-          presets: [['es2015', { "loose": true, "modules": false }], 'stage-3'],
+          presets: buildBabelPresets(config.build.profile),
           plugins: ['transform-strict-mode'],
           comments: false
         }
