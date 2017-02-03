@@ -192,18 +192,6 @@ module.exports = function (basePath) {
       break
   }
 
-  switch (config.build.profile) {
-    case 'angular':
-      jsLoaders.push({
-        loader: 'ng-annotate-loader',
-        query: {
-          es6: true,
-          map: true,
-        },
-      })
-      break
-  }
-
   if (PRODUCTION_MODE) {
     plugins.push(new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
