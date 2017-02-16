@@ -134,17 +134,17 @@ module.exports = function (basePath) {
         babel: {
           presets: buildBabelPresets(config.build.profile),
           plugins: ['transform-strict-mode'],
-          comments: false
-        }
-      }
+          comments: false,
+        },
+      },
     }),
   ]
   const jsLoaders = buildJsLoaders(config.build.profile)
   const cssLoader = {
     loader: 'css-loader',
     options: {
-      localIdentName: '[path][name]__[local]--[hash:base64:5]'
-    }
+      localIdentName: '[path][name]__[local]--[hash:base64:5]',
+    },
   }
   const postCssLoader = {
     loader: 'postcss-loader',
@@ -156,15 +156,16 @@ module.exports = function (basePath) {
           }),
           require('postcss-cssnext'),
         ]
-      }
-    }
+      },
+    },
   }
   const sassLoader = {
-    loader: 'sass-loader', options: {
+    loader: 'sass-loader',
+    options: {
       includePaths: [
         path.join(basePath, 'node_modules'),
       ],
-    }
+    },
   }
 
   let extractCSS = null
@@ -212,7 +213,7 @@ module.exports = function (basePath) {
     resolve: {
       modules: [
         path.resolve(basePath),
-        path.join(basePath, 'node_modules')
+        path.join(basePath, 'node_modules'),
       ],
     },
     module: {
@@ -226,16 +227,16 @@ module.exports = function (basePath) {
         {
           test: /\.css/,
           use: extractCSS.extract({
-            loader:[cssLoader, postCssLoader],
-            fallbackLoader: 'style-loader',
-          })
+            loader: [cssLoader, postCssLoader],
+            fallback: 'style-loader',
+          }),
         },
         {
           test: /\.scss$/,
           use: extractCSS.extract({
-            loader:[cssLoader, postCssLoader, sassLoader],
-            fallbackLoader: 'style-loader',
-          })
+            loader: [cssLoader, postCssLoader, sassLoader],
+            fallback: 'style-loader',
+          }),
         },
         { test: /\.jade$/, loader: 'jade-loader' },
         { test: /\.html$/, loader: 'html-loader' },
