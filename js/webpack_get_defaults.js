@@ -193,12 +193,6 @@ module.exports = function (basePath) {
       break
   }
 
-  if (PRODUCTION_MODE) {
-    plugins.push(new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-    }))
-  }
-
   return {
     context: basePath,
     entry: PATHS.src,
