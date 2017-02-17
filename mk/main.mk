@@ -121,7 +121,7 @@ endef
 
 # Makefile Targets
 #
-.PHONY: default help update makemessages prepare settings
+.PHONY: default help update makemessages prepare settings translations
 .PHONY: serve dist serve-dist syntax test livetest jenkins-test test-browser
 
 help:
@@ -153,7 +153,11 @@ livetest: prepare
 
 makemessages: /tmp/template.pot
 
-translations: $(OUTPUT_DIR)/translations.json
+translations:
+	mkdir -p $(OUTPUT_DIR)
+	rm -f $(OUTPUT_DIR)/translations.json
+	gettext-compile --output $(OUTPUT_DIR)/translations.json $(LOCALE_FILES)
+
 settings: $(OUTPUT_DIR)/app.settings.js
 
 serve: prepare
@@ -200,7 +204,3 @@ endif
 		[ -f $$PO_FILE ] && msgmerge --lang=$$lang --sort-output --update $$PO_FILE $@ || msginit --no-translator --locale=$$lang --input=$@ -o $$PO_FILE; \
 		msgattrib --no-wrap --no-location --no-obsolete -o $$PO_FILE $$PO_FILE; \
 	done;
-
-$(OUTPUT_DIR)/translations.json:
-	mkdir -p $(OUTPUT_DIR)
-	gettext-compile --output $@ $(LOCALE_FILES)
