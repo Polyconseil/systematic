@@ -9,6 +9,7 @@ const webpack = require('webpack')
 
 const HtmlPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const ngAnnotatePlugin = require('ng-annotate-webpack-plugin')
 
 const config = require('./config')
 const enums = require('./config_choices')
@@ -74,22 +75,6 @@ function getOutputFileName () {
   return name
 }
 
-function buildJsLoaders (profile) {
-  const loaders = [{loader: 'babel-loader'}]
-  switch (profile) {
-    case 'angular':
-      loaders.push({
-        loader: 'ng-annotate',
-        query: {
-          es6: true,
-          map: true,
-        },
-      })
-      break
-  }
-  return loaders
-}
-
 function configureHTMLPlugin () {
   const indexHtmlPath = path.join(config.build.src_dir, 'index.html')
   if (fs.existsSync(indexHtmlPath)) {
@@ -126,6 +111,7 @@ module.exports = function (basePath) {
     src: path.join(basePath, config.build.src_dir),
     dist: path.join(basePath, config.build.output_dir),
   }
+
   const plugins = [
     new webpack.LoaderOptionsPlugin({
       debug: true,
@@ -139,7 +125,11 @@ module.exports = function (basePath) {
       },
     }),
   ]
-  const jsLoaders = buildJsLoaders(config.build.profile)
+
+  const jsLoaders = [{
+    loader: 'babel-loader',
+  }]
+
   const cssLoader = {
     loader: 'css-loader',
     options: {
@@ -192,6 +182,15 @@ module.exports = function (basePath) {
       plugins.push(extractCSS)
       break
   }
+
+  switch (config.build.type) {
+    case enums.buildTypes.APPLICATION:
+      plugins.push(new ngAnnotatePlugin({
+				es6: true,
+				map: true,
+      }))
+			break;
+	}
 
   return {
     context: basePath,
