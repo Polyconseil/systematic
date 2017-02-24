@@ -231,6 +231,7 @@ module.exports = function (basePath) {
             fallback: 'style-loader',
           }),
         },
+        { test: /\.json/, loader: 'json-loader' },
         { test: /\.jade$/, loader: 'jade-loader' },
         { test: /\.html$/, loader: 'html-loader' },
         { test: /\.(png|gif|jp(e)?g)$/, loader: 'url-loader?limit=50000' },
