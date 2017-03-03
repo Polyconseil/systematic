@@ -162,7 +162,6 @@ settings: $(OUTPUT_DIR)/app.settings.js
 
 serve: prepare
 	mkdir -p $(OUTPUT_DIR)
-	# TODO: Switch to webpack 2, for the --open option to work
 	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) $(WEBPACK_OPTIONS) \
 		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host $(SERVE_HOST) --colors \
 		--bail --progress --output-pathinfo
