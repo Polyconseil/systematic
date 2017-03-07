@@ -119,7 +119,7 @@ module.exports = function (basePath) {
         context: basePath,
         babel: {
           presets: buildBabelPresets(config.build.profile),
-          plugins: ['transform-strict-mode'],
+          plugins: ['transform-strict-mode', 'transform-class-properties'],
           comments: false,
         },
       },
