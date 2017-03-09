@@ -390,7 +390,12 @@ var namespace = argv.namespace || '__SETTINGS__';
 var config = {};
 filenames.forEach(function(filename) {
   var parsed = iniDecode(fs.readFileSync(filename, 'utf-8'));
-  for (var i in parsed) { config[i] = parsed[i]; }
+  for (var section in parsed) {
+    config[section] = config[section] || {};
+    for (var key in parsed[section]) {
+      config[section][key] = parsed[section][key];
+    }
+  }
 });
 
 console.log(util.format('window.%s = %s;', namespace, JSON.stringify(config)));
