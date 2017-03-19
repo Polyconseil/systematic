@@ -148,7 +148,7 @@ Example:
 `make makemessages` extract translations from your HTML and JS files using [easygettext](https://github.com/Polyconseil/easygettext).
 The resulting `.po` files will be in `/locale`.
 
-`make translations` generates a JSON file from them, located at dist/translations.json`. It is automatically run with `serve`, `dist` and `test`.
+`make translations` generates a JSON file from them, located at `dist/translations.json`. It is automatically run with `serve`, `dist` and `test`.
 
 You can then load them in your JS as an object:
 ```javascript
