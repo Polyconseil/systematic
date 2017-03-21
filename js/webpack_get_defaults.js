@@ -128,6 +128,17 @@ module.exports = function (basePath) {
 
   const jsLoaders = [{
     loader: 'babel-loader',
+    query: {
+      presets: ['es2015', 'stage-3'],
+      plugins: [
+        'transform-strict-mode',
+        // Use babel-runtime helpers to avoid code duplication
+        ['transform-runtime', {
+          'polyfill': false,
+          'regenerator': false
+        }]
+    ],
+  },
   }]
 
   const cssLoader = {
