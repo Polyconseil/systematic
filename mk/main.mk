@@ -83,7 +83,7 @@ LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
 
 GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' 2> /dev/null)
 GETTEXT_JS_SOURCES   ?= $(shell find $(SRC_DIR) -name '*.js')
-SETTINGS_INI_FILES := $(shell find $(SRC_DIR)/settings -name '*.ini' 2> /dev/null)
+SETTINGS_INI_FILES ?= $(shell find $(SRC_DIR) -name '*.ini' 2> /dev/null)
 
 # Colors for a nicer output
 ECHOPREFIX ?= $(shell tput setaf 2)--- [make]
@@ -153,9 +153,18 @@ livetest: prepare
 
 makemessages: /tmp/template.pot
 
-translations: $(OUTPUT_DIR)/translations.json
+translations:
+	mkdir -p $(OUTPUT_DIR)
+	rm -f $(OUTPUT_DIR)/translations.json
+	gettext-compile --output $(OUTPUT_DIR)/translations.json $(LOCALE_FILES)
 
-settings: $(OUTPUT_DIR)/app.settings.js
+settings:
+ifeq ($(BUILD_TYPE),application)
+	mkdir -p $(OUTPUT_DIR)
+	rm -f $(OUTPUT_DIR)/app.settings.js
+	@echo "$(ECHOPREFIX) generating 'app.settings.js' $(ECHOSUFFIX)"
+	$(INI2JS) $(SETTINGS_INI_FILES) --global_name __SETTINGS__ > $(OUTPUT_DIR)/app.settings.js
+endif
 
 serve: prepare
 	mkdir -p $(OUTPUT_DIR)
@@ -175,14 +184,6 @@ serve-dist: dist
 
 
 # Miscellaneous build commands
-
-$(OUTPUT_DIR)/app.settings.js: $(SETTINGS_INI_FILES)
-ifeq ($(BUILD_TYPE),application)
-	@echo "$(ECHOPREFIX) generating 'app.settings.js' $(ECHOSUFFIX)"
-	mkdir -p $(OUTPUT_DIR)
-	$(INI2JS) $^ --global_name app_settings > $@
-endif
-
 /tmp/template.pot: $(GETTEXT_JS_SOURCES) $(GETTEXT_HTML_SOURCES)
 	@echo "$(ECHOPREFIX) extracting translations $(ECHOSUFFIX)"
 	mkdir -p $(dir $@)
@@ -200,7 +201,3 @@ endif
 		[ -f $$PO_FILE ] && msgmerge --lang=$$lang --sort-output --update $$PO_FILE $@ || msginit --no-translator --locale=$$lang --input=$@ -o $$PO_FILE; \
 		msgattrib --no-wrap --no-location --no-obsolete -o $$PO_FILE $$PO_FILE; \
 	done;
-
-$(OUTPUT_DIR)/translations.json: $(LOCALE_FILES)
-	mkdir -p $(dir $@)
-	gettext-compile --output $@ $^
