@@ -153,18 +153,9 @@ livetest: prepare
 
 makemessages: /tmp/template.pot
 
-translations:
-	mkdir -p $(OUTPUT_DIR)
-	rm -f $(OUTPUT_DIR)/translations.json
-	gettext-compile --output $(OUTPUT_DIR)/translations.json $(LOCALE_FILES)
+translations: $(OUTPUT_DIR)/translations.json
 
-settings:
-ifeq ($(BUILD_TYPE),application)
-	mkdir -p $(OUTPUT_DIR)
-	rm -f $(OUTPUT_DIR)/app.settings.js
-	@echo "$(ECHOPREFIX) generating 'app.settings.js' $(ECHOSUFFIX)"
-	$(INI2JS) $(SETTINGS_INI_FILES) --global_name __SETTINGS__ > $(OUTPUT_DIR)/app.settings.js
-endif
+settings: $(OUTPUT_DIR)/app.settings.js
 
 serve: prepare
 	mkdir -p $(OUTPUT_DIR)
@@ -184,6 +175,14 @@ serve-dist: dist
 
 
 # Miscellaneous build commands
+
+$(OUTPUT_DIR)/app.settings.js: $(SETTINGS_INI_FILES)
+ifeq ($(BUILD_TYPE),application)
+	mkdir -p $(dir $@)
+	@echo "$(ECHOPREFIX) generating '$(notdir $@)' $(ECHOSUFFIX)"
+	$(INI2JS) $^ --global_name __SETTINGS__ > $@
+endif
+
 /tmp/template.pot: $(GETTEXT_JS_SOURCES) $(GETTEXT_HTML_SOURCES)
 	@echo "$(ECHOPREFIX) extracting translations $(ECHOSUFFIX)"
 	mkdir -p $(dir $@)
@@ -201,3 +200,7 @@ serve-dist: dist
 		[ -f $$PO_FILE ] && msgmerge --lang=$$lang --sort-output --update $$PO_FILE $@ || msginit --no-translator --locale=$$lang --input=$@ -o $$PO_FILE; \
 		msgattrib --no-wrap --no-location --no-obsolete -o $$PO_FILE $$PO_FILE; \
 	done;
+
+$(OUTPUT_DIR)/translations.json: $(LOCALE_FILES)
+	mkdir -p $(dir $@)
+	gettext-compile --output $@ $^
