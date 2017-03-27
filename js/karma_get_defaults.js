@@ -2,6 +2,7 @@ const path = require('path')
 
 const systematicConfig = require('./config')
 
+const useJavascriptFuture = (process.env.JAVASCRIPT_FUTURE === 'true')
 
 module.exports = function (basePath, _webpackConfig) {
 
@@ -9,7 +10,7 @@ module.exports = function (basePath, _webpackConfig) {
 
   // Inline source maps, without columns & simple sourcemaps for loaders
   webpackConfig.devtool = 'inline-source-map'
-  webpackConfig.entry = function(){return {}}  // Reset the webpack entry point, test files are added separatly by karma-webpack
+  webpackConfig.entry = function () { return {} }  // Reset the webpack entry point, test files are added separatly by karma-webpack
   webpackConfig.externals = []  // Keep all the dependencies during the tests
 
   const testFiles = path.join(basePath, systematicConfig.test.file_pattern)
@@ -19,10 +20,25 @@ module.exports = function (basePath, _webpackConfig) {
     autoWatch: true, // Without this _in the config file_, plugins do not reload automatically
     browserNoActivityTimeout: 100000, // in ms, 100 seconds
 
-    frameworks: ['jasmine', 'jasmine-matchers', 'phantomjs-shim'],
+    // configure karma to be able to use chromium as test launcher
+    customLaunchers: {
+      ChromeNoSandboxHeadless: {
+        autoWatch: true,
+        base: 'Chromium',
+        flags: [
+          '--no-sandbox',
+          // See https://chromium.googlesource.com/chromium/src/  /lkgr/headless/README.md
+          '--headless',
+          '--disable-gpu',
+          // Without a remote debugging port, Google Chrome exits immediately.
+          ' --remote-debugging-port=9222',
+        ],
+      },
+    },
+
+    frameworks: ['jasmine', 'jasmine-matchers'],
 
     files: [
-      basePath + '/node_modules/babel-polyfill/dist/polyfill.js',  // polyfill if we don't include the entrypoint
       testFiles,
     ],
 
@@ -32,8 +48,6 @@ module.exports = function (basePath, _webpackConfig) {
       'karma-jasmine-html-reporter',
       'karma-junit-reporter',
       'karma-webpack-error-reporter',
-      'karma-phantomjs-launcher',
-      'karma-phantomjs-shim',
       'karma-sourcemap-loader',
       'karma-webpack',
     ],
@@ -43,7 +57,7 @@ module.exports = function (basePath, _webpackConfig) {
       useBrowserName: false,
     },
 
-    browsers: ['PhantomJS'],
+    browsers: [],
     reporters: ['webpack-error'],
 
     webpack: webpackConfig,
@@ -56,5 +70,20 @@ module.exports = function (basePath, _webpackConfig) {
   karmaConfig.preprocessors = {}
   karmaConfig.preprocessors[testFiles] = ['webpack', 'sourcemap']
 
+  if (useJavascriptFuture !== false) {
+    karmaConfig.browsers.push('ChromeNoSandboxHeadless')
+    karmaConfig.plugins.push(
+      'karma-chrome-launcher'
+    )
+  } else {
+    karmaConfig.frameworks.push('phantomjs-shim')
+    karmaConfig.browsers.push('PhantomJS')
+    karmaConfig.plugins.push(
+      'karma-phantomjs-launcher', 'karma-phantomjs-shim'
+    )
+    karmaConfig.files.push(
+      basePath + '/node_modules/babel-polyfill/dist/polyfill.js'  // polyfill if we don't include the entrypoint
+    )
+  }
   return karmaConfig
 }

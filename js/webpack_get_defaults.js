@@ -15,6 +15,9 @@ const config = require('./config')
 const enums = require('./config_choices')
 
 const PRODUCTION_MODE = (process.env.SYSTEMATIC_BUILD_MODE === 'PROD')
+const useJavascriptFuture = (process.env.JAVASCRIPT_FUTURE === 'true')
+
+console.log('Use javascriptFuture : ' + useJavascriptFuture)
 
 function buildPublicPath () {
   if (PRODUCTION_MODE) return `${config.build.public_path}`
@@ -92,10 +95,10 @@ function configureHTMLPlugin () {
 }
 
 function buildBabelPresets (profile) {
-  const presets = [
-    ['es2015', { 'loose': true, 'modules': false }],
-    'stage-3',
-  ]
+  let presets = []
+  if (useJavascriptFuture === false) {
+    presets.push(['es2015', { 'loose': true, 'modules': false }])
+  }
   switch (profile) {
     case 'react':
       presets.unshift('react')

@@ -113,6 +113,7 @@ The following commands are available.
 
     syntax                  Check application style and syntax with eslint.
     test                    Runs a single run of the tests and syntax.
+		test-fast								Runs tests using chromium without babel es6 transpilation.
     livetest                Runs continous tests with complete source maps, without syntax check.
     jenkins-test            Runs tests on jenkins.
 
@@ -145,11 +146,18 @@ eslint:
 test: prepare syntax
 	karma start --reporters webpack-error --single-run --no-auto-watch $(KARMA_OPTIONS_CONFIG_FILE)
 
+test-fast: prepare syntax
+	JAVASCRIPT_FUTURE=true karma start --reporters webpack-error --single-run --no-auto-watch $(KARMA_OPTIONS_CONFIG_FILE)
+
 jenkins-test: prepare syntax
 	karma start  --reporters junit,webpack-error --single-run --no-auto-watch --no-colors $(KARMA_OPTIONS_CONFIG_FILE)
 
 livetest: prepare
 	karma start  --reporters webpack-error,kjhtml --no-single-run --devtool source-map $(KARMA_OPTIONS_CONFIG_FILE)
+
+livetest-fast: prepare
+	JAVASCRIPT_FUTURE=true karma start  --reporters webpack-error,kjhtml --no-single-run --devtool source-map $(KARMA_OPTIONS_CONFIG_FILE)
+
 
 makemessages: /tmp/template.pot
 
