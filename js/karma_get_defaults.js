@@ -2,6 +2,7 @@ const path = require('path')
 
 const systematicConfig = require('./config')
 
+const useJavascriptFuture = (process.env.JAVASCRIPT_FUTURE === 'true')
 
 module.exports = function (basePath, _webpackConfig) {
 
@@ -22,6 +23,7 @@ module.exports = function (basePath, _webpackConfig) {
     // configure karma to be able to use chromium as test launcher
     customLaunchers: {
       ChromeNoSandboxHeadless: {
+        autoWatch: true,
         base: 'Chromium',
         flags: [
           '--no-sandbox',
@@ -34,22 +36,18 @@ module.exports = function (basePath, _webpackConfig) {
       },
     },
 
-    frameworks: ['jasmine', 'jasmine-matchers', 'phantomjs-shim'],
+    frameworks: ['jasmine', 'jasmine-matchers'],
 
     files: [
-      basePath + '/node_modules/babel-polyfill/dist/polyfill.js',  // polyfill if we don't include the entrypoint
       testFiles,
     ],
 
     plugins: [
-      'karma-chrome-launcher',
       'karma-jasmine',
       'karma-jasmine-matchers',
       'karma-jasmine-html-reporter',
       'karma-junit-reporter',
       'karma-webpack-error-reporter',
-      'karma-phantomjs-launcher',
-      'karma-phantomjs-shim',
       'karma-sourcemap-loader',
       'karma-webpack',
     ],
@@ -59,7 +57,7 @@ module.exports = function (basePath, _webpackConfig) {
       useBrowserName: false,
     },
 
-    browsers: ['PhantomJS', 'ChromeNoSandboxHeadless'],
+    browsers: [],
     reporters: ['webpack-error'],
 
     webpack: webpackConfig,
@@ -72,5 +70,20 @@ module.exports = function (basePath, _webpackConfig) {
   karmaConfig.preprocessors = {}
   karmaConfig.preprocessors[testFiles] = ['webpack', 'sourcemap']
 
+  if (useJavascriptFuture !== false) {
+    karmaConfig.browsers.push('ChromeNoSandboxHeadless')
+    karmaConfig.plugins.push(
+      'karma-chrome-launcher'
+    )
+  } else {
+    karmaConfig.frameworks.push('phantomjs-shim')
+    karmaConfig.browsers.push('PhantomJS')
+    karmaConfig.plugins.push(
+      'karma-phantomjs-launcher', 'karma-phantomjs-shim'
+    )
+    karmaConfig.files.push(
+      basePath + '/node_modules/babel-polyfill/dist/polyfill.js'  // polyfill if we don't include the entrypoint
+    )
+  }
   return karmaConfig
 }
