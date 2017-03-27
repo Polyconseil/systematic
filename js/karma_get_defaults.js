@@ -19,6 +19,21 @@ module.exports = function (basePath, _webpackConfig) {
     autoWatch: true, // Without this _in the config file_, plugins do not reload automatically
     browserNoActivityTimeout: 100000, // in ms, 100 seconds
 
+    // configure karma to be able to use chromium as test launcher
+    customLaunchers: {
+      ChromeNoSandboxHeadless: {
+        base: 'Chromium',
+        flags: [
+          '--no-sandbox',
+          // See https://chromium.googlesource.com/chromium/src/  /lkgr/headless/README.md
+          '--headless',
+          '--disable-gpu',
+          // Without a remote debugging port, Google Chrome exits immediately.
+          ' --remote-debugging-port=9222',
+        ],
+      },
+    },
+
     frameworks: ['jasmine', 'jasmine-matchers', 'phantomjs-shim'],
 
     files: [
@@ -27,6 +42,7 @@ module.exports = function (basePath, _webpackConfig) {
     ],
 
     plugins: [
+      'karma-chrome-launcher',
       'karma-jasmine',
       'karma-jasmine-matchers',
       'karma-jasmine-html-reporter',
@@ -43,7 +59,7 @@ module.exports = function (basePath, _webpackConfig) {
       useBrowserName: false,
     },
 
-    browsers: ['PhantomJS'],
+    browsers: ['PhantomJS', 'ChromeNoSandboxHeadless'],
     reporters: ['webpack-error'],
 
     webpack: webpackConfig,
