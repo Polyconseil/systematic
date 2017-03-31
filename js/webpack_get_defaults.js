@@ -9,7 +9,6 @@ const webpack = require('webpack')
 
 const HtmlPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const ngAnnotatePlugin = require('ng-annotate-webpack-plugin')
 
 const config = require('./config')
 const enums = require('./config_choices')
@@ -185,10 +184,13 @@ module.exports = function (basePath) {
 
   switch (config.build.type) {
     case enums.buildTypes.APPLICATION:
-      plugins.push(new ngAnnotatePlugin({
-				es6: true,
-				map: true,
-      }))
+      switch (config.build.profile) {
+        case 'angular':
+          plugins.push(new require('ng-annotate-webpack-plugin')({
+            es6: true,
+            map: true,
+          }))
+      }
 			break;
 	}
 
