@@ -68,7 +68,7 @@ function getOutputFileName () {
   let name = 'index.js'
   if (config.build.type === enums.buildTypes.APPLICATION) {
     name = 'bundle.js'
-    if (PRODUCTION_MODE) {
+    if (PRODUCTION_MODE && config.build.enable_filename_hashing) {
       name = `${name}.[hash].js`
     }
   }

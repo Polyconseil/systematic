@@ -11,6 +11,7 @@ _.defaultsDeep(systematic, {
     src_dir: 'src',
     output_dir: 'dist',
     public_path: '/',
+    enable_filename_hashing: true,
   },
   serve: {
     host: '127.0.0.1',

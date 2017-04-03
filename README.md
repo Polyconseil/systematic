@@ -71,6 +71,9 @@ The file structure expected for your application or library.
   ; Optional, default is blank
   ; The locales to generate translation files
   locales = en_US en_GB
+  ; Optional, default is true
+  ; Whether to hash the generated bundle.js (relevant only for type = application)
+  enableFileNameHashing = false
 
   [serve]
   ; Interface to listen
