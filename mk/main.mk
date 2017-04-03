@@ -70,12 +70,8 @@ else
 KARMA_OPTIONS_CONFIG_FILE ?= karma.conf.js
 endif
 
-WEBPACK_OPTIONS ?= $(WEBPACK_OPTIONS_CONFIG_FILE) --bail
-
 # Other variables
 
-# webpack can need more memory than the default 512mo of node
-NODE_MEMORY ?= 4096
 ESLINTRC ?= ./$(SYSTEMATIC_PATH)/.eslintrc
 
 LOCALES ?= $(call readini,$(CONF_INI),build,locales)
@@ -108,7 +104,6 @@ The following commands are available.
     prepare                 Execute all pre-build actions (translations, settings)
 
     serve                   Build in development mode, serve and watch.
-    serve-dist              Bundles the package for distribution and serves it.
     dist                    Bundles the package for distribution.
 
     syntax                  Check application style and syntax with eslint.
@@ -122,7 +117,7 @@ endef
 # Makefile Targets
 #
 .PHONY: default help update makemessages prepare settings translations
-.PHONY: serve dist serve-dist syntax test livetest jenkins-test test-browser
+.PHONY: serve dist syntax test livetest jenkins-test test-browser
 
 help:
 	@echo ""
@@ -159,20 +154,16 @@ settings: $(OUTPUT_DIR)/app.settings.js
 
 serve: prepare
 	mkdir -p $(OUTPUT_DIR)
-	node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK_DEV_SERVER) $(WEBPACK_OPTIONS) \
-		--content-base $(OUTPUT_DIR) --hot --inline --open --port $(SERVE_PORT) --host $(SERVE_HOST) --colors \
-		--bail --progress --output-pathinfo
+	webpack-dev-server --content-base $(OUTPUT_DIR) --hot --inline --open \
+		--port $(SERVE_PORT) --host $(SERVE_HOST) \
+		--colors --bail --progress --output-pathinfo
 
 # Don't minify because it causes issues, see https://github.com/Polyconseil/systematic/issues/13
 dist: prepare
 	mkdir -p $(OUTPUT_DIR)
-	SYSTEMATIC_BUILD_MODE=PROD node --max_old_space_size=$(NODE_MEMORY) $(WEBPACK) $(WEBPACK_OPTIONS) \
-		--no-color --display-modules $(WEBPACK_DIST_OPTS) --optimize-minimize
-
-serve-dist: dist
-	mkdir -p $(OUTPUT_DIR)
-	$(NODE_BINDIR)http-server ./$(OUTPUT_DIR) -p $(TEST_PORT) -o
-
+	SYSTEMATIC_BUILD_MODE=PROD webpack $(WEBPACK_OPTIONS_CONFIG_FILE) \
+		--no-color --bail --display-modules  --optimize-minimize \
+		$(WEBPACK_DIST_OPTS)
 
 # Miscellaneous build commands
 
