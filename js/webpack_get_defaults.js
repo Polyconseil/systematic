@@ -92,8 +92,9 @@ function configureHTMLPlugin () {
 
 function buildBabelPresets (profile) {
   const presets = [
-    ['es2015', { 'loose': true, 'modules': false }],
-    'stage-3',
+    ['es2015', {'modules': false }],
+    'es2016',
+    'es2017',
   ]
   switch (profile) {
     case 'react':
@@ -112,6 +113,7 @@ module.exports = function (basePath) {
   }
 
   const plugins = [
+    // FIXME(vperron): Restore babel options directly within loader as soon as it's supported with webpack2
     new webpack.LoaderOptionsPlugin({
       debug: true,
       options: {
