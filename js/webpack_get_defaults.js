@@ -104,6 +104,12 @@ function buildBabelPresets (profile) {
   return presets
 }
 
+function getDevtool () {
+  if (PRODUCTION_MODE) {
+    return 'source-map'
+  }
+  return 'cheap-eval-source-map'
+}
 
 module.exports = function (basePath) {
 
@@ -243,6 +249,6 @@ module.exports = function (basePath) {
       ],
     },
     plugins: plugins,
-    devtool: 'source-map',  // A source map will be emitted.
+    devtool: getDevtool(),
   }
 }
