@@ -74,6 +74,17 @@ function getOutputFileName () {
   return name
 }
 
+
+function getOutputCssFileName () {
+  if (config.build.type === enums.buildTypes.APPLICATION) {
+    if (PRODUCTION_MODE && config.build.enable_filename_hashing) {
+      return 'bundle.[hash].css'
+    }
+    return 'bundle.css'
+  }
+  return 'index.css'
+}
+
 function configureHTMLPlugin () {
   const indexHtmlPath = path.join(config.build.src_dir, 'index.html')
   if (fs.existsSync(indexHtmlPath)) {
@@ -165,28 +176,24 @@ module.exports = function (basePath) {
     },
   }
 
-  let extractCSS = null
+  let cssRulesAggregator = function (loaders) {
+    return ['style-loader'].concat(loaders)
+  }
+
+  if (PRODUCTION_MODE) {
+    const extractCSS = new ExtractTextPlugin(getOutputCssFileName())
+    plugins.push(extractCSS)
+    cssRulesAggregator = function (loaders) {
+      return extractCSS.extract({
+        use: loaders,
+      })
+    }
+  }
 
   switch (config.build.type) {
     case enums.buildTypes.APPLICATION:
-      if (PRODUCTION_MODE) {
-        extractCSS = new ExtractTextPlugin('bundle.[contenthash].css')
-      } else {
-        extractCSS = new ExtractTextPlugin('bundle.css')
-      }
-      plugins.push(extractCSS)
-      plugins.push(configureHTMLPlugin())
-      break
-
     case enums.buildTypes.COMPONENT:
-      extractCSS = new ExtractTextPlugin('bundle.css')
-      plugins.push(extractCSS)
       plugins.push(configureHTMLPlugin())
-      break
-
-    case enums.buildTypes.LIBRARY:
-      extractCSS = new ExtractTextPlugin('bundle.css')
-      plugins.push(extractCSS)
       break
   }
 
@@ -229,17 +236,11 @@ module.exports = function (basePath) {
         },
         {
           test: /\.css/,
-          use: extractCSS.extract({
-            loader: [cssLoader, postCssLoader],
-            fallback: 'style-loader',
-          }),
+          use: cssRulesAggregator([cssLoader, postCssLoader]),
         },
         {
           test: /\.scss$/,
-          use: extractCSS.extract({
-            loader: [cssLoader, postCssLoader, sassLoader],
-            fallback: 'style-loader',
-          }),
+          use: cssRulesAggregator([cssLoader, postCssLoader, sassLoader]),
         },
         { test: /\.json/, loader: 'json-loader' },
         { test: /\.jade$/, loader: 'jade-loader' },
