@@ -210,6 +210,7 @@ module.exports = function (basePath) {
 	}
 
   return {
+    cache: true,
     context: basePath,
     entry: PATHS.src,
     output: {
