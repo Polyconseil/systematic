@@ -106,6 +106,7 @@ function buildBabelPresets (profile) {
     ['es2015', {'modules': false }],
     'es2016',
     'es2017',
+    'stage-3',  // needed for object spread operator "..."
   ]
   switch (profile) {
     case 'react':
