@@ -138,7 +138,11 @@ module.exports = function (basePath) {
         context: basePath,
         babel: {
           presets: buildBabelPresets(config.build.profile),
-          plugins: ['transform-strict-mode', 'transform-class-properties'],
+          plugins: [
+            'transform-strict-mode',
+            ['transform-runtime', {polyfill: false}],
+            'transform-class-properties'
+          ],
           comments: false,
         },
       },
