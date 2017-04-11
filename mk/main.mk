@@ -162,7 +162,7 @@ serve: prepare
 dist: prepare
 	mkdir -p $(OUTPUT_DIR)
 	SYSTEMATIC_BUILD_MODE=PROD webpack $(WEBPACK_OPTIONS_CONFIG_FILE) \
-		--no-color --bail --display-modules  --optimize-minimize \
+		--no-color --bail --display-modules  -p \
 		$(WEBPACK_DIST_OPTS)
 
 # Miscellaneous build commands
