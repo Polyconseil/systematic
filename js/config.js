@@ -14,7 +14,7 @@ _.defaultsDeep(systematic, {
     enable_filename_hashing: true,
   },
   serve: {
-    host: '127.0.0.1',
+    host: '0.0.0.0',  // default of python server. No clear arguments why should be 127.0.0.1.
     port: 8080,
   },
 })
