@@ -116,10 +116,8 @@ function buildBabelPresets (profile) {
 }
 
 function getDevtool () {
-  if (PRODUCTION_MODE) {
-    return 'source-map'
-  }
-  return 'cheap-eval-source-map'
+  // https://github.com/webpack/webpack/issues/2145#issuecomment-294361203
+  return 'cheap-module-source-map'
 }
 
 module.exports = function (basePath) {
