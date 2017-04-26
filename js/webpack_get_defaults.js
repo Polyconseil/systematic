@@ -16,8 +16,7 @@ const enums = require('./config_choices')
 const PRODUCTION_MODE = (process.env.SYSTEMATIC_BUILD_MODE === 'PROD')
 
 function buildPublicPath () {
-  if (PRODUCTION_MODE) return `${config.build.public_path}`
-  else return `http://${config.serve.host}:${config.serve.port}/`
+  return `${config.build.public_path}`
 }
 
 function libraryTarget () {
