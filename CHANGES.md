@@ -1,6 +1,15 @@
 Changes
 =======
 
+Version 1.3.0
+-------------
+- devtool: Use cheap-module-source-map as it's the only one that works. (by Victor Perron 14 hours ago)
+- Make the default serve path be '/' unless configured otherwise. (by Victor Perron 14 hours ago)
+- Use 0.0.0.0 as the default host. (by Victor Perron 14 hours ago)
+- dist: Replace '--optimize-minimize' with '-p', more standard. (by Victor Perron 2 weeks ago)
+- Freeze dependencies wich were not frozen (by Victor Perron 3 weeks ago)
+- Add 'transform-runtime' to avoid standardization issues in production (by Victor Perron 3 weeks ago)
+
 Version 1.1.0
 -------------
 
