@@ -51,7 +51,7 @@ OUTPUT_DIR := $(call readini,$(CONF_INI),build,output_dir)
 OUTPUT_DIR := $(if $(OUTPUT_DIR),$(OUTPUT_DIR),dist)
 
 SERVE_HOST := $(call readini,$(CONF_INI),serve,host)
-SERVE_HOST := $(if $(SERVE_HOST),$(SERVE_HOST),127.0.0.1)
+SERVE_HOST := $(if $(SERVE_HOST),$(SERVE_HOST),0.0.0.0)
 
 SERVE_PORT := $(call readini,$(CONF_INI),serve,port)
 SERVE_PORT := $(if $(SERVE_PORT),$(SERVE_PORT),8080)

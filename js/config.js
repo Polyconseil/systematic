@@ -14,7 +14,8 @@ _.defaultsDeep(systematic, {
     enable_filename_hashing: true,
   },
   serve: {
-    host: '0.0.0.0',  // default of python server. No clear arguments why should be 127.0.0.1.
+    // FIXME(vperron): This configuration comes in double with the one from the makefile.
+    host: '0.0.0.0',
     port: 8080,
   },
 })
