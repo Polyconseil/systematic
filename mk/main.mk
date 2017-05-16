@@ -191,6 +191,7 @@ endif
 		[ -f $$PO_FILE ] && msgmerge --lang=$$lang --sort-output --update $$PO_FILE $@ || msginit --no-translator --locale=$$lang --input=$@ -o $$PO_FILE; \
 		msgattrib --no-wrap --no-location --no-obsolete -o $$PO_FILE $$PO_FILE; \
 	done;
+	rm $@
 
 $(OUTPUT_DIR)/translations.json: $(LOCALE_FILES)
 	mkdir -p $(dir $@)
