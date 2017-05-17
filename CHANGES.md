@@ -1,6 +1,11 @@
 Changes
 =======
 
+Next version (not yet released)
+-------------------------------
+
+- Stopped opening a new tab on "make serve".
+
 Version 1.3.0
 -------------
 - devtool: Use cheap-module-source-map as it's the only one that works. (by Victor Perron 14 hours ago)
