@@ -73,6 +73,7 @@ endif
 # Other variables
 
 ESLINTRC ?= ./$(SYSTEMATIC_PATH)/.eslintrc
+ESLINTOPTIONS ?=
 
 LOCALES ?= $(call readini,$(CONF_INI),build,locales)
 LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
@@ -135,7 +136,7 @@ update:
 syntax: eslint
 
 eslint:
-	eslint --config $(ESLINTRC) $(SRC_DIR)
+	eslint --config $(ESLINTRC) $(ESLINTOPTIONS) $(SRC_DIR)
 
 test: prepare syntax
 	karma start --reporters webpack-error --single-run --no-auto-watch $(KARMA_OPTIONS_CONFIG_FILE)
