@@ -98,6 +98,7 @@ function configureHTMLPlugin () {
     }
     return new HtmlPlugin(htmlPluginProperties)
   }
+  throw "file " + indexHtmlPath + " not found"
 }
 
 function buildBabelPresets (profile) {
