@@ -5,6 +5,7 @@ Next version (not yet released)
 -------------------------------
 
 - Stopped opening a new tab on "make serve".
+- Compile .vue files with vue-loader
 
 Version 1.3.0
 -------------

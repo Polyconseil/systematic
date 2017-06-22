@@ -225,6 +225,7 @@ module.exports = function (basePath) {
     },
     externals: getExternals(),
     resolve: {
+      extensions: ['.js', '.vue', '.json'],
       modules: [
         path.resolve(basePath),
         path.join(basePath, 'node_modules'),
@@ -237,6 +238,16 @@ module.exports = function (basePath) {
           use: jsLoaders,
           exclude: /(node_modules|bower_components)/,
           include: [PATHS.src],
+        },
+        {
+          test: /\.vue$/,
+          loader: 'vue-loader',
+          options: {
+            loaders: {
+              css: ['vue-style-loader', cssLoader],
+              postcss: ['vue-style-loader', cssLoader, postCssLoader],
+            }
+          }
         },
         {
           test: /\.css/,
