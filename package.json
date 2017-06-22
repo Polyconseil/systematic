@@ -17,8 +17,22 @@
   "author": "Polyconseil",
   "license": "MIT",
   "files": [
-    "*",
-    "!.gitignore"
+    "CHANGES.md",
+    "bin/ini2js.js",
+    "default_config/karma.conf.js",
+    "default_config/project_path.js",
+    "default_config/webpack.config.js",
+    "index.js",
+    "js/config.js",
+    "js/config_choices.js",
+    "js/karma_get_defaults.js",
+    "js/webpack_get_defaults.js",
+    "mk/angular.mk",
+    "mk/main.mk",
+    "mk/react.mk",
+    "mk/vanilla.mk",
+    "mk/vue.mk",
+    "package.json"
   ],
   "dependencies": {
     "babel-core": "6.24.0",
