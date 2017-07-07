@@ -4,11 +4,21 @@ Changes
 Next version (not yet released)
 -------------------------------
 
+Version 1.4.0
+-------------
+- main.mk: delete temp makemessages file
 - Stopped opening a new tab on "make serve".
 - Compile .vue files with vue-loader
+- Use eslint on .vue files
+- Fail loudly if index.html is missing
+
+Version 1.3.1
+-------------
+- Fix serve host: forgot the one in the makefile
 
 Version 1.3.0
 -------------
+
 - devtool: Use cheap-module-source-map as it's the only one that works. (by Victor Perron 14 hours ago)
 - Make the default serve path be '/' unless configured otherwise. (by Victor Perron 14 hours ago)
 - Use 0.0.0.0 as the default host. (by Victor Perron 14 hours ago)
