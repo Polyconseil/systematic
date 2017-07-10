@@ -4,6 +4,11 @@ Changes
 Next version (not yet released)
 -------------------------------
 
+Version 1.4.1
+-------------
+- Fix: include '.eslintrc' while packaging systematic (it's needed to run 'make syntax')
+- Fix: (mk) includes .vue in gettext sources
+
 Version 1.4.0
 -------------
 - main.mk: delete temp makemessages file
