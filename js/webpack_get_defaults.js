@@ -121,6 +121,18 @@ function getDevtool () {
   return 'cheap-module-source-map'
 }
 
+function getBabelPlugins () {
+  const plugins = [
+    'transform-strict-mode',
+    ['transform-runtime', {polyfill: false}],
+    'transform-class-properties'
+  ]
+
+  if (config.build.type === enums.buildTypes.APPLICATION && config.build.profile === 'angular') {
+    plugins.push('angularjs-annotate')
+  }
+}
+
 module.exports = function (basePath) {
 
   const PATHS = {
@@ -136,11 +148,7 @@ module.exports = function (basePath) {
         context: basePath,
         babel: {
           presets: buildBabelPresets(config.build.profile),
-          plugins: [
-            'transform-strict-mode',
-            ['transform-runtime', {polyfill: false}],
-            'transform-class-properties'
-          ],
+          plugins: getBabelPlugins(),
           comments: false,
         },
       },
@@ -199,18 +207,6 @@ module.exports = function (basePath) {
       plugins.push(configureHTMLPlugin())
       break
   }
-
-  switch (config.build.type) {
-    case enums.buildTypes.APPLICATION:
-      switch (config.build.profile) {
-        case 'angular':
-          plugins.push(new require('ng-annotate-webpack-plugin')({
-            es6: true,
-            map: true,
-          }))
-      }
-			break;
-	}
 
   return {
     cache: true,

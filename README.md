@@ -177,7 +177,7 @@ natural `vanilla` profile.
 
 Value : `angular`
 
-Adds the [ng-annotate](https://github.com/olov/ng-annotate) loader.
+Adds the [ng-annotate](https://github.com/schmod/babel-plugin-angularjs-annotate) Babel plugin.
 
 ## VueJS
 
