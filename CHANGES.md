@@ -3,6 +3,7 @@ Changes
 
 Next version (not yet released)
 -------------------------------
+- Ugrade ng-annotate-webpack to babel-plugin-angularjs-annotate (fixes angular builds)
 
 Version 1.4.1
 -------------
@@ -24,12 +25,12 @@ Version 1.3.1
 Version 1.3.0
 -------------
 
-- devtool: Use cheap-module-source-map as it's the only one that works. (by Victor Perron 14 hours ago)
-- Make the default serve path be '/' unless configured otherwise. (by Victor Perron 14 hours ago)
-- Use 0.0.0.0 as the default host. (by Victor Perron 14 hours ago)
-- dist: Replace '--optimize-minimize' with '-p', more standard. (by Victor Perron 2 weeks ago)
-- Freeze dependencies wich were not frozen (by Victor Perron 3 weeks ago)
-- Add 'transform-runtime' to avoid standardization issues in production (by Victor Perron 3 weeks ago)
+- devtool: Use cheap-module-source-map as it's the only one that works.
+- Make the default serve path be '/' unless configured otherwise.
+- Use 0.0.0.0 as the default host.
+- dist: Replace '--optimize-minimize' with '-p', more standard.
+- Freeze dependencies wich were not frozen
+- Add 'transform-runtime' to avoid standardization issues in production
 
 Version 1.1.0
 -------------
