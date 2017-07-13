@@ -123,14 +123,16 @@ function getDevtool () {
 
 function getBabelPlugins () {
   const plugins = [
-    'transform-strict-mode',
-    ['transform-runtime', {polyfill: false}],
-    'transform-class-properties'
+    require('babel-plugin-transform-strict-mode'),
+    [require('babel-plugin-transform-runtime'), {polyfill: false}],
+    require('babel-plugin-transform-class-properties'),
   ]
 
   if (config.build.type === enums.buildTypes.APPLICATION && config.build.profile === 'angular') {
     plugins.push('angularjs-annotate')
   }
+
+  return plugins
 }
 
 module.exports = function (basePath) {
@@ -140,23 +142,15 @@ module.exports = function (basePath) {
     dist: path.join(basePath, config.build.output_dir),
   }
 
-  const plugins = [
-    // FIXME(vperron): Restore babel options directly within loader as soon as it's supported with webpack2
-    new webpack.LoaderOptionsPlugin({
-      debug: true,
-      options: {
-        context: basePath,
-        babel: {
-          presets: buildBabelPresets(config.build.profile),
-          plugins: getBabelPlugins(),
-          comments: false,
-        },
-      },
-    }),
-  ]
+  const plugins = []
 
   const jsLoaders = [{
     loader: 'babel-loader',
+    options: {
+      presets: buildBabelPresets(config.build.profile),
+      plugins: getBabelPlugins(),
+      comments: false,
+    }
   }]
 
   const cssLoader = {
