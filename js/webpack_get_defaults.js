@@ -11,7 +11,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const config = require('./config')
 const enums = require('./config_choices')
 
-const PRODUCTION_MODE = (process.env.SYSTEMATIC_BUILD_MODE === 'PROD')
+const PRODUCTION_MODE = (process.env.NODE_ENV === 'production')
 
 function buildPublicPath () {
   return `${config.build.public_path}`

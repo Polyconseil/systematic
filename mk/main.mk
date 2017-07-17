@@ -162,7 +162,7 @@ serve: prepare
 # Don't minify because it causes issues, see https://github.com/Polyconseil/systematic/issues/13
 dist: prepare
 	mkdir -p $(OUTPUT_DIR)
-	SYSTEMATIC_BUILD_MODE=PROD webpack $(WEBPACK_OPTIONS_CONFIG_FILE) \
+	NODE_ENV=production webpack $(WEBPACK_OPTIONS_CONFIG_FILE) \
 		--no-color --bail --display-modules  -p \
 		$(WEBPACK_DIST_OPTS)
 
