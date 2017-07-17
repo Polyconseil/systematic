@@ -5,8 +5,6 @@
 const fs = require('fs')
 const path = require('path')
 
-const webpack = require('webpack')
-
 const HtmlPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
@@ -98,12 +96,12 @@ function configureHTMLPlugin () {
     }
     return new HtmlPlugin(htmlPluginProperties)
   }
-  throw "file " + indexHtmlPath + " not found"
+  throw new Error('file ' + indexHtmlPath + ' not found')
 }
 
 function buildBabelPresets (profile) {
   const presets = [
-    ['es2015', {'modules': false }],
+    ['es2015', {'modules': false}],
     'es2016',
     'es2017',
     'stage-3',  // needed for object spread operator "..."
@@ -123,9 +121,9 @@ function getDevtool () {
 
 function getBabelPlugins () {
   const plugins = [
-    require('babel-plugin-transform-strict-mode'),
-    [require('babel-plugin-transform-runtime'), {polyfill: false}],
-    require('babel-plugin-transform-class-properties'),
+    'transform-strict-mode',
+    ['transform-runtime', {polyfill: false}],
+    'transform-class-properties',
   ]
 
   if (config.build.type === enums.buildTypes.APPLICATION && config.build.profile === 'angular') {
@@ -150,7 +148,7 @@ module.exports = function (basePath) {
       presets: buildBabelPresets(config.build.profile),
       plugins: getBabelPlugins(),
       comments: false,
-    }
+    },
   }]
 
   const cssLoader = {
@@ -234,10 +232,11 @@ module.exports = function (basePath) {
           loader: 'vue-loader',
           options: {
             loaders: {
+              js: jsLoaders,
               css: ['vue-style-loader', cssLoader],
               postcss: ['vue-style-loader', cssLoader, postCssLoader],
-            }
-          }
+            },
+          },
         },
         {
           test: /\.css/,

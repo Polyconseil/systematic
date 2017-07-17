@@ -72,7 +72,7 @@ endif
 
 # Other variables
 
-ESLINTRC ?= ./$(SYSTEMATIC_PATH)/.eslintrc
+ESLINTRC ?= ./$(SYSTEMATIC_PATH).eslintrc
 ESLINTOPTIONS ?=
 
 LOCALES ?= $(call readini,$(CONF_INI),build,locales)
