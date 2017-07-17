@@ -165,7 +165,13 @@ module.exports = function (basePath) {
           require('postcss-import')({  // This plugin enables @import rule in CSS files.
             path: [basePath],  // Use the same path for CSS and JS imports
           }),
-          require('postcss-cssnext'),
+          require('postcss-cssnext')({
+            features: {
+              customProperties: {
+                preserve: true,
+              },
+            },
+          }),
         ]
       },
     },
