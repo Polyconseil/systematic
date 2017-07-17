@@ -255,5 +255,8 @@ module.exports = function (basePath) {
     },
     plugins: plugins,
     devtool: getDevtool(),
+    devServer: {
+      disableHostCheck: true,  // since webpack 2.4.3, a host check is present, remove it.
+    }
   }
 }
