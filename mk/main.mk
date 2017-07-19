@@ -56,6 +56,8 @@ SERVE_HOST := $(if $(SERVE_HOST),$(SERVE_HOST),0.0.0.0)
 SERVE_PORT := $(call readini,$(CONF_INI),serve,port)
 SERVE_PORT := $(if $(SERVE_PORT),$(SERVE_PORT),8080)
 
+WEBPACK_EXTRA_OPTIONS ?= 
+
 TEST_PORT ?= 8081
 
 # webpack default config
@@ -157,14 +159,15 @@ serve: prepare
 	mkdir -p $(OUTPUT_DIR)
 	webpack-dev-server --content-base $(OUTPUT_DIR) --hot --inline \
 		--port $(SERVE_PORT) --host $(SERVE_HOST) \
-		--colors --bail --progress --output-pathinfo
+		--colors --bail --progress --output-pathinfo \
+		$(WEBPACK_EXTRA_OPTIONS)
 
 # Don't minify because it causes issues, see https://github.com/Polyconseil/systematic/issues/13
 dist: prepare
 	mkdir -p $(OUTPUT_DIR)
 	NODE_ENV=production webpack $(WEBPACK_OPTIONS_CONFIG_FILE) \
 		--no-color --bail --display-modules  -p \
-		$(WEBPACK_DIST_OPTS)
+		$(WEBPACK_DIST_OPTS) $(WEBPACK_EXTRA_OPTIONS)
 
 # Miscellaneous build commands
 
