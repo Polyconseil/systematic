@@ -115,8 +115,7 @@ function buildBabelPresets (profile) {
 }
 
 function getDevtool () {
-  // https://github.com/webpack/webpack/issues/2145#issuecomment-294361203
-  return 'cheap-module-source-map'
+  return 'source-map'
 }
 
 function getBabelPlugins () {
