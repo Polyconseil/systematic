@@ -11,7 +11,7 @@
     "url": "https://github.com/polyconseil/systematic"
   },
   "scripts": {
-    "test": "cd sample && npm install && make clean dist && make test && cd .."
+    "test": "npm install && cd sample && rm -rf node_modules && npm install && make clean dist && make test"
   },
   "keywords": [],
   "author": "Polyconseil",
@@ -73,7 +73,7 @@
     "karma-sourcemap-loader": "0.3.7",
     "karma-webpack": "2.0.4",
     "karma-webpack-error-reporter": "0.0.3",
-    "lodash": "4.17.4",
+    "lodash.defaultsdeep": "^4.6.0",
     "mkdirp": "^0.5.1",
     "ngtemplate-loader": "2.0.1",
     "node-sass": "4.5.3",

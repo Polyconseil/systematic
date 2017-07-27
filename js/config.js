@@ -1,12 +1,12 @@
 const fs = require('fs')
 
-const _ = require('lodash')
+const defaultsDeep = require('lodash.defaultsdeep')
 const ini = require('ini')
 
 
 const systematic = ini.parse(fs.readFileSync('./systematic.ini', 'utf-8'))
 
-_.defaultsDeep(systematic, {
+defaultsDeep(systematic, {
   build: {
     src_dir: 'src',
     output_dir: 'dist',
@@ -20,9 +20,9 @@ _.defaultsDeep(systematic, {
   },
 })
 
-_.defaultsDeep(systematic, {
+defaultsDeep(systematic, {
   test: {
-    file_pattern: systematic.build.src_dir + '/**/*tests.js'
+    file_pattern: systematic.build.src_dir + '/**/*tests.js',
   },
 })
 
