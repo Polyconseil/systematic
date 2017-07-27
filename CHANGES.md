@@ -1,8 +1,17 @@
 Changes
 =======
-
 Next version (not yet released)
 -------------------------------
+
+Version 1.7.0
+-------------
+- Add source-map-loader to import dependencie's source maps when building your application.
+- Bump webpack to 3.4 and a bunch of other dependencies in the same movement.
+- Fix the tests, which were broken since a long time.
+- Get package-lock.json out of .gitignore now that it's correctly handled by NPM.
+
+Version 1.5.0
+-------------
 - Ugrade ng-annotate-webpack to babel-plugin-angularjs-annotate (fixes angular builds)
 
 Version 1.4.1
