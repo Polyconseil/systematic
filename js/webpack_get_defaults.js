@@ -13,6 +13,15 @@ const enums = require('./config_choices')
 
 const PRODUCTION_MODE = (process.env.NODE_ENV === 'production')
 
+function getPackageInfo () {
+  let packageJson
+  try {
+    return require('package.json')
+  } catch (e) {
+    return null
+  }
+}
+
 function buildPublicPath () {
   return `${config.build.public_path}`
 }
@@ -32,13 +41,20 @@ function libraryTarget () {
   }
 }
 
-function getDependencies () {
-  let packageJson
-  try {
-    packageJson = require('package.json')
-  } catch (e) {
-    return []
+function getDevToolFilenameTemplate () {
+  switch (config.build.type) {
+    case enums.buildTypes.LIBRARY:
+    case enums.buildTypes.COMPONENT:
+      const packageJson = getPackageInfo()
+      return `${packageJson.name}/[resource-path]`
+    default:
+      return 'webpack:///[resource-path]'
   }
+}
+
+function getDependencies () {
+  const packageJson = getPackageInfo()
+  if (!packageJson) return []
   return Object.keys(packageJson.dependencies)
 }
 
@@ -112,10 +128,6 @@ function buildBabelPresets (profile) {
       break
   }
   return presets
-}
-
-function getDevtool () {
-  return 'source-map'
 }
 
 function getBabelPlugins () {
@@ -215,6 +227,7 @@ module.exports = function (basePath) {
       filename: getOutputFileName(),
       publicPath: buildPublicPath(), // Prefix for all the static urls
       libraryTarget: libraryTarget(),
+      devtoolModuleFilenameTemplate: getDevToolFilenameTemplate(),
     },
     externals: getExternals(),
     resolve: {
@@ -231,6 +244,11 @@ module.exports = function (basePath) {
           use: jsLoaders,
           exclude: /(node_modules|bower_components)/,
           include: [PATHS.src],
+        },
+        {
+          test: /\.js$/,
+          use: ['source-map-loader'],
+          enforce: 'pre',
         },
         {
           test: /\.vue$/,
@@ -259,9 +277,9 @@ module.exports = function (basePath) {
       ],
     },
     plugins: plugins,
-    devtool: getDevtool(),
+    devtool: 'source-map',
     devServer: {
       disableHostCheck: true,  // since webpack 2.4.3, a host check is present, remove it.
-    }
+    },
   }
 }
