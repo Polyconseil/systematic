@@ -3,6 +3,11 @@ Changes
 Next version (not yet released)
 -------------------------------
 
+
+Version 1.7.1
+-------------
+- Downgrade 'file-loader' to 0.11.2. ('css-loader' is incompatible with 'file-loader' 1.0.0)
+
 Version 1.7.0
 -------------
 - Add source-map-loader to import dependencie's source maps when building your application.
