@@ -241,7 +241,7 @@ module.exports = function (basePath) {
       rules: [
         {
           test: /\.(js|jsx)/,
-          use: jsLoaders,
+          use: ['cache-loader', ...jsLoaders],
           exclude: /(node_modules|bower_components)/,
           include: [PATHS.src],
         },
@@ -255,19 +255,19 @@ module.exports = function (basePath) {
           loader: 'vue-loader',
           options: {
             loaders: {
-              js: jsLoaders,
-              css: ['vue-style-loader', cssLoader],
-              postcss: ['vue-style-loader', cssLoader, postCssLoader],
+              js: ['cache-loader', ...jsLoaders],
+              css: ['cache-loader', 'vue-style-loader', cssLoader],
+              postcss: ['cache-loader', 'vue-style-loader', cssLoader, postCssLoader],
             },
           },
         },
         {
           test: /\.css/,
-          use: cssRulesAggregator([cssLoader, postCssLoader]),
+          use: ['cache-loader', ...cssRulesAggregator([cssLoader, postCssLoader])],
         },
         {
           test: /\.scss$/,
-          use: cssRulesAggregator([cssLoader, postCssLoader, sassLoader]),
+          use: ['cache-loader', ...cssRulesAggregator([cssLoader, postCssLoader, sassLoader])],
         },
         { test: /\.json/, use: 'json-loader' },
         { test: /\.jade$/, use: 'jade-loader' },
