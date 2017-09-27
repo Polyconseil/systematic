@@ -166,7 +166,7 @@ serve: prepare
 dist: prepare
 	mkdir -p $(OUTPUT_DIR)
 	NODE_ENV=production webpack $(WEBPACK_OPTIONS_CONFIG_FILE) \
-		--no-color --bail --display-modules  -p \
+		--no-color --bail --display-modules \
 		$(WEBPACK_DIST_OPTS) $(WEBPACK_EXTRA_OPTIONS)
 
 # Miscellaneous build commands
