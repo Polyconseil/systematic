@@ -14,7 +14,7 @@ Run tests:
 make test
 ```
 
-### Serve
+### Serve
 
 ```
 make serve
