@@ -205,46 +205,17 @@ module.exports = function (basePath) {
     const extractCSS = new ExtractTextPlugin(getOutputCssFileName())
     plugins.push(extractCSS)
     const uglifyJS = new UglifyPlugin({
-      compress: {
-        angular       : false,
-        booleans      : false,  // not the default
-        cascade       : true,
-        collapse_vars : true,
-        comparisons   : false,  // not the default
-        conditionals  : false,  // not the default
-        dead_code     : true,
-        drop_console  : false,
-        drop_debugger : true,
-        evaluate      : true,
-        expression    : false,
-        global_defs   : {},
-        hoist_funs    : true,
-        hoist_vars    : false,
-        if_return     : false,  // not the default
-        join_vars     : true,
-        keep_fargs    : true,
-        keep_fnames   : false,
-        keep_infinity : false,
-        loops         : true,
-        negate_iife   : true,
-        passes        : 1,
-        properties    : true,
-        pure_getters  : true && "strict",
-        pure_funcs    : null,
-        reduce_vars   : true,
-        screw_ie8     : true,
-        sequences     : true,
-        side_effects  : true,
-        switches      : true,
-        top_retain    : null,
-        unsafe        : false,
-        unsafe_comps  : false,
-        unsafe_math   : false,
-        unsafe_proto  : false,
-        unsafe_regexp : false,
-        unused        : true,
-        warnings      : true,
-      }
+      compress : {
+        warnings      : false,
+        booleans      : false,
+        comparisons   : false,
+        conditionals  : false,
+        if_return     : false,
+      },
+      parallel: true,
+      sourceMap: true,
+      mangle : { keep_fnames : true },
+      comments : false,
     })
     plugins.push(uglifyJS)
     cssRulesAggregator = function (loaders) {
