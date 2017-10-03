@@ -278,11 +278,11 @@ module.exports = function (basePath) {
         },
         {
           test: /\.css/,
-          use: ['cache-loader', ...cssRulesAggregator([cssLoader, postCssLoader])],
+          use: cssRulesAggregator([cssLoader, postCssLoader]),
         },
         {
           test: /\.scss$/,
-          use: ['cache-loader', ...cssRulesAggregator([cssLoader, postCssLoader, sassLoader])],
+          use: cssRulesAggregator([cssLoader, postCssLoader, sassLoader]),
         },
         { test: /\.json/, use: 'json-loader' },
         { test: /\.jade$/, use: 'jade-loader' },
