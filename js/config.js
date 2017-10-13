@@ -12,6 +12,7 @@ defaultsDeep(systematic, {
     output_dir: 'dist',
     public_path: '/',
     enable_filename_hashing: true,
+    enable_babel: true,
   },
   serve: {
     // FIXME(vperron): This configuration comes in double with the one from the makefile.

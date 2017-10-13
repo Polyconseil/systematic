@@ -154,14 +154,18 @@ module.exports = function (basePath) {
 
   const plugins = []
 
-  const jsLoaders = [{
-    loader: 'babel-loader',
-    options: {
-      presets: buildBabelPresets(config.build.profile),
-      plugins: getBabelPlugins(),
-      comments: false,
-    },
-  }]
+  const jsLoaders = []
+
+  if (config.build.type !== enums.buildTypes.LIBRARY && config.build.enable_babel) {
+    jsLoaders.push({
+      loader: 'babel-loader',
+      options: {
+        presets: buildBabelPresets(config.build.profile),
+        plugins: getBabelPlugins(),
+        comments: false,
+      },
+    })
+  }
 
   const cssLoader = {
     loader: 'css-loader',
