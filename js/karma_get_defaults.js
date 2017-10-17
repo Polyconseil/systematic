@@ -2,6 +2,7 @@ const path = require('path')
 
 const systematicConfig = require('./config')
 
+process.env.CHROME_BIN = require('puppeteer').executablePath()
 
 module.exports = function (basePath, _webpackConfig) {
 
@@ -19,7 +20,7 @@ module.exports = function (basePath, _webpackConfig) {
     autoWatch: true, // Without this _in the config file_, plugins do not reload automatically
     browserNoActivityTimeout: 100000, // in ms, 100 seconds
 
-    frameworks: ['jasmine', 'jasmine-matchers', 'phantomjs-shim'],
+    frameworks: ['jasmine', 'jasmine-matchers'],
 
     files: [
       basePath + '/node_modules/babel-polyfill/dist/polyfill.js',  // polyfill if we don't include the entrypoint
@@ -32,8 +33,7 @@ module.exports = function (basePath, _webpackConfig) {
       'karma-jasmine-html-reporter',
       'karma-junit-reporter',
       'karma-webpack-error-reporter',
-      'karma-phantomjs-launcher',
-      'karma-phantomjs-shim',
+      'karma-chrome-launcher',
       'karma-sourcemap-loader',
       'karma-webpack',
     ],
@@ -43,7 +43,7 @@ module.exports = function (basePath, _webpackConfig) {
       useBrowserName: false,
     },
 
-    browsers: ['PhantomJS'],
+    browsers: ['ChromeHeadless'],
     reporters: ['webpack-error'],
 
     webpack: webpackConfig,
