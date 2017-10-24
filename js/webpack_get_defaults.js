@@ -14,10 +14,10 @@ const enums = require('./config_choices')
 
 const PRODUCTION_MODE = (process.env.NODE_ENV === 'production')
 
-function getPackageInfo () {
+function getPackageInfo (basePath) {
   let packageJson
   try {
-    return require('package.json')
+    return require(path.join(basePath, 'package.json'))
   } catch (e) {
     return null
   }
@@ -42,35 +42,35 @@ function libraryTarget () {
   }
 }
 
-function getDevToolFilenameTemplate () {
+function getDevToolFilenameTemplate (basePath) {
   switch (config.build.type) {
     case enums.buildTypes.LIBRARY:
     case enums.buildTypes.COMPONENT:
-      const packageJson = getPackageInfo()
+      const packageJson = getPackageInfo(basePath)
       return `${packageJson.name}/[resource-path]`
     default:
       return 'webpack:///[resource-path]'
   }
 }
 
-function getDependencies () {
-  const packageJson = getPackageInfo()
+function getDependencies (basePath) {
+  const packageJson = getPackageInfo(basePath)
   if (!packageJson) return []
   return Object.keys(packageJson.dependencies)
 }
 
-function getExternals () {
+function getExternals (basePath) {
   // All deps of a library or component must be installed or available in the application context.
   // This avoids duplicated deps and version conflicts
   switch (config.build.type) {
     case enums.buildTypes.COMPONENT:
       if (PRODUCTION_MODE) {
-        return getDependencies()
+        return getDependencies(basePath)
       } else {
         return []
       }
     case enums.buildTypes.LIBRARY:
-      return getDependencies()
+      return getDependencies(basePath)
     default:
       return []
   }
@@ -246,9 +246,9 @@ module.exports = function (basePath) {
       filename: getOutputFileName(),
       publicPath: buildPublicPath(), // Prefix for all the static urls
       libraryTarget: libraryTarget(),
-      devtoolModuleFilenameTemplate: getDevToolFilenameTemplate(),
+      devtoolModuleFilenameTemplate: getDevToolFilenameTemplate(basePath),
     },
-    externals: getExternals(),
+    externals: getExternals(basePath),
     resolve: {
       extensions: ['.js', '.vue', '.json'],
       modules: [
