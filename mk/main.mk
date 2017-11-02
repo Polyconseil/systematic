@@ -164,10 +164,14 @@ serve: prepare
 
 # Don't minify because it causes issues, see https://github.com/Polyconseil/systematic/issues/13
 dist: prepare
+ifeq ($(BUILD_TYPE),library)
+	@echo "Doing nothing, it's a library. Export the entry point in your package.json!"
+else
 	mkdir -p $(OUTPUT_DIR)
 	NODE_ENV=production webpack $(WEBPACK_OPTIONS_CONFIG_FILE) \
 		--no-color --bail --display-modules \
 		$(WEBPACK_DIST_OPTS) $(WEBPACK_EXTRA_OPTIONS)
+endif
 
 # Miscellaneous build commands
 
