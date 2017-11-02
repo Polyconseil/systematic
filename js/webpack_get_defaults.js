@@ -269,11 +269,6 @@ module.exports = function (basePath) {
           include: [PATHS.src],
         },
         {
-          test: /\.js$/,
-          use: ['source-map-loader'],
-          enforce: 'pre',
-        },
-        {
           test: /\.vue$/,
           loader: 'vue-loader',
           include: PATHS.src,
