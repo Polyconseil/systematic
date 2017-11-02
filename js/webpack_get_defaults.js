@@ -134,7 +134,6 @@ function buildBabelPresets (profile) {
 
 function getBabelPlugins () {
   const plugins = [
-    'transform-strict-mode',
     ['transform-runtime', {polyfill: false}],
     'transform-class-properties',
   ]

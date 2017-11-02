@@ -22,7 +22,6 @@ module.exports = function (basePath, _webpackConfig) {
     frameworks: ['jasmine', 'jasmine-matchers'],
 
     files: [
-      basePath + '/node_modules/babel-polyfill/dist/polyfill.js',  // polyfill if we don't include the entrypoint
       testFiles,
     ],
 
