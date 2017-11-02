@@ -181,6 +181,7 @@ module.exports = function (basePath) {
   const postCssLoader = {
     loader: 'postcss-loader',
     options: {
+      ident: 'postcss',
       plugins: function () {
         return [
           require('postcss-import')({  // This plugin enables @import rule in CSS files.
