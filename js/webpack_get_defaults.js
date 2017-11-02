@@ -8,6 +8,7 @@ const path = require('path')
 const HtmlPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyPlugin = require('uglifyjs-webpack-plugin')
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 
 const config = require('./config')
 const enums = require('./config_choices')
@@ -152,7 +153,10 @@ module.exports = function (basePath) {
     dist: path.join(basePath, config.build.output_dir),
   }
 
-  const plugins = []
+  const plugins = [
+    new HardSourceWebpackPlugin(),
+  ]
+
 
   const jsLoaders = []
 
@@ -272,6 +276,7 @@ module.exports = function (basePath) {
         {
           test: /\.vue$/,
           loader: 'vue-loader',
+          include: PATHS.src,
           options: {
             loaders: {
               js: ['cache-loader', ...jsLoaders],
@@ -282,15 +287,17 @@ module.exports = function (basePath) {
         },
         {
           test: /\.css/,
+          include: PATHS.src,
           use: cssRulesAggregator([cssLoader, postCssLoader]),
         },
         {
           test: /\.scss$/,
+          include: PATHS.src,
           use: cssRulesAggregator([cssLoader, postCssLoader, sassLoader]),
         },
         { test: /\.json/, use: 'json-loader' },
-        { test: /\.jade$/, use: 'jade-loader' },
-        { test: /\.html$/, use: 'html-loader' },
+        { test: /\.jade$/, include: PATHS.src, use: 'jade-loader' },
+        { test: /\.html$/, include: PATHS.src, use: 'html-loader' },
         { test: /\.(png|gif|jp(e)?g)$/, use: 'url-loader?limit=50000' },
         { test: /\.(ttf|eot|svg|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: 'url-loader?limit=50000' },
       ],
