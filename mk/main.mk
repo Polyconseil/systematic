@@ -140,7 +140,7 @@ syntax: eslint
 eslint:
 	eslint --config $(ESLINTRC) $(ESLINTOPTIONS) $(SRC_DIR)
 
-test: prepare syntax
+test:
 	karma start --reporters webpack-error --single-run --no-auto-watch $(KARMA_OPTIONS_CONFIG_FILE)
 
 jenkins-test: prepare syntax
