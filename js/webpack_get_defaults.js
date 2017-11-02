@@ -272,7 +272,7 @@ module.exports = function (basePath) {
         {
           test: /\.vue$/,
           loader: 'vue-loader',
-          include: PATHS.src,
+          include: [PATHS.src, ...PATHS.es_libs],
           options: {
             loaders: {
               js: ['cache-loader', ...jsLoaders],
@@ -282,18 +282,16 @@ module.exports = function (basePath) {
           },
         },
         {
-          test: /\.css/,
-          include: PATHS.src,
+          test: /\.css$/,
           use: cssRulesAggregator([cssLoader, postCssLoader]),
         },
         {
           test: /\.scss$/,
-          include: PATHS.src,
           use: cssRulesAggregator([cssLoader, postCssLoader, sassLoader]),
         },
         { test: /\.json/, use: 'json-loader' },
-        { test: /\.jade$/, include: PATHS.src, use: 'jade-loader' },
-        { test: /\.html$/, include: PATHS.src, use: 'html-loader' },
+        { test: /\.jade$/, use: 'jade-loader' },
+        { test: /\.html$/, use: 'html-loader' },
         { test: /\.(png|gif|jp(e)?g)$/, use: 'url-loader?limit=50000' },
         { test: /\.(ttf|eot|svg|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: 'url-loader?limit=50000' },
       ],
