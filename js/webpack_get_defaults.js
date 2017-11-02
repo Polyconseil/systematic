@@ -214,17 +214,20 @@ module.exports = function (basePath) {
     const extractCSS = new ExtractTextPlugin(getOutputCssFileName())
     plugins.push(extractCSS)
     const uglifyJS = new UglifyPlugin({
-      compress : {
-        warnings      : false,
-        booleans      : false,
-        comparisons   : false,
-        conditionals  : false,
-        if_return     : false,
-      },
       parallel: true,
       sourceMap: true,
-      mangle : { keep_fnames : true },
-      comments : false,
+      uglifyOptions: {
+        compress : {
+          warnings      : false,
+          booleans      : false,
+          comparisons   : false,
+          conditionals  : false,
+          if_return     : false,
+        },
+        mangle : {
+          keep_fnames : true,
+        },
+      }
     })
     plugins.push(uglifyJS)
     cssRulesAggregator = function (loaders) {
