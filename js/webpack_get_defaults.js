@@ -229,6 +229,7 @@ module.exports = function (basePath) {
     plugins.push(uglifyJS)
     cssRulesAggregator = function (loaders) {
       return extractCSS.extract({
+        fallback: 'style-loader',
         use: loaders,
       })
     }
@@ -264,7 +265,7 @@ module.exports = function (basePath) {
     module: {
       rules: [
         {
-          test: /\.(js|jsx)/,
+          test: /\.(js|jsx)$/,
           use: ['cache-loader', ...jsLoaders],
           include: [PATHS.src, ...PATHS.es_libs],
         },
