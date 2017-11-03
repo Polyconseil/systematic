@@ -149,7 +149,6 @@ module.exports = function (basePath) {
 
   const PATHS = {
     src: path.join(basePath, config.build.src_dir),
-    es_libs: config.build.es_libs.map((es_lib) => path.join(basePath, 'node_modules', es_lib)),
     dist: path.join(basePath, config.build.output_dir),
   }
 
@@ -270,12 +269,12 @@ module.exports = function (basePath) {
         {
           test: /\.(js|jsx)$/,
           use: ['cache-loader', ...jsLoaders],
-          include: [PATHS.src, ...PATHS.es_libs],
+          include: [PATHS.src],
         },
         {
           test: /\.vue$/,
           loader: 'vue-loader',
-          include: [PATHS.src, ...PATHS.es_libs],
+          include: [PATHS.src],
           options: {
             loaders: {
               js: ['cache-loader', ...jsLoaders],
