@@ -74,6 +74,10 @@ The file structure expected for your application or library.
   ; Optional, default is true
   ; Whether to hash the generated bundle.js (relevant only for type = application)
   enableFileNameHashing = false
+  ; Optional, default is []
+  ; Adds entries to the noParse config of webpack; large libraries without a require can go there.
+  ; It's only an optimization to speed up compilation in some cases, but it may break the build.
+  no_parse[] = vuetify
 
   [serve]
   ; Interface to listen
@@ -229,37 +233,38 @@ Systematic will set all dependencies as webpack "externals", which means they ha
 # Polyfilling
 
 Systematic uses [Babel](https://github.com/babel/babel) to transpile ES6, ES6+ code to plain ES5.
-Polyfilling is then needed:
-1. For methods that can't be transpiled
-2. To ensure expected ES5 features are present, whatever the browser
 
-An example of what **1.** means:
+Polyfilling is still needed:
+
+1. For methods that can't be transpiled: when Babel can't guess the correct transpilation for instance.
+
+  ```javascript
+  console.log('blah'.repeat(2))  // Dynamically evaluated so transpilation lets it untouched
   ```
-  console.log('blah'.repeat(2))  // Dynamically dispatched so transpilation lets it untouched
-  ```
-Polyfilling actually consists in using a standard library.
 
-## Tests
-
-Systematic polyfills `Phantom JS` with Babel `babel-polyfill` (as it lacks 'Promises' for example).
+2. To ensure expected ES6 features are present, whatever browser is used (Array.contains, for instance)
 
 ## Applications
 
-If you build an app, you have two solutions:
+You have two solutions:
 1. Use `babel-polyfill` just like in tests. You have to include it in the app entry point, before any other import:
+
   ```javascript
   import 'babel-polyfill'
   ```
+This has the advantage of simplicity and consistency across browsers but it pollutes the global scope quite broadly.
+
 2. Import what you need from `core-js` (on which `babel-polyfill` is built) on a per case basis:
+
   ```javascript
   import _repeat from 'core-js/library/fn/string/repeat';
   const myStr = _repeat('blah', 2);
   ```
-**(1)** has the advantage of simplicity and consistency across browsers but it pollutes the global scope and burdens your app. So **(1)** is advised as a first approach and **(2)** when you feel like it's time to make optimizations.
+This method is preferred as you can precisely choose what's being added to the environment. But it's more tedious.
 
 ## Libraries
-
-Avoid a global polyfill as it touches global variables. Use imports from `core-js` as described above.
+Avoid a global polyfill as it modifies global entities such as "Function" or "String".
+Use precise imports from `core-js` as described above if needed.
 
 
 # Troubleshooting
