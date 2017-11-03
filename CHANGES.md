@@ -3,6 +3,13 @@ Changes
 Next version (not yet released)
 -------------------------------
 
+Version 1.9.0
+-------------
+- Do not "build" libraries anymore. Libraries are distributed as modules.
+- Speedup builds: use Chrome Headless & various optimizations
+- Remove useless Babel polyfill & Karma.
+- Add a non-mandatory "noParse" field in the config to not parse some huge dependencies.
+- Massive dependencies update.
 
 Version 1.7.1
 -------------
