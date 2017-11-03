@@ -145,6 +145,15 @@ function getBabelPlugins () {
   return plugins
 }
 
+function checkNoParse (name) {
+  for (let entry of config.build.no_parse) {
+    if (name.indexOf(path.join('node_modules', entry)) !== -1) {
+      return true
+    }
+  }
+  return false
+}
+
 module.exports = function (basePath) {
 
   const PATHS = {
@@ -155,7 +164,6 @@ module.exports = function (basePath) {
   const plugins = [
     new HardSourceWebpackPlugin(),
   ]
-
 
   const jsLoaders = []
 
@@ -265,6 +273,7 @@ module.exports = function (basePath) {
       ],
     },
     module: {
+      noParse: checkNoParse,
       rules: [
         {
           test: /\.(js|jsx)$/,
