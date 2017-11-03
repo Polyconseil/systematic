@@ -2,7 +2,9 @@ const path = require('path')
 
 const systematicConfig = require('./config')
 
-process.env.CHROME_BIN = require('puppeteer').executablePath()
+if (!process.env.CHROME_BIN) {
+  process.env.CHROME_BIN = require('puppeteer').executablePath()
+}
 
 module.exports = function (basePath, _webpackConfig) {
 

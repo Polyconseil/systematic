@@ -3,6 +3,10 @@ Changes
 Next version (not yet released)
 -------------------------------
 
+Version 1.9.1
+-------------
+- Karma conf: Allow CHROME_BIN as environment variable
+
 Version 1.9.0
 -------------
 - Do not "build" libraries anymore. Libraries are distributed as modules.
