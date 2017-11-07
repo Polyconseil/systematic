@@ -43,7 +43,13 @@ module.exports = function (basePath, _webpackConfig) {
       useBrowserName: false,
     },
 
-    browsers: ['ChromeHeadless'],
+    browsers: [process.env.CI ? 'ChromeWithoutSandbox' : 'ChromeHeadless'],
+    customLaunchers: {
+      ChromeWithoutSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
     reporters: ['webpack-error'],
 
     webpack: webpackConfig,
