@@ -1,5 +1,7 @@
 const path = require('path')
 
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+
 const systematicConfig = require('./config')
 
 if (!process.env.CHROME_BIN) {
@@ -13,6 +15,7 @@ module.exports = function (basePath, _webpackConfig) {
   webpackConfig.devtool = 'eval'  // fastest source map ever
   webpackConfig.entry = function(){return {}}  // Reset the webpack entry point, test files are added separatly by karma-webpack
   webpackConfig.externals = []  // Keep all the dependencies during the tests
+  webpackConfig.plugins.push(new HardSourceWebpackPlugin())
 
   const testFiles = path.join(basePath, systematicConfig.test.file_pattern)
 

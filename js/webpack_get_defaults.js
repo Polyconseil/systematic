@@ -8,7 +8,6 @@ const path = require('path')
 const HtmlPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyPlugin = require('uglifyjs-webpack-plugin')
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 
 const config = require('./config')
 const enums = require('./config_choices')
@@ -161,9 +160,7 @@ module.exports = function (basePath) {
     dist: path.join(basePath, config.build.output_dir),
   }
 
-  const plugins = [
-    new HardSourceWebpackPlugin(),
-  ]
+  const plugins = []
 
   const jsLoaders = []
 
