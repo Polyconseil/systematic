@@ -73,6 +73,7 @@
     "karma-webpack": "2.0.9",
     "karma-webpack-error-reporter": "0.0.3",
     "lodash.defaultsdeep": "^4.6.0",
+    "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "ngtemplate-loader": "2.0.1",
     "node-sass": "4.7.2",
