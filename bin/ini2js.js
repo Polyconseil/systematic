@@ -4,10 +4,19 @@
 
 'use strict';
 const fs = require('fs');
-const ini = require('ini');
-const minimist = require('minimist');
 const util = require('util');
 
+const ini = require('ini');
+const minimist = require('minimist');
+
+
+function cast(value) {
+  try {
+    return JSON.parse(value.toLowerCase());
+  } catch (e) {
+   return value;
+  }
+}
 
 // Parameters
 const argv = minimist(process.argv.slice(2));
@@ -21,7 +30,8 @@ filenames.forEach(function(filename) {
   for (var section in parsed) {
     config[section] = config[section] || {};
     for (var key in parsed[section]) {
-      config[section][key] = parsed[section][key];
+      const strValue = parsed[section][key];
+      config[section][key] = cast(strValue);
     }
   }
 });

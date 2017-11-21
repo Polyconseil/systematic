@@ -1,6 +1,11 @@
 Changes
 =======
 
+Version 1.10.3
+--------------
+- Fix boolean cast for ini files
+
+
 Version 1.10.1
 --------------
 - Fix eslint-plugin-html dependency on eslint
