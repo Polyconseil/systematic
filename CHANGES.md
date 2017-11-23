@@ -2,6 +2,15 @@ Changes
 =======
 Next version (not yet released)
 -------------------------------
+- Completely remove HardSourcePlugin
+
+Version 1.9.3
+-------------
+- Keep HardSourcePlugin only for tests
+
+Version 1.9.2
+-------------
+- Karma: Enable running Chrome without a sandbox
 
 Version 1.9.1
 -------------
