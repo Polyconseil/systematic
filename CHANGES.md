@@ -2,6 +2,9 @@ Changes
 =======
 Next version (not yet released)
 -------------------------------
+
+Version 1.9.4
+-------------
 - Completely remove HardSourcePlugin
 
 Version 1.9.3
