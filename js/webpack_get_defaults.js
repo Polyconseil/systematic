@@ -5,6 +5,8 @@
 const fs = require('fs')
 const path = require('path')
 
+const webpack = require('webpack')
+
 const HtmlPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyPlugin = require('uglifyjs-webpack-plugin')
@@ -240,6 +242,7 @@ module.exports = function (basePath) {
         use: loaders,
       })
     }
+    plugins.push(new webpack.DefinePlugin({'process.env': {NODE_ENV: '"production"'}}))
   }
 
   switch (config.build.type) {
