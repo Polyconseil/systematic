@@ -2,6 +2,7 @@ Changes
 =======
 Next version (not yet released)
 -------------------------------
+- Fix a regression preventing NODE_ENV to be passed to uglifyjs
 
 Version 1.9.4
 -------------
