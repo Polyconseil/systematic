@@ -252,6 +252,11 @@ module.exports = function (basePath) {
       break
   }
 
+  const providePlugin = new webpack.ProvidePlugin({
+    $: 'jquery',
+  })
+  plugins.push(providePlugin)
+
   return {
     cache: true,
     context: basePath,
