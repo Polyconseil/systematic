@@ -308,7 +308,7 @@ module.exports = function (basePath) {
       ],
     },
     plugins: plugins,
-    devtool: 'source-map',
+    devtool: 'cheap-module-inline-source-map',
     devServer: {
       disableHostCheck: true,  // since webpack 2.4.3, a host check is present, remove it.
     },

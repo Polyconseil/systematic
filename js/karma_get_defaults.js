@@ -10,7 +10,6 @@ module.exports = function (basePath, _webpackConfig) {
 
   const webpackConfig = _webpackConfig || require('./webpack_get_defaults')(basePath)
 
-  webpackConfig.devtool = 'eval'  // fastest source map ever
   webpackConfig.entry = function(){return {}}  // Reset the webpack entry point, test files are added separatly by karma-webpack
   webpackConfig.externals = []  // Keep all the dependencies during the tests
 
