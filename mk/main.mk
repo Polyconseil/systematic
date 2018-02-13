@@ -6,7 +6,6 @@ NODE_BINDIR ?= ./node_modules/.bin/
 SHELL ?= /bin/bash -o pipefail
 SYSTEMATIC_PATH ?= node_modules/systematic/
 WEBPACK ?= ./node_modules/webpack/bin/webpack.js
-WEBPACK_DEV_SERVER ?= ./node_modules/webpack-dev-server/bin/webpack-dev-server.js
 WEBPACK_DIST_OPTS := $(if $(CI),,--progress)
 
 CONF_INI ?= systematic.ini
