@@ -1,7 +1,13 @@
 Changes
 =======
-Next version (not yet released)
--------------------------------
+
+Version 1.10.0
+--------------
+- Fix a bug with source maps: use inline source maps.
+- Bump every package; allow for Vue message extraction (also if template language is pug/jade)
+
+Version 1.9.5
+-------------
 - Fix a regression preventing NODE_ENV to be passed to uglifyjs
 
 Version 1.9.4
