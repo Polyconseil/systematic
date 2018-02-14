@@ -50,6 +50,7 @@
     "cache-loader": "^1.2.0",
     "css-loader": "0.28.9",
     "easygettext": "2.3.0",
+    "eslint": "^4.7.0",
     "eslint-plugin-html": "4.0.2",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "1.1.6",

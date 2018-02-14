@@ -1,6 +1,10 @@
 Changes
 =======
 
+Next version
+--------------
+- Fix eslint-plugin-html dependency on eslint
+
 Version 1.10.0
 --------------
 - Fix a bug with source maps: use inline source maps.
