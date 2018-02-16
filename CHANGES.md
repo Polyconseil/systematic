@@ -1,7 +1,7 @@
 Changes
 =======
 
-Next version
+Version 1.10.1
 --------------
 - Fix eslint-plugin-html dependency on eslint
 
