@@ -3,4 +3,3 @@ npm-debug.log
 sample/dist
 *.swp
 .idea/
-package-lock.json
