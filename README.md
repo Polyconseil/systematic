@@ -92,6 +92,8 @@ The file structure expected for your application or library.
   port = 8080
 
   [test]
+  ; Optional, default is karma but maybe jest in the future
+  engine = karma
   ; Optional, default: <YOUR_SRC_DIR>/**/*tests.js
   ; All files matching this pattern will be processed with karma
   ; It is relative to the root given to the karma config, usually the project root

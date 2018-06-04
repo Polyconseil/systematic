@@ -55,7 +55,7 @@ SERVE_HOST := $(if $(SERVE_HOST),$(SERVE_HOST),0.0.0.0)
 SERVE_PORT := $(call readini,$(CONF_INI),serve,port)
 SERVE_PORT := $(if $(SERVE_PORT),$(SERVE_PORT),8080)
 
-WEBPACK_EXTRA_OPTIONS ?= 
+WEBPACK_EXTRA_OPTIONS ?=
 
 TEST_PORT ?= 8081
 
@@ -65,10 +65,24 @@ ifeq ($(wildcard webpack.config.js),)
 WEBPACK_OPTIONS_CONFIG_FILE ?= --config $(SYSTEMATIC_PATH)default_config/webpack.config.js
 endif
 
-ifeq ($(wildcard karma.conf.js),)
-KARMA_OPTIONS_CONFIG_FILE ?= $(SYSTEMATIC_PATH)default_config/karma.conf.js
-else
-KARMA_OPTIONS_CONFIG_FILE ?= karma.conf.js
+# testing default config
+
+TEST_ENGINE ?= $(call readini,$(CONF_INI),test,engine)
+TEST_ENGINE := $(if $(TEST_ENGINE),$(TEST_ENGINE),karma)
+
+ifeq ($(TEST_ENGINE),karma)
+	ifeq ($(wildcard karma.conf.js),)
+		KARMA_OPTIONS_CONFIG_FILE ?= $(SYSTEMATIC_PATH)default_config/karma.conf.js
+	else
+		KARMA_OPTIONS_CONFIG_FILE ?= karma.conf.js
+	endif
+endif
+ifeq ($(TEST_ENGINE),jest)
+	ifeq ($(wildcard jest.conf.js),)
+		JEST_OPTIONS_CONFIG_FILE ?= $(SYSTEMATIC_PATH)default_config/jest.conf.js
+	else
+		JEST_OPTIONS_CONFIG_FILE ?= jest.conf.js
+	endif
 endif
 
 # Other variables
@@ -140,13 +154,28 @@ eslint:
 	eslint --config $(ESLINTRC) $(ESLINTOPTIONS) $(SRC_DIR)
 
 test:
+ifeq ($(TEST_ENGINE),karma)
 	karma start --reporters webpack-error --single-run --no-auto-watch $(KARMA_OPTIONS_CONFIG_FILE)
+endif
+ifeq ($(TEST_ENGINE),jest)
+	jest --config=$(JEST_OPTIONS_CONFIG_FILE) --no-cache
+endif
 
 jenkins-test: prepare syntax
-	karma start  --reporters junit,webpack-error --single-run --no-auto-watch --no-colors $(KARMA_OPTIONS_CONFIG_FILE)
+ifeq ($(TEST_ENGINE),karma)
+	karma start --reporters junit,webpack-error --single-run --no-auto-watch --no-colors $(KARMA_OPTIONS_CONFIG_FILE)
+endif
+ifeq ($(TEST_ENGINE),jest)
+	jest --reporters junit --config=$(JEST_OPTIONS_CONFIG_FILE) --no-cache
+endif
 
 livetest: prepare
-	karma start  --reporters webpack-error,kjhtml --no-single-run --devtool source-map $(KARMA_OPTIONS_CONFIG_FILE)
+ifeq ($(TEST_ENGINE),karma)
+	karma start --reporters webpack-error,kjhtml --no-single-run --devtool source-map $(KARMA_OPTIONS_CONFIG_FILE)
+endif
+ifeq ($(TEST_ENGINE),jest)
+	jest --reporters kjhtml --config=$(JEST_OPTIONS_CONFIG_FILE)
+endif
 
 makemessages: /tmp/template.pot
 
