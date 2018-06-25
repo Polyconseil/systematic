@@ -14,6 +14,7 @@ defaultsDeep(systematic, {
     enable_filename_hashing: true,
     enable_babel: true,
     no_parse: [],
+    keep_dependency: [],
   },
   serve: {
     // FIXME(vperron): This configuration comes in double with the one from the makefile.

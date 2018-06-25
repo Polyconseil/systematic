@@ -78,6 +78,11 @@ The file structure expected for your application or library.
   ; Adds entries to the noParse config of webpack; large libraries without a require can go there.
   ; It's only an optimization to speed up compilation in some cases, but it may break the build.
   no_parse[] = vuetify
+  ; Optional, default is []
+  ; In "component" or "library" mode, this enables you to actually IMPORT adependency within the bundle
+  ; instead of having them all out. For instance this may be useful for undistributed dependencies, or
+  ; proprietary ones.
+  keep_dependency[] = lodash
 
   [serve]
   ; Interface to listen
@@ -222,6 +227,15 @@ It's possible to override the build or test config by adding config files at the
 
 A component is halfway between a library and an application. You get to have an index.html page that is useful for development, but the dependencies
 aren't bundled with the final package, just like a library.
+
+You also have the choice of having the component used directly within a page, without being required from within another JS application that
+goes through webpack.
+
+In that regard, you have to pay attention to NOT import your dependencies using Webpack-based `import` feature and use the `/* global _, L */`
+notation in your sources (use `import` in your tests, why not) so that your application will try and find those symbols on `window`;
+also, use the `keep_dependency` feature in your configuration file for any dependency yo uwant bundled with.
+
+
 
 # Building libraries
 

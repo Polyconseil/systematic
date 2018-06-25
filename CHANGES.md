@@ -1,6 +1,14 @@
 Changes
 =======
 
+Version 1.12.0
+--------------
+- Add a "keep_dependency" feature and document the "component" target better.
+
+Version 1.11.0
+--------------
+- Fix an issue with easygettext and node10
+
 Version 1.10.3
 --------------
 - Fix boolean cast for ini files

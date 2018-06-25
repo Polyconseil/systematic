@@ -64,18 +64,20 @@ function getDependencies (basePath) {
 function getExternals (basePath) {
   // All deps of a library or component must be installed or available in the application context.
   // This avoids duplicated deps and version conflicts
+  let externals = []
   switch (config.build.type) {
     case enums.buildTypes.COMPONENT:
       if (PRODUCTION_MODE) {
-        return getDependencies(basePath)
+        externals = getDependencies(basePath)
       } else {
         return []
       }
     case enums.buildTypes.LIBRARY:
-      return getDependencies(basePath)
+      externals = getDependencies(basePath)
     default:
       return []
   }
+  return externals.filter((item) => !config.build.keep_dependency.contains(item))
 }
 
 
