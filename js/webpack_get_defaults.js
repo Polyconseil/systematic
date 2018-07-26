@@ -8,8 +8,7 @@ const path = require('path')
 const webpack = require('webpack')
 
 const HtmlPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const UglifyPlugin = require('uglifyjs-webpack-plugin')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const config = require('./config')
@@ -141,7 +140,9 @@ function buildBabelPresets (profile) {
 function getBabelPlugins () {
   const plugins = [
     ['transform-runtime', {polyfill: false}],
+    'transform-object-rest-spread',
     'transform-class-properties',
+    'transform-async-generator-functions',
   ]
 
   if (config.build.type === enums.buildTypes.APPLICATION && config.build.profile === 'angular') {
@@ -192,6 +193,7 @@ module.exports = function (basePath) {
     loader: 'css-loader',
     options: {
       localIdentName: '[path][name]__[local]--[hash:base64:5]',
+      importLoaders: 2,  // let postcss/scss resolve @import
     },
   }
   const postCssLoader = {
@@ -199,10 +201,10 @@ module.exports = function (basePath) {
     options: {
       ident: 'postcss',
       sourceMap: true,
-      plugins: function () {
+      plugins: function (loader) {
         return [
           require('postcss-import')({  // This plugin enables @import rule in CSS files.
-            path: [basePath],  // Use the same path for CSS and JS imports
+            path: [loader.resourcePath, basePath],  // Use the same path for CSS and JS imports
           }),
           require('postcss-cssnext')({
             features: {
@@ -222,37 +224,18 @@ module.exports = function (basePath) {
     },
   }
 
-  let cssRulesAggregator = function (loaders) {
-    return ['style-loader'].concat(loaders)
+  let baseCssLoaders = ['style-loader']
+
+  if (config.build.profile === 'vue') {
+    baseCssLoaders = ['vue-style-loader']
   }
 
   if (PRODUCTION_MODE) {
-    const extractCSS = new ExtractTextPlugin(getOutputCssFileName())
-    plugins.push(extractCSS)
-    const uglifyJS = new UglifyPlugin({
-      parallel: true,
-      sourceMap: true,
-      uglifyOptions: {
-        compress : {
-          warnings      : false,
-          booleans      : false,
-          comparisons   : false,
-          conditionals  : false,
-          if_return     : false,
-        },
-        mangle : {
-          keep_fnames : true,
-        },
-      }
+    const extractCSS = new MiniCssExtractPlugin({
+      filename: getOutputCssFileName()
     })
-    plugins.push(uglifyJS)
-    cssRulesAggregator = function (loaders) {
-      return extractCSS.extract({
-        fallback: 'style-loader',
-        use: loaders,
-      })
-    }
-    plugins.push(new webpack.DefinePlugin({'process.env': {NODE_ENV: '"production"'}}))
+    plugins.push(extractCSS)
+    baseCssLoaders = [MiniCssExtractPlugin.loader]
   }
 
   switch (config.build.type) {
@@ -276,7 +259,7 @@ module.exports = function (basePath) {
     },
     externals: getExternals(basePath),
     resolve: {
-      extensions: ['.js', '.vue', '.json'],
+      extensions: ['.vue', '.js'],
       modules: [
         path.resolve(basePath),
         nodeModulesPath,
@@ -287,30 +270,21 @@ module.exports = function (basePath) {
       rules: [
         {
           test: /\.(js|jsx)$/,
-          use: ['cache-loader', ...jsLoaders],
+          use: jsLoaders,
           include: [PATHS.src],
         },
         {
           test: /\.vue$/,
           loader: 'vue-loader',
-          include: [PATHS.src],
-          options: {
-            loaders: {
-              js: ['cache-loader', ...jsLoaders],
-              css: ['cache-loader', 'vue-style-loader', cssLoader],
-              postcss: ['cache-loader', 'vue-style-loader', cssLoader, postCssLoader],
-            },
-          },
         },
         {
           test: /\.css$/,
-          use: cssRulesAggregator([cssLoader, postCssLoader]),
+          use: baseCssLoaders.concat([cssLoader, postCssLoader]),
         },
         {
           test: /\.scss$/,
-          use: cssRulesAggregator([cssLoader, postCssLoader, sassLoader]),
+          use: baseCssLoaders.concat([cssLoader, postCssLoader, sassLoader]),
         },
-        { test: /\.json/, use: 'json-loader' },
         { test: /\.jade$/, use: 'jade-loader' },
         { test: /\.html$/, use: 'html-loader' },
         { test: /\.(png|gif|jp(e)?g)$/, use: 'url-loader?limit=50000' },

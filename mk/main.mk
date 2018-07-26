@@ -156,7 +156,7 @@ settings: $(OUTPUT_DIR)/app.settings.js
 
 serve: prepare
 	mkdir -p $(OUTPUT_DIR)
-	webpack-dev-server --content-base $(OUTPUT_DIR) --hot --inline \
+	webpack-dev-server --mode development --content-base $(OUTPUT_DIR) --hot --inline \
 		--port $(SERVE_PORT) --host $(SERVE_HOST) \
 		--colors --bail --progress --output-pathinfo \
 		$(WEBPACK_EXTRA_OPTIONS)
@@ -167,7 +167,7 @@ ifeq ($(BUILD_TYPE),library)
 	@echo "Doing nothing, it's a library. Export the entry point in your package.json!"
 else
 	mkdir -p $(OUTPUT_DIR)
-	NODE_ENV=production webpack $(WEBPACK_OPTIONS_CONFIG_FILE) \
+	NODE_ENV=production webpack --mode production $(WEBPACK_OPTIONS_CONFIG_FILE) \
 		--no-color --bail --display-modules \
 		$(WEBPACK_DIST_OPTS) $(WEBPACK_EXTRA_OPTIONS)
 endif
