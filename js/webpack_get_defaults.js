@@ -123,10 +123,12 @@ function configureHTMLPlugin () {
 
 function buildBabelPresets (profile) {
   const presets = [
-    ['es2015', {'modules': false}],
-    'es2016',
-    'es2017',
-    'stage-3',  // needed for object spread operator "..."
+    ['env', {
+        'targets': {
+          'firefox': 60,
+        }
+      }
+    ]
   ]
   switch (profile) {
     case 'react':
