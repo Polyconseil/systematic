@@ -10,6 +10,7 @@ const webpack = require('webpack')
 const HtmlPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyPlugin = require('uglifyjs-webpack-plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const config = require('./config')
 const enums = require('./config_choices')
@@ -159,12 +160,18 @@ function checkNoParse (name) {
 
 module.exports = function (basePath) {
 
+  const nodeModulesPath = path.join(basePath, 'node_modules')
+
   const PATHS = {
     src: path.join(basePath, config.build.src_dir),
     dist: path.join(basePath, config.build.output_dir),
   }
 
   const plugins = []
+
+  if (config.build.profile === 'vue') {
+    plugins.push(new VueLoaderPlugin())
+  }
 
   const jsLoaders = []
 
@@ -209,9 +216,7 @@ module.exports = function (basePath) {
   const sassLoader = {
     loader: 'sass-loader',
     options: {
-      includePaths: [
-        path.join(basePath, 'node_modules'),
-      ],
+      includePaths: [nodeModulesPath],
     },
   }
 
@@ -272,7 +277,7 @@ module.exports = function (basePath) {
       extensions: ['.js', '.vue', '.json'],
       modules: [
         path.resolve(basePath),
-        path.join(basePath, 'node_modules'),
+        nodeModulesPath,
       ],
     },
     module: {
