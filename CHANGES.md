@@ -1,5 +1,9 @@
 Changes
 =======
+Version 2.0.0
+-------------
+- Switch to Webpack 4, which brings in quite a lot of changes. Probably your app will need some tuning.
+- Switch to the latest version of vue-loader also; deep changes for all Vue applications are possible.
 
 Version 1.12.0
 --------------
