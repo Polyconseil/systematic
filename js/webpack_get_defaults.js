@@ -72,12 +72,14 @@ function getExternals (basePath) {
       } else {
         return []
       }
+      break;
     case enums.buildTypes.LIBRARY:
       externals = getDependencies(basePath)
+      break;
     default:
       return []
   }
-  return externals.filter((item) => !config.build.keep_dependency.contains(item))
+  return externals.filter((item) => !config.build.keep_dependency.indexOf(item) !== -1)
 }
 
 
