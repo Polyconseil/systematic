@@ -156,7 +156,7 @@ settings: $(OUTPUT_DIR)/app.settings.js
 
 serve: prepare
 	mkdir -p $(OUTPUT_DIR)
-	webpack-dev-server --mode development --content-base $(OUTPUT_DIR) --hot --inline \
+	webpack-dev-server --mode development $(WEBPACK_OPTIONS_CONFIG_FILE) --content-base $(OUTPUT_DIR) --hot --inline \
 		--port $(SERVE_PORT) --host $(SERVE_HOST) \
 		--colors --bail --progress --output-pathinfo \
 		$(WEBPACK_EXTRA_OPTIONS)
