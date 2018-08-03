@@ -142,6 +142,7 @@ function getBabelPlugins () {
     ['transform-runtime', {polyfill: false}],
     'transform-object-rest-spread',
     'transform-class-properties',
+    'transform-async-to-generator',
     'transform-async-generator-functions',
   ]
 
