@@ -9,6 +9,7 @@ const webpack = require('webpack')
 
 const HtmlPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const config = require('./config')
@@ -243,10 +244,29 @@ module.exports = function (basePath) {
       break
   }
 
+  let optimization = {}
+  if (PRODUCTION_MODE) {
+    optimization.minimizer = [
+      new UglifyJsPlugin({
+        parallel: true,
+        cache: true,
+        sourceMap: true,
+        uglifyOptions: {
+          compress: {
+            inline: false,
+          },
+          keep_fnames: true,
+          keep_classnames: true,
+        },
+      }),
+    ]
+  }
+
   return {
     cache: true,
     context: basePath,
     entry: PATHS.src,
+    optimization: {},
     output: {
       path: PATHS.dist,
       pathinfo: true,
@@ -290,7 +310,7 @@ module.exports = function (basePath) {
       ],
     },
     plugins: plugins,
-    devtool: 'cheap-module-inline-source-map',
+    devtool: PRODUCTION_MODE ? 'source-map' : 'cheap-module-inline-source-map',
     devServer: {
       disableHostCheck: true,  // since webpack 2.4.3, a host check is present, remove it.
     },
