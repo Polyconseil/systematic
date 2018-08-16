@@ -31,13 +31,8 @@ function buildPublicPath () {
 
 function libraryTarget () {
   switch (config.build.type) {
-    case enums.buildTypes.COMPONENT:
-      if (PRODUCTION_MODE) {
-        return 'umd'
-      } else {
-        return 'var'
-      }
     case enums.buildTypes.LIBRARY:
+    case enums.buildTypes.COMPONENT:
       return 'umd'
     default:
       return 'var'
