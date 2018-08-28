@@ -10,8 +10,8 @@ module.exports = function (basePath, _webpackConfig) {
 
   const webpackConfig = _webpackConfig || require('./webpack_get_defaults')(basePath)
 
-  webpackConfig.entry = function(){return {}}  // Reset the webpack entry point, test files are added separatly by karma-webpack
-  webpackConfig.externals = []  // Keep all the dependencies during the tests
+  webpackConfig.entry = function () { return {} } // Reset the webpack entry point, test files are added separately by karma-webpack
+  webpackConfig.externals = [] // Keep all the dependencies during the tests
 
   const testFiles = path.join(basePath, systematicConfig.test.file_pattern)
 
@@ -46,8 +46,8 @@ module.exports = function (basePath, _webpackConfig) {
     customLaunchers: {
       ChromeWithoutSandbox: {
         base: 'ChromeHeadless',
-        flags: ['--no-sandbox']
-      }
+        flags: ['--no-sandbox'],
+      },
     },
     reporters: ['webpack-error'],
 
