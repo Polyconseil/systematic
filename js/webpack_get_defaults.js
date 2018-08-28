@@ -5,10 +5,8 @@
 const fs = require('fs')
 const path = require('path')
 
-const webpack = require('webpack')
-
 const HtmlPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const config = require('./config')
@@ -17,7 +15,6 @@ const enums = require('./config_choices')
 const PRODUCTION_MODE = (process.env.NODE_ENV === 'production')
 
 function getPackageInfo (basePath) {
-  let packageJson
   try {
     return require(path.join(basePath, 'package.json'))
   } catch (e) {
@@ -72,8 +69,10 @@ function getExternals (basePath) {
       } else {
         return []
       }
+      break
     case enums.buildTypes.LIBRARY:
       externals = getDependencies(basePath)
+      break
     default:
       return []
   }
@@ -123,11 +122,10 @@ function configureHTMLPlugin () {
 function buildBabelPresets (profile) {
   const presets = [
     ['env', {
-        'targets': {
-          'firefox': 60,
-        }
-      }
-    ]
+      'targets': {
+        'firefox': 60,
+      },
+    }],
   ]
   switch (profile) {
     case 'react':
@@ -194,7 +192,7 @@ module.exports = function (basePath) {
     loader: 'css-loader',
     options: {
       localIdentName: '[path][name]__[local]--[hash:base64:5]',
-      importLoaders: 2,  // let postcss/scss resolve @import
+      importLoaders: 2, // let postcss/scss resolve @import
     },
   }
   const postCssLoader = {
@@ -204,8 +202,8 @@ module.exports = function (basePath) {
       sourceMap: true,
       plugins: function (loader) {
         return [
-          require('postcss-import')({  // This plugin enables @import rule in CSS files.
-            path: [loader.resourcePath, basePath],  // Use the same path for CSS and JS imports
+          require('postcss-import')({ // This plugin enables @import rule in CSS files.
+            path: [loader.resourcePath, basePath], // Use the same path for CSS and JS imports
           }),
           require('postcss-cssnext')({
             features: {
@@ -233,7 +231,7 @@ module.exports = function (basePath) {
 
   if (PRODUCTION_MODE) {
     const extractCSS = new MiniCssExtractPlugin({
-      filename: getOutputCssFileName()
+      filename: getOutputCssFileName(),
     })
     plugins.push(extractCSS)
     baseCssLoaders = [MiniCssExtractPlugin.loader]
@@ -295,7 +293,7 @@ module.exports = function (basePath) {
     plugins: plugins,
     devtool: 'cheap-module-inline-source-map',
     devServer: {
-      disableHostCheck: true,  // since webpack 2.4.3, a host check is present, remove it.
+      disableHostCheck: true, // since webpack 2.4.3, a host check is present, remove it.
     },
   }
 }
