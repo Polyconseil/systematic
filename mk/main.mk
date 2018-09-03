@@ -166,7 +166,7 @@ ifeq ($(TEST_ENGINE),karma)
 	karma start --reporters junit,webpack-error --single-run --no-auto-watch --no-colors $(KARMA_OPTIONS_CONFIG_FILE)
 endif
 ifeq ($(TEST_ENGINE),jest)
-	jest --reporters junit --config=$(JEST_OPTIONS_CONFIG_FILE) --no-cache
+	jest --ci --testResultsProcessor="jest-junit" --config=$(JEST_OPTIONS_CONFIG_FILE) --no-cache
 endif
 
 livetest: prepare
