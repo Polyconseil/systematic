@@ -72,7 +72,7 @@ function getExternals (basePath) {
     default:
       return []
   }
-  return externals.filter((item) => !config.build.keep_dependency.indexOf(item) !== -1)
+  return externals.filter((item) => config.build.keep_dependency.indexOf(item) === -1)
 }
 
 
