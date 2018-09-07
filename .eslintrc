@@ -6,6 +6,7 @@ extends:
 env:
   jasmine: true
   browser: true
+  jest: true
 rules:
   comma-dangle:
     - 2

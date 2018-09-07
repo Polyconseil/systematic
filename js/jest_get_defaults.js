@@ -3,6 +3,8 @@
 
 'use strict'
 
+const systematicConfig = require('./config')
+
 module.exports = function (basePath) {
   return {
     moduleFileExtensions: [
@@ -13,6 +15,7 @@ module.exports = function (basePath) {
     transform: {
       '.*\\.(vue)$': `${basePath}/node_modules/vue-jest`,
       '^.+\\.js$': `${basePath}/node_modules/systematic/js/babel_jest_transformer.js`,
+      '^.+\\.html$': `${basePath}/node_modules/systematic/js/html_loader.js`,
     },
     transformIgnorePatterns: [
       'node_modules/(?!(cassets|vanitils)/)',
@@ -21,16 +24,18 @@ module.exports = function (basePath) {
       basePath,
     ],
     moduleNameMapper: {
-      '\\.(html|css|less)$': 'identity-obj-proxy',
+      '\\.(css|less)$': 'identity-obj-proxy',
     },
     roots: [
       basePath,
     ],
-    testRegex: '.spec.js',
+    setupTestFrameworkScriptFile: systematicConfig.test.setup_script_file,
+    testRegex: systematicConfig.test.file_pattern,
     globals: {
       "vue-jest": {
         babelRcFile: `${basePath}/node_modules/systematic/default_config/babelrc`,
       },
+      "__TEST__": true,
     },
   }
 }
