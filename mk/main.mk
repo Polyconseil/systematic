@@ -160,7 +160,7 @@ ifeq ($(TEST_ENGINE),karma)
 	karma start --reporters webpack-error --single-run --no-auto-watch $(KARMA_OPTIONS_CONFIG_FILE)
 endif
 ifeq ($(TEST_ENGINE),jest)
-	jest --config=$(JEST_OPTIONS_CONFIG_FILE) --no-cache
+	jest --config=$(JEST_OPTIONS_CONFIG_FILE) --no-cache ${ARGS}
 endif
 
 jenkins-test: prepare syntax
