@@ -1,5 +1,11 @@
 Changes
 =======
+
+Version 2.1.7
+-------------
+- Allow using Jest instead of Karma for tests
+- Allow to pass arguments to `make test` when using Jest (e.g. to filter the tests being run)
+
 Version 2.0.0
 -------------
 - Switch to Webpack 4, which brings in quite a lot of changes. Probably your app will need some tuning.
