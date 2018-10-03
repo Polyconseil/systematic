@@ -1,6 +1,10 @@
 Changes
 =======
 
+Version 2.1.8
+-------------
+- Allow usage of async generator functions with jest test engine.
+
 Version 2.1.7
 -------------
 - Allow using Jest instead of Karma for tests
