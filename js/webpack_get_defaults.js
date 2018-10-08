@@ -300,6 +300,20 @@ module.exports = function (basePath) {
           use: baseCssLoaders.concat([cssLoader, postCssLoader, sassLoader]),
         },
         { test: /\.jade$/, use: 'jade-loader' },
+        {
+          test: /\.pug$/,
+          oneOf: [
+            // this applies to `<template lang="pug">` in Vue components
+            {
+              resourceQuery: /^\?vue/,
+              use: ['pug-plain-loader'],
+            },
+            // this applies to pug imports inside JavaScript
+            {
+              use: ['raw-loader', 'pug-plain-loader'],
+            },
+          ],
+        },
         { test: /\.html$/, use: 'html-loader' },
         { test: /\.(png|gif|jp(e)?g)$/, use: 'url-loader?limit=50000' },
         { test: /\.(ttf|eot|svg|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: 'url-loader?limit=50000' },

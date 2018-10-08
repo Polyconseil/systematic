@@ -1,6 +1,10 @@
 Changes
 =======
 
+Next version
+------------
+- Allow usage of .pug preprocessor. Fix a bug with last versions of vue-loader.
+
 Version 2.1.8
 -------------
 - Allow usage of async generator functions with jest test engine.
