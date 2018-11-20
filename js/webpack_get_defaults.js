@@ -118,9 +118,9 @@ function configureHTMLPlugin () {
 function buildBabelPresets (profile) {
   const presets = [
     ['env', {
-      'targets': {
-        'firefox': 60,
-      },
+       'modules': false,
+       // see on https://browserl.ist/?q=%3E0.25%25%2C+not+ie+11%2C+not+op_mini+all
+       'targets': '>0.25%, not ie 11, not op_mini all',
     }],
   ]
   switch (profile) {
