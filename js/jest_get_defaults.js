@@ -4,6 +4,7 @@
 'use strict'
 
 const systematicConfig = require('./config')
+const babelDefaults = require('./babel_get_defaults.js')()
 
 module.exports = function (basePath) {
   return {
@@ -32,10 +33,10 @@ module.exports = function (basePath) {
     setupTestFrameworkScriptFile: systematicConfig.test.setup_script_file,
     testRegex: systematicConfig.test.file_pattern,
     globals: {
-      "vue-jest": {
-        babelRcFile: `${basePath}/node_modules/systematic/default_config/babelrc`,
+      'vue-jest': {
+        babelConfig: babelDefaults,
       },
-      "__TEST__": true,
+      '__TEST__': true,
     },
   }
 }
