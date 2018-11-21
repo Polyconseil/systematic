@@ -117,7 +117,7 @@ function configureHTMLPlugin () {
 
 function buildBabelPresets (profile) {
   const presets = [
-    ['env', {
+    ['@babel/preset-env', {
        'modules': false,
        // see on https://browserl.ist/?q=%3E0.25%25%2C+not+ie+11%2C+not+op_mini+all
        'targets': '>0.25%, not ie 11, not op_mini all',
@@ -133,11 +133,7 @@ function buildBabelPresets (profile) {
 
 function getBabelPlugins () {
   const plugins = [
-    ['transform-runtime', {polyfill: false}],
-    'transform-object-rest-spread',
-    'transform-class-properties',
-    'transform-async-to-generator',
-    'transform-async-generator-functions',
+    '@babel/plugin-transform-runtime',
   ]
 
   if (config.build.type === enums.buildTypes.APPLICATION && config.build.profile === 'angular') {
