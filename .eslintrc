@@ -1,8 +1,10 @@
 ---
-parser: babel-eslint
+parserOptions:
+  parser: babel-eslint
 extends:
   - standard
   - standard-jsx
+  - plugin:vue/essential
 env:
   jasmine: true
   browser: true
