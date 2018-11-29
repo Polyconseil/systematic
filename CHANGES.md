@@ -1,7 +1,18 @@
 Changes
 =======
 
-Next version
+
+Version 2.3.0
+------------
+- Enable tree-shaking.
+- Bump to babel 7.
+- Fix Vue file linting.
+- Add coverage on Jenkins targets.
+- Support dynamic import() statements in the code.
+- Switch to easygettext for all our code translations.
+
+
+Version 2.2.0
 ------------
 - Allow usage of .pug preprocessor. Fix a bug with last versions of vue-loader.
 
