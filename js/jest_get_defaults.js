@@ -3,11 +3,18 @@
 
 'use strict'
 
+const path = require('path')
+
 const systematicConfig = require('./config')
 const babelDefaults = require('./babel_get_defaults.js')()
 
 module.exports = function (basePath) {
+  basePath = path.normalize(basePath)
   return {
+    collectCoverageFrom: [
+      '{src,lib}/**/*.{js,jsx,vue}',
+    ],
+    coveragePathIgnorePatterns: ['/node_modules/', 'spec.js', 'test.js'],
     moduleFileExtensions: [
       'js',
       'json',
@@ -27,9 +34,7 @@ module.exports = function (basePath) {
     moduleNameMapper: {
       '\\.(css|less)$': 'identity-obj-proxy',
     },
-    roots: [
-      basePath,
-    ],
+    rootDir: basePath,
     setupTestFrameworkScriptFile: systematicConfig.test.setup_script_file,
     testRegex: systematicConfig.test.file_pattern,
     globals: {
