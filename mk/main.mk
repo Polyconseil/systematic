@@ -94,8 +94,7 @@ ESLINTFIX = $(if $(FIX),--fix,)
 LOCALES ?= $(call readini,$(CONF_INI),build,locales)
 LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
 
-GETTEXT_HTML_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' 2> /dev/null)
-GETTEXT_JS_SOURCES   ?= $(shell find $(SRC_DIR) -name '*.js')
+GETTEXT_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' -o -name '*.js' -o -name '*.vue' 2> /dev/null)
 SETTINGS_INI_FILES ?= $(shell find $(SRC_DIR) -name '*.ini' 2> /dev/null)
 
 # Colors for a nicer output
@@ -212,16 +211,10 @@ ifeq ($(BUILD_TYPE),application)
 	$(INI2JS) $^ --global_name __SETTINGS__ > $@
 endif
 
-/tmp/template.pot: $(GETTEXT_JS_SOURCES) $(GETTEXT_HTML_SOURCES)
+/tmp/template.pot: $(GETTEXT_SOURCES)
 	@echo "$(ECHOPREFIX) extracting translations $(ECHOSUFFIX)"
 	mkdir -p $(dir $@)
-	gettext-extract --quiet $(GETTEXTEXTRACT_OPTIONS) --output $@ $(GETTEXT_HTML_SOURCES)
-	xgettext --language=JavaScript --keyword=i18n --keyword=npgettext:1c,2,3 --from-code=utf-8 \
-		--sort-output --join-existing --no-wrap --package-name=$(PACKAGE_NAME) \
-		--package-version=$(shell node -e "console.log(require('./package.json').version);") \
-		--copyright="$(PACKAGE_AUTHOR)" --output $@ $(GETTEXT_JS_SOURCES)
-	# Remove comments
-	sed -i.bak '/^#:/ d' $@ && rm $@.bak
+	gettext-extract --quiet $(GETTEXTEXTRACT_OPTIONS) --output $@ $(GETTEXT_SOURCES)
 	@for lang in $(LOCALES); do \
 		export PO_FILE=locale/$$lang/LC_MESSAGES/app.po; \
 		echo "msgmerge --sort-output --update $$PO_FILE $@"; \
