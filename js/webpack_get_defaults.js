@@ -132,16 +132,10 @@ function buildBabelPresets (profile) {
 }
 
 function getBabelPlugins () {
-  const plugins = [
+  return [
     '@babel/plugin-transform-runtime',
     '@babel/plugin-syntax-dynamic-import',
   ]
-
-  if (config.build.type === enums.buildTypes.APPLICATION && config.build.profile === 'angular') {
-    plugins.push('angularjs-annotate')
-  }
-
-  return plugins
 }
 
 function checkNoParse (name) {

@@ -16,7 +16,6 @@
     "leaflet": "1.1.0"
   },
   "devDependencies": {
-    "karma": "^1.7.0",
     "systematic": "../."
   }
 }

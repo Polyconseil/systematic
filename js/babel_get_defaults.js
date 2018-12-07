@@ -11,7 +11,7 @@ module.exports = function () {
     'env': {
       'test': {
         'plugins': [
-          'dynamic-import-node'
+          '@babel/plugin-syntax-dynamic-import',
         ],
         'presets': [
           ['@babel/preset-env', {'targets': { 'node': 'current' }}]

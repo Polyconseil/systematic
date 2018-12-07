@@ -1,5 +1,4 @@
 module.exports = {
-  karma_get_defaults: require('./js/karma_get_defaults'),
   jest_get_defaults: require('./js/jest_get_defaults'),
   babel_get_defaults: require('./js/babel_get_defaults'),
   webpack_get_defaults: require('./js/webpack_get_defaults'),

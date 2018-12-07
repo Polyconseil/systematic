@@ -41,7 +41,6 @@ The file structure expected for your application or library.
 │    └── index.js         # JS entry point
 |
 ├── webpack.config.js     # Webpack config, inherits systematic's
-├── karma.config.js       # Karma config, inherits systematic's
 ├── Makefile              # Your application's Makefile
 └── systematic.ini        # systematic config
 ```
@@ -57,7 +56,7 @@ The file structure expected for your application or library.
   ; Project type, can be application, component or library. An app will need an HTML entry point
   type = library
   ; Optional, default: vanilla
-  ; Build profile, can be angular, vue...
+  ; Build profile, can be vue, react, ...
   profile = vanilla
   ; Optional, default: dist
   ; The relative path for the build output, defaults to dist
@@ -92,11 +91,9 @@ The file structure expected for your application or library.
   port = 8080
 
   [test]
-  ; Optional, default is karma but maybe jest in the future
-  engine = karma
   ; Optional, default: <YOUR_SRC_DIR>/**/*tests.js
-  ; All files matching this pattern will be processed with karma
-  ; It is relative to the root given to the karma config, usually the project root
+  ; All files matching this pattern will be processed with Jest
+  ; It is relative to the root given to the Jest config, usually the project root
   file_pattern = src/**/*tests.js
   ```
 
@@ -196,7 +193,7 @@ Value : `vue`
 
 Adds translation management with the vue translation token.
 
-# Override Karma or Webpack config
+# Override Jest or Webpack config
 
 It's possible to override the build or test config by adding config files at the root of the projet.
 
@@ -213,16 +210,16 @@ It's possible to override the build or test config by adding config files at the
   ```
 
 
-* For Karma: `karma.conf.js`. Example:
+* For Jest: `jest.conf.js`. Example:
 
   ```javascript
-  // import systematic default karma settings
-  const karmaDefaults = require('systematic').karma_get_defaults(__dirname)
+  // import systematic default jest settings
+  const jestDefaults = require('systematic').jest_get_defaults(__dirname)
 
   // optional overrides example
-  karmaDefaults.plugins.push('my-plugin')
+  jestDefaults.plugins.push('my-plugin')
 
-  module.exports = karma => karma.set(karmaDefaults)
+  module.exports = jest => jest.set(jestDefaults)
   ```
 
 # Building components
