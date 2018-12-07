@@ -5,9 +5,10 @@
 const fs = require('fs')
 const path = require('path')
 
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const HtmlPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const config = require('./config')
@@ -158,6 +159,10 @@ module.exports = function (basePath) {
 
   const plugins = []
 
+  if (config.build.analyze) {
+    plugins.push(new BundleAnalyzerPlugin())
+  }
+
   if (config.build.profile === 'vue') {
     plugins.push(new VueLoaderPlugin())
   }
@@ -234,11 +239,12 @@ module.exports = function (basePath) {
   let optimization = {}
   if (PRODUCTION_MODE) {
     optimization.minimizer = [
-      new UglifyJsPlugin({
+      new TerserPlugin({
         parallel: true,
         cache: true,
         sourceMap: true,
-        uglifyOptions: {
+        extractComments: true,
+        terserOptions: {
           compress: {
             inline: false,
           },

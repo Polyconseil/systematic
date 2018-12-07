@@ -70,9 +70,6 @@ The file structure expected for your application or library.
   ; Optional, default is blank
   ; The locales to generate translation files
   locales = en_US en_GB
-  ; Optional, default is true
-  ; Whether to hash the generated bundle.js (relevant only for type = application)
-  enableFileNameHashing = false
   ; Optional, default is []
   ; Adds entries to the noParse config of webpack; large libraries without a require can go there.
   ; It's only an optimization to speed up compilation in some cases, but it may break the build.
@@ -82,6 +79,9 @@ The file structure expected for your application or library.
   ; instead of having them all out. For instance this may be useful for undistributed dependencies, or
   ; proprietary ones.
   keep_dependency[] = lodash
+  ; Optional, default is 0
+  ; Analyze the bundle right after build to check the sizes.
+  analysis = 1
 
   [serve]
   ; Interface to listen

@@ -15,6 +15,7 @@ defaultsDeep(systematic, {
     enable_babel: true,
     no_parse: [],
     keep_dependency: [],
+    analyze: false,
   },
   serve: {
     // FIXME(vperron): This configuration comes in double with the one from the makefile.
