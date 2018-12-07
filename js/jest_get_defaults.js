@@ -32,7 +32,7 @@ module.exports = function (basePath) {
       basePath,
     ],
     moduleNameMapper: {
-      '\\.(css|less)$': 'identity-obj-proxy',
+      '\\.(sass|scss|css|less)$': 'identity-obj-proxy',
     },
     rootDir: basePath,
     setupTestFrameworkScriptFile: systematicConfig.test.setup_script_file,
