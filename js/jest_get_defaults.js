@@ -14,7 +14,7 @@ module.exports = function (basePath) {
     collectCoverageFrom: [
       '{src,lib}/**/*.{js,jsx,vue}',
     ],
-    coveragePathIgnorePatterns: ['/node_modules/', 'spec.js', 'test.js'],
+    coveragePathIgnorePatterns: ['/node_modules/', 'index.js', 'spec.js', 'test.js'],
     moduleFileExtensions: [
       'js',
       'json',
