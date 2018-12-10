@@ -1,6 +1,10 @@
 Changes
 =======
-
+Version 3.0
+-----------
+- Drop any support for Angular v1 and Karma testing.
+- Replace the deprecated UglifyJS plugin by Terser.
+- Add bundle analysis as an option in systematic.ini.
 
 Version 2.3.0
 ------------
