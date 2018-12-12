@@ -142,10 +142,10 @@ eslint:
 	eslint --config $(ESLINTRC) $(ESLINTOPTIONS) $(SRC_DIR) $(ESLINTFIX)
 
 test:
-	TZ=utc jest --config=$(JEST_OPTIONS_CONFIG_FILE) --no-cache ${ARGS}
+	TZ=utc jest --config=$(JEST_OPTIONS_CONFIG_FILE) ${ARGS}
 
 jenkins-test: prepare syntax
-	JEST_JUNIT_OUTPUT='./reports/TEST-jest.xml' JEST_JUNIT_CLASSNAME="{classname}" JEST_JUNIT_TITLE="{title}" jest --ci --coverage --reporters=default --reporters=jest-junit --config=$(JEST_OPTIONS_CONFIG_FILE) --no-cache
+	JEST_JUNIT_OUTPUT='./reports/TEST-jest.xml' JEST_JUNIT_CLASSNAME="{classname}" JEST_JUNIT_TITLE="{title}" jest --ci --verbose --coverage --reporters=default --reporters=jest-junit --config=$(JEST_OPTIONS_CONFIG_FILE)
 
 livetest: prepare
 	jest --reporters kjhtml --config=$(JEST_OPTIONS_CONFIG_FILE)
