@@ -141,7 +141,7 @@ syntax: eslint
 eslint:
 	eslint --config $(ESLINTRC) $(ESLINTOPTIONS) $(SRC_DIR) $(ESLINTFIX)
 
-test:
+test: prepare
 	TZ=utc jest --config=$(JEST_OPTIONS_CONFIG_FILE) ${ARGS}
 
 jenkins-test: prepare syntax
