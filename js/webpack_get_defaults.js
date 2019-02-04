@@ -7,7 +7,7 @@ const path = require('path')
 
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const HtmlPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
@@ -215,13 +215,14 @@ module.exports = function (basePath) {
     },
   }
 
-  let baseCssLoaders = ['style-loader']
-
-  if (config.build.profile === 'vue') {
-    baseCssLoaders = ['vue-style-loader']
-  }
-
-  if (PRODUCTION_MODE) {
+  let baseCssLoaders = []
+  if (!PRODUCTION_MODE) {
+    if (config.build.profile !== 'vue') {
+      baseCssLoaders = ['style-loader']
+    } else {
+      baseCssLoaders = ['vue-style-loader']
+    }
+  } else {
     const extractCSS = new MiniCssExtractPlugin({
       filename: getOutputCssFileName(),
     })
