@@ -18,7 +18,7 @@ defaultsDeep(systematic, {
     analyze: false,
   },
   serve: {
-    // FIXME(vperron): This configuration comes in double with the one from the makefile.
+    // This configuration comes in double with the one from the makefile.
     host: '0.0.0.0',
     port: 8080,
   },

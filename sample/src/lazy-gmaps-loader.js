@@ -8,14 +8,12 @@ let promise = new Promise((resolve) => {
 })
 
 export default {
-  __name__: 'lazy-gmaps-loader',  // TODO(vperron): is there a way to get the file name instead ?
+  __name__: 'lazy-gmaps-loader', // is there a way to get the file name instead ?
 
   load: function () {
     if (typeof google === 'undefined' || !google.maps) {
       // Ensure it loads only once
       if (!isLoading) {
-        // When initMap is called, it calls our promise's 'resolve' function
-        // TODO(vperron): Dynamically generate the callback name to be set in window
         window.initMap = globalResolve
         let script = document.createElement('script')
         script.src = 'http://maps.googleapis.com/maps/api/js?language=en&callback=initMap'
