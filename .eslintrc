@@ -4,7 +4,7 @@ parserOptions:
 extends:
   - standard
   - standard-jsx
-  - plugin:vue/essential
+  - plugin:vue/recommended
 env:
   jasmine: true
   browser: true
@@ -23,3 +23,27 @@ rules:
 
   # Disable arrow-parens rule, since Standard isn't CLEAR about what it wants.
   arrow-parens: 0
+
+  # use brace style even in templates, 1tbs is the default
+  vue/brace-style: 1tbs
+
+  # components should be kebab-case in templates
+  vue/component-name-in-template-casing:
+    - error
+    - kebab-case
+    - registeredComponentsOnly: true
+    - ignores: []
+
+  # components should have the same name as their file name (case ignored)
+  vue/match-component-file-name:
+    - error
+    - extensions: [js, vue]
+    - shouldMatchCase: false
+
+  # use curly spacing even in templates
+  vue/object-curly-spacing: always
+
+  # never use parenthesis on function call for v-on
+  vue/v-on-function-call:
+    - error
+    - never
