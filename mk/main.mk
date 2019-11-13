@@ -1,9 +1,14 @@
 default: help
 
+# Shell
+# On OSX the PATH variable isn't exported unless "SHELL" is also set, see: http://stackoverflow.com/a/25506676
+
+SHELL := /bin/bash
+.SHELLFLAGS = -ec -o pipefail
+
 # Paths
 
 NODE_BINDIR ?= ./node_modules/.bin/
-SHELL ?= /bin/bash -o pipefail
 SYSTEMATIC_PATH ?= node_modules/systematic/
 WEBPACK ?= ./node_modules/webpack/bin/webpack.js
 WEBPACK_DIST_OPTS := $(if $(CI),,--progress)
@@ -20,8 +25,6 @@ define read_package
 $(shell node -p "require('./package.json').$(1)")
 endef
 
-# On OSX the PATH variable isn't exported unless "SHELL" is also set, see: http://stackoverflow.com/a/25506676
-SHELL = /bin/bash
 export PATH := $(NODE_BINDIR):$(PATH)
 export NODE_PATH := $(shell pwd):$(NODE_PATH)
 
