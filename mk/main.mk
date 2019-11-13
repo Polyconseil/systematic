@@ -4,7 +4,7 @@ default: help
 # On OSX the PATH variable isn't exported unless "SHELL" is also set, see: http://stackoverflow.com/a/25506676
 
 SHELL := /bin/bash
-.SHELLFLAGS = -ec -o pipefail
+.SHELLFLAGS = -ec -o pipefail -O extglob
 
 # Paths
 
@@ -30,20 +30,21 @@ export NODE_PATH := $(shell pwd):$(NODE_PATH)
 
 # Variables customizable through systematic.ini
 
+AVAILABLE_PROFILES := $(subst .mk,,$(notdir $(shell ls $(SYSTEMATIC_PATH)mk/!(main).mk)))
 BUILD_PROFILE ?= $(call readini,$(CONF_INI),build,profile)
 BUILD_PROFILE := $(or $(BUILD_PROFILE),vanilla)
 BUILD_TYPE ?= $(call readini,$(CONF_INI),build,type)
 PACKAGE_NAME ?= $(call read_package,name)
 PACKAGE_AUTHOR ?= $(call read_package,author)
 
-ifeq ($(BUILD_PROFILE),)
-$(error Please define a build.profile in $(CONF_INI))
+ifeq ($(filter $(BUILD_PROFILE),$(AVAILABLE_PROFILES)),)
+    $(error Please define a valid build.profile in $(CONF_INI))
 endif
 ifeq ($(PACKAGE_NAME),)
-$(error Please define a package name in $(CONF_INI))
+    $(error Please define a package name in $(CONF_INI))
 endif
 ifeq ($(PACKAGE_AUTHOR),)
-$(error Please define a package author in package.json (used in translation files))
+    $(error Please define a package author in package.json (used in translation files))
 endif
 
 SRC_DIR := $(call readini,$(CONF_INI),build,src_dir)
