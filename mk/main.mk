@@ -31,7 +31,7 @@ export NODE_PATH := $(shell pwd):$(NODE_PATH)
 # Variables customizable through systematic.ini
 
 BUILD_PROFILE ?= $(call readini,$(CONF_INI),build,profile)
-BUILD_PROFILE := $(if $(BUILD_PROFILE),$(BUILD_PROFILE),vanilla)
+BUILD_PROFILE := $(or $(BUILD_PROFILE),vanilla)
 BUILD_TYPE ?= $(call readini,$(CONF_INI),build,type)
 PACKAGE_NAME ?= $(call read_package,name)
 PACKAGE_AUTHOR ?= $(call read_package,author)
@@ -47,16 +47,16 @@ $(error Please define a package author in package.json (used in translation file
 endif
 
 SRC_DIR := $(call readini,$(CONF_INI),build,src_dir)
-SRC_DIR := $(if $(SRC_DIR),$(SRC_DIR),src)
+SRC_DIR := $(or $(SRC_DIR),src)
 
 OUTPUT_DIR := $(call readini,$(CONF_INI),build,output_dir)
-OUTPUT_DIR := $(if $(OUTPUT_DIR),$(OUTPUT_DIR),dist)
+OUTPUT_DIR := $(or $(OUTPUT_DIR),dist)
 
 SERVE_HOST := $(call readini,$(CONF_INI),serve,host)
-SERVE_HOST := $(if $(SERVE_HOST),$(SERVE_HOST),0.0.0.0)
+SERVE_HOST := $(or $(SERVE_HOST),0.0.0.0)
 
 SERVE_PORT := $(call readini,$(CONF_INI),serve,port)
-SERVE_PORT := $(if $(SERVE_PORT),$(SERVE_PORT),8080)
+SERVE_PORT := $(or $(SERVE_PORT),8080)
 
 WEBPACK_EXTRA_OPTIONS ?=
 
