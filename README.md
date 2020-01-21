@@ -81,7 +81,7 @@ The file structure expected for your application or library.
   keep_dependency[] = lodash
   ; Optional, default is 0
   ; Analyze the bundle right after build to check the sizes.
-  analysis = 1
+  analyze = 1
 
   [serve]
   ; Interface to listen
