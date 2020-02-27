@@ -24,6 +24,7 @@ module.exports = function (basePath) {
       '.*\\.(vue)$': `${basePath}/node_modules/vue-jest`,
       '^.+\\.js$': `${basePath}/node_modules/systematic/js/babel_jest_transformer.js`,
       '^.+\\.html$': `${basePath}/node_modules/systematic/js/html_loader.js`,
+      '^.+\\.pug$': `${basePath}/node_modules/pug-jest`,
     },
     transformIgnorePatterns: [
       'node_modules/(?!(cassets|vanitils)/)',
