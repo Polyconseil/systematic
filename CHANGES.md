@@ -1,5 +1,11 @@
 Changes
 =======
+
+Version 3.1
+-----------
+- Add support for pug files in `make makemessages` and jest tests
+- Stronger linting for vue components
+
 Version 3.0
 -----------
 - Drop any support for Angular v1 and Karma testing.
