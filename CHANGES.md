@@ -1,6 +1,10 @@
 Changes
 =======
 
+Version 3.1.1
+-------------
+- Fix gettext sources collection
+
 Version 3.1
 -----------
 - Add support for pug files in `make makemessages` and jest tests
