@@ -84,7 +84,7 @@ ESLINTFIX = $(if $(FIX),--fix,)
 LOCALES ?= $(call readini,$(CONF_INI),build,locales)
 LOCALE_FILES ?= $(patsubst %,locale/%/LC_MESSAGES/app.po,$(LOCALES))
 
-GETTEXT_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' -o -name '*.js' -o -name '*.vue' -name '*.pug' 2> /dev/null)
+GETTEXT_SOURCES ?= $(shell find $(SRC_DIR) -name '*.jade' -o -name '*.html' -o -name '*.js' -o -name '*.vue' -o -name '*.pug' 2> /dev/null)
 SETTINGS_INI_FILES ?= $(shell find $(SRC_DIR) -name '*.ini' 2> /dev/null)
 
 # Colors for a nicer output
